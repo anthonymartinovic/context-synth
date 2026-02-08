@@ -1,8 +1,36 @@
 # Context Synth
 
-Context Synth explores combining multiple context sources into a single structured markdown file for LLM consumption.
+Context Synth is an open-source pipeline for synthesizing multiple context sources into a single structured context document usable by AI-assisted development workflows.
 
-v0.0.1-alpha includes an offline heuristic prototype and example workflow. CLI and editor integrations are in progress.
+The pipeline:
+
+* Converts sources into structured units
+* Synthesizes units into canonical context documents
+* Applies weighting during synthesis to shape outputs and manage token budgets
+* Defines schemas and interfaces that enable extension
+
+## Status
+
+Under active development.
+
+Project trajectory and architectural intent are defined in:
+
+* VISION.md
+* DIRECTION.md
+
+The section below preserves the current implementation snapshot and accurately reflects the repository as it exists today.
+
+As development progresses, this README will evolve and the snapshot section may be removed once implementation converges with the pipeline framing above.
+
+---
+
+## Implementation Snapshot (v0.0.1-alpha Lineage)
+
+The content below is retained as a historical snapshot representing the current state of the codebase and its original documentation.
+
+---
+
+Context Synth is a **context synthesis protocol** with a **reference engine** that distills multiple context sources into one structured markdown file.
 
 ## Status (experimental)
 
