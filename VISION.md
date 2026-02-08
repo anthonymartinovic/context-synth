@@ -13,11 +13,11 @@ The trajectory is toward a stable, versioned open-source pipeline that:
 * Produces deterministic synthesized documents
 * Enables integration into developer tooling
 
+Practically, this is meant to sit between upstream context providers (including editor/tooling sources like MCP) and the downstream prompt window: adapters ingest/normalize sources into units, the core pipeline synthesizes, and the resulting canonical document becomes the context you provide to an AI system.
+
 ## v1.0 Intent
 
 The pipeline is intended to be delivered through:
 
 * A command-line interface
 * Integration with Cursor and VS Code
-
-The pipeline abstraction defines Context Synth.
