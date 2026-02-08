@@ -13,7 +13,7 @@ The trajectory is toward a stable, versioned open-source pipeline that:
 * Produces deterministic synthesized documents
 * Enables integration into developer tooling
 
-Practically, this is meant to sit between upstream context providers (including tool-provided context surfaced via MCP servers) and the downstream prompt window: adapters ingest/normalize sources into units, the core pipeline synthesizes, and the resulting canonical document becomes the context you provide to an AI system.
+Practically, this is meant to sit between upstream context providers (including context surfaced via MCP servers) and the downstream prompt window: adapters ingest/normalize sources into units, the core pipeline synthesizes, and the resulting canonical document becomes the context you provide to your chat/prompt.
 
 ## v1.0 Intent
 
