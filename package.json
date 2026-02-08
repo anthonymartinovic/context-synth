@@ -1,0 +1,35 @@
+{
+  "name": "context-synth",
+  "displayName": "Context Synth",
+  "description": "Distills multiple context sources into a single structured context markdown file.",
+  "version": "0.0.1-alpha",
+  "publisher": "context-synth",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onCommand:context-synth.synth"],
+  "main": "./dist/src/adapters/vscode/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "context-synth.synth",
+        "title": "Context Synth: Synthesize"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "js-yaml": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.2.1",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.9.3"
+  }
+}

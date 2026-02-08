@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=../cs.schema.json
+version: 1
+
+sources:
+  - id: business
+    path: examples/docs/BUSINESS_DOMAIN_KNOWLEDGE.md
+    weight: 0.99
+
+  - id: tech
+    path: examples/docs/TECHNICAL_SPEC.md
+    weight: 0.885
+
+  - id: product
+    path: examples/docs/PRODUCT_REQUIREMENTS.md
+    weight: 0.4
+
+routing:
+  mode: heuristic # change to: cursor
+
+context:
+  path: CONTEXT.md
+
+emit:
+  citations: true
+
+chunking:
+  mode: headings
