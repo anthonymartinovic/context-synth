@@ -1,8 +1,8 @@
 # Context Synth
 
-Exploring a **context synthesis protocol** through an experimental **reference implementation** that distills multiple context sources into a structured markdown artifact.
+Exploring a **context synthesis protocol** with a **reference engine** that distills multiple context sources into one structured markdown file.
 
-The project investigates deterministic synthesis of weighted inputs into a canonical context file intended for LLM consumption. The current release (v0.0.1-alpha) provides an offline heuristic prototype and example workflow; CLI and editor integrations are in progress.
+The current release (v0.0.1-alpha) provides an offline heuristic prototype and example workflow; CLI and editor integrations are in progress.
 
 ## Status (experimental)
 
