@@ -6,7 +6,7 @@ Pipeline:
 
 Sources → Adapters → Context Units → Synthesis → Canonical Context Document
 
-The user controls what the pipeline produces through three inputs: **sources** (what goes in, and how authoritative each source is), **templates** (what the output looks like), and **budget** (how much fits in the result). Everything between is handled by the pipeline.
+The user controls what the pipeline produces through three inputs: **sources** (what goes in, and how influential each source is), **templates** (what the output looks like), and **budget** (how much fits in the result). Everything between is handled by the pipeline.
 
 Context Synth is defined by this flow and by the separation of responsibilities between its components.
 
@@ -48,7 +48,7 @@ It does not ingest sources or assemble documents.
 
 Sources are the user's primary control surface.
 
-A source is a weighted input — a document or data feed that the user selects for inclusion in the pipeline. Each source carries a weight (0..1) expressing how authoritative it is relative to other sources.
+A source is a weighted input — a document or data feed that the user selects for inclusion in the pipeline. Each source carries a weight (0..1) expressing how influential it is relative to other sources.
 
 The user configures sources and their weights before the pipeline runs. This is a pre-pipeline decision: the user declares what goes in and how much it matters. They do not interact with Context Units or any internal pipeline representation.
 
@@ -58,7 +58,7 @@ Weight propagates from sources through the pipeline:
 - CSE uses weight to determine slot filling precedence, content ordering, and orphan inclusion
 - Higher weight means greater influence on the final canonical document
 
-Sources, templates, and budget together define the user's intent: sources determine what content is available and how authoritative it is; templates determine what the output looks like; budget determines how much fits.
+Sources, templates, and budget together define the user's intent: sources determine what content is available and how influential it is; templates determine what the output looks like; budget determines how much fits.
 
 ---
 
@@ -258,7 +258,7 @@ Context Synth may operate on material surfaced by RAG, but it is not RAG. They o
 | Term | Meaning |
 |---|---|
 | **Source** | A weighted input document or data feed — the user's primary control surface |
-| **Weight** | A 0..1 float on a source indicating authoritativeness; propagates to Context Units and influences synthesis precedence |
+| **Weight** | A 0..1 float on a source indicating influence; propagates to Context Units and affects synthesis precedence |
 | **Budget** | A token count that constrains output size — the user's control over how much content fits in the result |
 | **Context Unit** | The standardized representation of a discrete section of source content — an internal pipeline concept, not user-configured |
 | **Adapter** | A component that converts raw source data into CSP-compliant Context Units |
