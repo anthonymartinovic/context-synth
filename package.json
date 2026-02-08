@@ -1,7 +1,7 @@
 {
   "name": "context-synth",
   "displayName": "Context Synth",
-  "description": "Distills multiple context sources into a single structured context markdown file.",
+  "description": "An open-source pipeline for synthesizing multiple context sources into a single structured context document usable by AI-assisted development workflows.",
   "version": "0.0.1-alpha",
   "publisher": "context-synth",
   "engines": {
