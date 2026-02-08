@@ -1,8 +1,8 @@
 # Context Synth
 
-Exploring a **context synthesis protocol** with a **reference engine** that distills multiple context sources into one structured markdown file.
+Context Synth explores combining multiple context sources into a single structured markdown file for LLM consumption.
 
-The current release (v0.0.1-alpha) provides an offline heuristic prototype and example workflow; CLI and editor integrations are in progress.
+v0.0.1-alpha includes an offline heuristic prototype and example workflow. CLI and editor integrations are in progress.
 
 ## Status (experimental)
 
