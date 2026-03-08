@@ -1,143 +1,180 @@
-# Context Synth -- v1 Architecture
+# Context Synth -- Architecture
 
-## Pipeline
+## Purpose
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     CONTEXT SOURCES                         │
-│                                                             │
-│   Markdown files: domain docs, ADRs, requirements,         │
-│   specs, constraints -- configured in contextsynth.yml      │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│  1. SNAP                                         no LLM    │
-│                                                             │
-│  Read configured source files, normalize content,           │
-│  compute hashes, estimate token counts.                     │
-│                                                             │
-│  Output: snapshot (files + hashes + tokens)                 │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│  2. EXTRACT                                       Gemini    │
-│                                                             │
-│  LLM reads all source contents and pulls out key            │
-│  information: facts, decisions, constraints, requirements,  │
-│  concepts, rationale. Each item references its source       │
-│  file and paragraph.                                        │
-│                                                             │
-│  Output: extracted items with source references             │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│  3. RANK                                          Claude    │
-│                                                             │
-│  LLM assigns priority to each extracted item within its     │
-│  section based on relevance, importance, and uniqueness.    │
-│                                                             │
-│  Output: items ordered by priority per section              │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│  4. ASSEMBLE                                      no LLM   │
-│                                                             │
-│  Include items in priority order within each section's      │
-│  token budget. Redistribute surplus. Render markdown.       │
-│                                                             │
-│  Output: assembled context artifact                         │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│  5. VERIFY                                          GPT     │
-│                                                             │
-│  For each item: check it against its source paragraph.      │
-│  A different model than extraction -- independent check.    │
-│  Unfaithful items are excluded.                             │
-│                                                             │
-│  Output: verified artifact                                  │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                       context.md                            │
-│                                                             │
-│  Ranked, verified context organized by section.             │
-│  Full source tracking. Committed to repo.                   │
-│  Consumed by AI agents alongside the code.                  │
-└─────────────────────────────────────────────────────────────┘
-```
+This document describes the technical shape of Context Synth at a system level. Unlike `docs/VISION.md`, which defines the enduring product thesis and invariants, and `docs/design/v0.1.md`, which defines the first release target, this file focuses on components, data flow, and implementation boundaries. Details here are expected to evolve as the implementation evolves.
 
-## Models
+## System Overview
+
+Context Synth is an agent context compiler. It turns configured external knowledge sources into a repo-local context artifact for AI agents. The initial release supports local markdown files to validate the pipeline architecture. The intended primary ingestion path is MCP-fetched content -- Confluence, Notion, Jira, and other external sources accessed through MCP servers. The architecture must not assume local files are the only source type.
 
 ```
-┌───────────────┐    ┌───────────────┐    ┌───────────────┐
-│    GEMINI      │    │    CLAUDE      │    │     GPT       │
-│                │    │               │    │               │
-│  Reads all     │    │  Judges what  │    │  Checks each  │
-│  source docs   │    │  matters most │    │  extraction   │
-│  (1M+ tokens)  │    │               │    │  against its  │
-│                │    │  Ranks items  │    │  source       │
-│  Extracts key  │    │  by priority  │    │               │
-│  information   │    │               │    │  Independent  │
-│                │    │               │    │  cross-check  │
-│                │    │               │    │               │
-│  STAGE 2       │    │  STAGE 3      │    │  STAGE 5      │
-└───────────────┘    └───────────────┘    └───────────────┘
+Configured source documents
+        │
+        ▼
+     Snap sources
+        │
+        ▼
+   Extract candidates
+        │
+        ▼
+     Rank by section
+        │
+        ▼
+    Assemble artifact
+        │
+        ▼
+  Verify source alignment
+        │
+        ▼
+       context.md
 ```
+
+## Main Components
+
+### CLI Layer
+
+Owns command entry points such as:
+- `cs init`
+- `cs snap`
+- `cs synth`
+
+Responsibilities:
+- load configuration
+- validate inputs
+- invoke the synthesis pipeline
+- report progress and results
+
+### Config Layer
+
+Parses and validates `contextsynth.yml`.
+
+Responsibilities:
+- resolve source declarations (file paths and globs in v0.1; MCP resources and URIs later)
+- apply defaults
+- validate section and budget configuration
+- expose a normalized runtime config
+
+### Source and Snapshot Layer
+
+Captures configured source material into a deterministic snapshot. This layer owns the boundary between "content has been fetched" and "content enters the pipeline." Downstream stages operate on normalized content with provenance references and do not know or care whether the content originated from a local file, an MCP resource, or another source type.
+
+The v0.1 implementation reads local markdown files. The abstraction boundary should be clean enough that adding MCP-fetched sources later is a new adapter behind the same interface, not a rework of the pipeline.
+
+Responsibilities:
+- resolve and fetch source content (local files in v0.1, MCP resources later)
+- normalize contents into a source-type-agnostic representation
+- attach provenance references (file path, URI, or MCP resource identifier)
+- compute content hashes
+- estimate token counts
+- record the source set used for a synthesis run
+
+### Extraction Layer
+
+Produces candidate context items from the snapshot.
+
+Responsibilities:
+- operate over source content
+- preserve source references on derived items
+- classify or structure extracted context
+- optionally cache intermediate outputs
+
+This layer may be LLM-backed, but the exact prompting and item shape are intentionally still flexible.
+
+### Ranking Layer
+
+Orders candidate items within sections.
+
+Responsibilities:
+- prioritize for agent usefulness
+- work within section-level budgets
+- preserve auditable ordering decisions
+- optionally cache ranked plans
+
+### Assembly Layer
+
+Builds the final artifact from ranked items.
+
+Responsibilities:
+- allocate section budgets
+- include or omit items deterministically
+- render output markdown
+- attach artifact metadata
+
+### Verification Layer
+
+Performs an independent source-alignment check on derived items.
+
+Responsibilities:
+- compare included items against referenced source material
+- record pass/fail outcomes
+- surface excluded items and reasons where applicable
+
+This layer increases confidence in derived context, but it does not replace canonical sources.
+
+## Data Model
+
+The main runtime objects are:
+
+- `Source`: canonical input (local file, MCP resource, or other external content)
+- `Snapshot`: normalized set of sources for a run
+- `Extraction`: candidate item with source reference
+- `SynthesisPlan`: ranked extractions grouped by section
+- `ContextArtifact`: final rendered output plus metadata
+
+The exact source-reference model remains open. It may eventually use paragraphs, spans, or another stable unit.
 
 ## Data Flow
 
-```
-Markdown files
-    │
-    ▼
-Snapshot (files, hashes, token counts)
-    │
-    ▼
-Extracted items (text, category, source reference)
-    │
-    ▼
-Ranked items (priority order per section)
-    │
-    ▼
-Assembled artifact (within token budgets)
-    │
-    ▼
-Verified artifact (unfaithful items removed)
-    │
-    ▼
-context.md (with source tracking metadata)
-```
+### 1. Capture
 
-## Traceability
+The pipeline begins by resolving configured sources and producing a snapshot tied to specific content hashes.
 
-At any point, you can:
+### 2. Derive
 
-- Trace any piece of information in the artifact back to its source file and paragraph
-- Verify the source hasn't changed (content hash comparison)
-- See why something was included or excluded (priority, budget, verification result)
-- Know which models made which decisions
+The system derives candidate context items from source material, preserving references back to the snapshot.
 
-## Fallback
+### 3. Prioritize
 
-When no LLM is configured, stages 2, 3, and 5 are skipped. Source file contents are included verbatim in config order within token budgets. Still governed. Still traceable. Less intelligent.
+Candidate items are ordered within sections so the most useful context is considered first during assembly.
 
-## Version Progression
+### 4. Render
 
-```
-v0.1  Snap → [Extract+Rank] → Assemble → Verify(structural) → context.md
-      Single model (Gemini), combined call, basic checks
+The final artifact is assembled within a configured budget and emitted as markdown with metadata.
 
-v0.2  Snap → Extract → Rank → Assemble → Verify(semantic) → context.md
-      Split stages, LLM-powered verification, caching (projected)
+### 5. Validate
 
-v0.3  Same pipeline, multi-model (Gemini/Claude/GPT) (projected)
+Derived items are checked for source alignment so humans can inspect what was accepted, rejected, or omitted.
 
-v1.0  Full pipeline, stable schema, production-ready
-```
+## Operating Modes
+
+### Full Synthesis Mode
+
+Uses the full pipeline, including derivation, prioritization, and verification.
+
+### Deterministic Fallback Mode
+
+Skips LLM-backed stages and assembles source contents directly in config order within budget.
+
+This mode is less intelligent, but it preserves the core governance properties:
+- bounded artifact generation
+- source traceability
+- reviewability
+
+## Architectural Boundaries
+
+These boundaries should remain stable even if internals change:
+
+- the source/snapshot layer should present a source-type-agnostic interface to the rest of the pipeline; adding a new source type (e.g. MCP resources) should be a new adapter, not a pipeline change
+- deterministic source capture should stay separate from LLM-backed derivation
+- assembly should remain deterministic and inspectable
+- source tracking should survive all modes
+- the artifact should remain a derived working set, not a new source of truth
+
+## Open Technical Questions
+
+- What is the best canonical source-reference model?
+- What should the primary extracted item type be?
+- How much caching should exist in the initial implementation?
+- How provider-specific should the architecture be early on?
+- How should verification handle items supported by multiple source fragments?
