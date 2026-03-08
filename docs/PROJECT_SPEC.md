@@ -4,7 +4,7 @@
 
 **Context Synth** is a weighted epistemic runtime for AI reasoning over repository-relevant knowledge.
 
-In plain English: **AI frames probability as certainty. To address that, Context Synth governs what shapes the answer, and by how much.**
+In plain English: **AI frames probability as certainty. This is not a bug at the edge of the system - it is a consequence of how current AI systems are designed to answer. To account for this, Context Synth governs what shapes the answer, and by how much.**
 
 It compiles repository-relevant knowledge into a governed, reasoning-ready context environment for humans, agents, and tools.
 
@@ -16,28 +16,13 @@ In this framing, repository-relevant does not mean repository-hosted. It means m
 
 ## Problem
 
-Modern software work depends on more than code. Critical context often lives across:
+Modern software work depends on more than code. The context that shapes decisions lives in architecture docs, spreadsheets, message threads, tickets, intranet pages — spread across systems that were never designed to talk to each other.
 
-- architecture documents
-- requirements
-- ADRs
-- tickets
-- domain references
-- external knowledge systems
-- team memory
-- operational constraints
+Tools already reach most of that information. But access is not the failure. The failure is that access alone does not produce a governed reasoning environment. When context is ungoverned, the same background questions get asked repeatedly, decisions get made against knowledge that wasn't visible at the point of work, and review quality becomes a function of who was in the room when the decision was made.
 
-Tools already make this information accessible. The failure is not access. The failure is that access does not produce a governed reasoning environment.
+That problem is real for humans. For LLM systems, it becomes something worse. Ungoverned context leaves gaps, and LLMs do not leave gaps empty — they fill them from probability and present the result as fact. This is usually called hallucination, but that framing is too soft. It is a predictable consequence of systems designed to produce plausible answers regardless of whether the basis for those answers is complete, structured, or verified.
 
-As a result:
-
-- contributors repeatedly ask the same background questions
-- agents and tools operate over incomplete or loosely assembled context
-- decisions depend on knowledge that is not visible at the point of work
-- outputs are difficult to review against source material
-- plausible but unsupported conclusions are treated as factual
-
-The deeper issue is epistemic, not merely ergonomic. When the reasoning environment is unbounded, unstructured, or unaudited, consumers fill gaps with inference. For AI systems, this often appears as hallucination. For teams, it appears as inconsistent judgment, re-explanation, and low trust.
+The problem is therefore epistemic, not merely ergonomic. Uncertainty is being converted into assertion inside a reasoning environment that has not been bounded, weighted, or made reviewable. Bounded, weighted context is not a quality improvement on top of this — it is the prerequisite that makes the reasoning trustworthy at all.
 
 ## Project Thesis
 
