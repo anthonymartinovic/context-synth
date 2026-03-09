@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/anthonymartinovic/context-synth/internal/config"
 	"github.com/anthonymartinovic/context-synth/internal/llm"
@@ -16,28 +17,50 @@ type LLMExtractor struct {
 	Client llm.Client
 }
 
+type extractionResult struct {
+	index       int
+	extractions []model.Extraction
+	err         error
+}
+
 func (l *LLMExtractor) Extract(ctx context.Context, snap model.Snapshot, sections []config.SectionDecl) ([]model.Extraction, error) {
 	if len(sections) == 0 {
 		return nil, fmt.Errorf("LLM extractor requires at least one section definition")
 	}
 
+	systemPrompt := buildSystemPrompt(sections)
+	results := make([]extractionResult, len(snap.Items))
+
+	var wg sync.WaitGroup
+	for i, item := range snap.Items {
+		wg.Add(1)
+		go func(idx int, item model.SnapshotItem) {
+			defer wg.Done()
+			prompt := buildExtractionPrompt(item, sections)
+
+			response, err := l.Client.Complete(ctx, prompt, systemPrompt)
+			if err != nil {
+				results[idx] = extractionResult{index: idx, err: fmt.Errorf("LLM extraction for %s: %w", item.Source.Path, err)}
+				return
+			}
+
+			extractions, err := parseExtractionResponse(response, item)
+			if err != nil {
+				results[idx] = extractionResult{index: idx, err: fmt.Errorf("parsing LLM response for %s: %w", item.Source.Path, err)}
+				return
+			}
+
+			results[idx] = extractionResult{index: idx, extractions: extractions}
+		}(i, item)
+	}
+	wg.Wait()
+
 	var allExtractions []model.Extraction
-
-	for _, item := range snap.Items {
-		prompt := buildExtractionPrompt(item, sections)
-		systemPrompt := buildSystemPrompt(sections)
-
-		response, err := l.Client.Complete(ctx, prompt, systemPrompt)
-		if err != nil {
-			return nil, fmt.Errorf("LLM extraction for %s: %w", item.Source.Path, err)
+	for _, r := range results {
+		if r.err != nil {
+			return nil, r.err
 		}
-
-		extractions, err := parseExtractionResponse(response, item)
-		if err != nil {
-			return nil, fmt.Errorf("parsing LLM response for %s: %w", item.Source.Path, err)
-		}
-
-		allExtractions = append(allExtractions, extractions...)
+		allExtractions = append(allExtractions, r.extractions...)
 	}
 
 	return allExtractions, nil
@@ -49,7 +72,9 @@ func buildSystemPrompt(sections []config.SectionDecl) string {
 		sectionNames = append(sectionNames, s.Name)
 	}
 
-	return fmt.Sprintf(`You are a content extraction assistant. Your job is to decompose source documents into discrete knowledge items and classify each into one of these sections: %s.
+	return fmt.Sprintf(`You are a content extraction assistant. Your job is to extract coherent knowledge items from source documents and classify each into one of these sections: %s.
+
+Each item should be a self-contained piece of knowledge, typically 2-5 sentences. Group related facts together rather than splitting every sentence into its own item. For example, a glossary term and its definition belong together; a constraint and its rationale belong together.
 
 Respond ONLY with a JSON array. Each element must have:
 - "section": one of the section names listed above (exact match)
@@ -64,7 +89,7 @@ func buildExtractionPrompt(item model.SnapshotItem, sections []config.SectionDec
 		sectionList.WriteString(fmt.Sprintf("- %s\n", s.Name))
 	}
 
-	return fmt.Sprintf(`Extract discrete knowledge items from the following source document and classify each into one of these sections:
+	return fmt.Sprintf(`Extract coherent knowledge items from the following source document and classify each into one of these sections:
 
 %s
 Source file: %s

@@ -41,14 +41,21 @@ func writeSection(b *strings.Builder, sec model.ArtifactSection) {
 	if sec.Name != "" {
 		b.WriteString(fmt.Sprintf("# %s\n\n", sec.Name))
 	}
-	for _, item := range sec.Items {
+
+	for i, item := range sec.Items {
 		b.WriteString(strings.TrimSpace(item.Content))
 		b.WriteString("\n\n")
-		b.WriteString(fmt.Sprintf("> source: %s | weight: %.1f | hash: %s\n\n",
-			item.SourcePath,
-			item.Weight,
-			item.ContentHash[:8],
-		))
+
+		isLast := i == len(sec.Items)-1
+		nextIsDifferentSource := isLast || sec.Items[i+1].SourcePath != item.SourcePath
+
+		if nextIsDifferentSource {
+			b.WriteString(fmt.Sprintf("> source: %s | weight: %.1f | hash: %s\n\n",
+				item.SourcePath,
+				item.Weight,
+				item.ContentHash[:8],
+			))
+		}
 	}
 }
 

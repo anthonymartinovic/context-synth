@@ -3,9 +3,9 @@ cs
 *.exe
 
 # Build
-.env
 /bin/
 /dist/
+.env
 
 # Dependencies
 /vendor/

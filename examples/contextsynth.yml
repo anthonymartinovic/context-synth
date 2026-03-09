@@ -14,14 +14,18 @@ sources:
     weight: 0.6
 
 sections:
-  - name: Domain Knowledge
-    budget: 0.40
-  - name: Requirements
-    budget: 0.35
-  - name: Technical Architecture
+  - name: Core Concepts and Glossary
+    budget: 0.15
+  - name: User Journeys and Workflows
+    budget: 0.20
+  - name: Constraints and Hard Rules
+    budget: 0.20
+  - name: Risks and Open Questions
+    budget: 0.20
+  - name: Infrastructure and Integration
     budget: 0.25
 
 llm:
   provider: gemini
-  model: gemini-2.5-pro
+  model: gemini-2.5-flash
   api_key_env: GEMINI_API_KEY
