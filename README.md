@@ -1,12 +1,12 @@
 <div align="center">
-  <img width="196" height="150" alt="Context Synth Logo" src="https://github.com/user-attachments/assets/512488ba-9234-4c3c-a495-9b68ff45542a" />
+  <img width="196" height="150" alt="Context Synth Logo" src="logo.png" />
 </div>
 
 ---
 
 ## Status
 
-v0.1 implemented. The `cs` binary compiles local markdown sources into bounded, traceable context artifacts with weight-based precedence, provenance tracking, and recorded omissions. The LLM-backed pipeline is working against Gemini. The artifact format is unstable and will change.
+**v0.1.0-alpha.1** — early release, not yet stable. The `cs` binary compiles local markdown sources into bounded, traceable context artifacts with weight-based precedence, provenance tracking, and recorded omissions. LLM-backed extraction runs against Gemini (the only supported provider in this release). The artifact format is unstable and will change.
 
 For a detailed account of what's working, what isn't, and what's deferred, see [STATUS.md](STATUS.md).
 
@@ -16,18 +16,24 @@ Context Synth is a governed context runtime that compiles multiple knowledge sou
 
 Users declare which sources are allowed to shape the output, how much influence each source carries, what structure the output should follow, and how much can fit within it. Context Synth produces a reviewable context file that shows what was included, what was omitted, and where each part came from.
 
-Context Synth does the following:
-
-- Compiles knowledge from repositories, local files, and external sources
-- Applies explicit source influence throughout the assembly process
-- Builds a structured context document within a defined budget
-- Preserves source references and records omissions for review
-
 ```
 Sources → Snap → Extract → Rank → Assemble → Verify → Contextfile
 ```
 
 For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md).
+
+### What v0.1 supports today
+
+- **Local markdown files** as the only source type
+- Per-source weight declaration with glob expansion
+- Global token budget with strict enforcement
+- User-defined section structure (with LLM-backed classification)
+- Deterministic fallback mode with no LLM required
+- Provenance and omissions recorded in every artifact
+
+### Long-term direction
+
+Context Synth is intended to become an infrastructure layer that governs how context is constructed, versioned, and supplied to AI systems — ingesting from repositories, MCP servers, and other external sources; supporting stable artifact versioning, diffing, and drift detection; and integrating into CI pipelines. None of that is in the current version.
 
 ## What It Is Not
 
@@ -38,7 +44,7 @@ For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) 
 
 ## Installation
 
-Requires Go 1.22+.
+Requires Go 1.26+.
 
 ```bash
 go install github.com/anthonymartinovic/context-synth/cmd/cs@latest
@@ -132,10 +138,7 @@ llm:
 - **Sections** define the output structure with proportional budget allocation.
 - **LLM** is optional. Without it, the pipeline runs in deterministic fallback mode.
 - Section classification requires the LLM. In `--no-llm` mode, output is flat weight-ordered.
-
-## Direction
-
-Long term, Context Synth is intended to become the infrastructure layer that governs how context is constructed, versioned, and supplied to AI systems.
+- **Only Gemini is supported in v0.1.** The `provider` field exists for future extensibility but is currently ignored — the pipeline always uses Gemini.
 
 ## Documentation
 

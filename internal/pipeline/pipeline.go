@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"os"
+	"runtime/debug"
 	"time"
 
 	"github.com/anthonymartinovic/context-synth/internal/assemble"
@@ -109,7 +110,7 @@ func Run(ctx context.Context, cfg config.Config, opts Options) (Result, error) {
 
 	artifact := model.Artifact{
 		FrontMatter: model.FrontMatter{
-			Generator:  "cs v0.1.0",
+			Generator:  "cs " + binaryVersion(),
 			Mode:       mode,
 			Snapshot:   snap.Hash,
 			Config:     configHash,
@@ -124,6 +125,13 @@ func Run(ctx context.Context, cfg config.Config, opts Options) (Result, error) {
 	output := render.Render(artifact)
 
 	return Result{Artifact: artifact, Output: output}, nil
+}
+
+func binaryVersion() string {
+	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" {
+		return info.Main.Version
+	}
+	return "(devel)"
 }
 
 func computeConfigHash(path string) string {

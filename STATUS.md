@@ -1,6 +1,6 @@
 # Status
 
-_Last updated: v0.1.0_
+_Last updated: v0.1.0-alpha.1_
 
 ## What's Working
 
@@ -45,3 +45,5 @@ _Last updated: v0.1.0_
 - `cs init` always writes to `contextsynth.yml` in the current directory — the `--config` flag has no effect on it.
 - Source paths in the Contextfile are relative to the config file location, which can look odd when running `cs` from a different working directory.
 - No retry logic on LLM API calls. A transient failure aborts the entire run.
+- No timeout on the Gemini HTTP client. A hung request will block indefinitely.
+- The `provider` field in the `llm` config block is ignored. Only Gemini is supported in v0.1; the field exists for future extensibility.
