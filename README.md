@@ -4,7 +4,7 @@
 
 ---
 
-Context Synth is a governed context runtime. It compiles knowledge from declared sources into a bounded, traceable context artifact shaped by explicit source weight. Every inclusion, omission, and influence is inspectable.
+Context Synth takes knowledge from multiple sources, lets you declare how important each one is, and compiles it into a single structured document. You can see exactly what was included, what was left out, and why.
 
 ## What It Does
 
@@ -21,9 +21,9 @@ The pipeline compiles these into a reviewable artifact:
 Sources → Snap → Extract → Rank → Assemble → Verify → Contextfile
 ```
 
-Weight propagates through every stage — it governs extraction prominence, ranking order, and budget allocation. The output is bounded, source-backed, and inspectable. It is a derived working set, not a new source of truth.
+Weight carries through every stage — higher-weight sources get more space in the output. The result stays within budget, traces back to its sources, and records what didn't make the cut.
 
-See the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md) for details on the pipeline, data model, invariants, and system-level technical shape.
+See the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md) for details on the inner workings.
 
 ## What It Is Not
 
