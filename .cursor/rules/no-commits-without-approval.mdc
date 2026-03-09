@@ -1,0 +1,12 @@
+---
+description: Require explicit approval before git write operations
+alwaysApply: true
+---
+
+# Git Approval
+
+- Never create a git commit unless I explicitly ask for it in that message.
+- Never infer approval to commit from prior discussion, implied intent, or task completion.
+- If changes are ready, stop and ask whether I want them committed.
+- Never amend, rebase, reset, push, merge, or cherry-pick unless I explicitly request it.
+- If I ask for code changes only, make the changes and leave them uncommitted.

@@ -1,0 +1,12 @@
+---
+description: Require explicit approval before deleting files
+alwaysApply: true
+---
+
+# File Deletion Approval
+
+- Never delete a file unless I explicitly ask for that deletion in that message.
+- Never infer approval to delete files from broad cleanup requests unless the files to delete are clearly identified and confirmed.
+- If deletion seems useful, propose it first and wait for approval.
+- Prefer moving or archiving files over deleting them when preservation may matter.
+- If a task requires many deletions, summarize the planned deletions and ask for confirmation before proceeding.

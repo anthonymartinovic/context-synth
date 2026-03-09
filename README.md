@@ -4,20 +4,22 @@
 
 ---
 
-Context Synth is a governed context runtime for AI-assisted workflows. It compiles multiple knowledge sources into a single structured context document.
+Context Synth is a governed context runtime that compiles multiple knowledge sources into a single structured context document for humans, tools, and AI systems.
 
-It:
+Users declare which sources are allowed to shape the output, how much influence each source carries, what structure the output should follow, and how much can fit within it. Context Synth produces a reviewable context file that shows what was included, what was omitted, and where each part came from.
 
-- Accepts sources with declared weights that control how much each source influences the output
-- Compiles source material into a structured, budget-bounded context document
-- Tracks provenance so every item in the output traces back to its source
-- Records what was included, what was omitted, and why
+Context Synth does the following:
+
+- Compiles knowledge from repositories, local files, and external sources
+- Applies explicit source influence throughout the assembly process
+- Builds a structured context document within a defined budget
+- Preserves source references and records omissions for review
 
 ```
 Sources → Snap → Extract → Rank → Assemble → Verify → Contextfile
 ```
 
-See the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md) for details on the inner workings.
+For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md).
 
 ## What It Is Not
 
@@ -32,9 +34,9 @@ Pre-implementation. The project specification, system design, and v0.1 design ar
 
 ## Documentation
 
-- [Project Spec](docs/PROJECT_SPEC.md) — thesis, pipeline, data model, invariants
-- [System Design](docs/SYSTEM_DESIGN.md) — system-level technical shape
-- [v0.1 Design](docs/design/v0.1.md) — first implementation slice
+- [Project Spec](docs/PROJECT_SPEC.md) — what Context Synth is for and the rules it follows
+- [System Design](docs/SYSTEM_DESIGN.md) — how the system is put together
+- [v0.1 Design](docs/design/v0.1.md) — the first build target
 
 ## License
 
