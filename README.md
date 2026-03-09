@@ -4,6 +4,14 @@
 
 ---
 
+## Status
+
+v0.1 implemented. The `cs` binary compiles local markdown sources into bounded, traceable context artifacts with weight-based precedence, provenance tracking, and recorded omissions. The LLM-backed pipeline is working against Gemini. The artifact format is unstable and will change.
+
+For a detailed account of what's working, what isn't, and what's deferred, see [STATUS.md](STATUS.md).
+
+---
+
 Context Synth is a governed context runtime that compiles multiple knowledge sources into a single structured context document for humans, tools, and AI systems.
 
 Users declare which sources are allowed to shape the output, how much influence each source carries, what structure the output should follow, and how much can fit within it. Context Synth produces a reviewable context file that shows what was included, what was omitted, and where each part came from.
@@ -124,10 +132,6 @@ llm:
 - **Sections** define the output structure with proportional budget allocation.
 - **LLM** is optional. Without it, the pipeline runs in deterministic fallback mode.
 - Section classification requires the LLM. In `--no-llm` mode, output is flat weight-ordered.
-
-## Status
-
-v0.1 implemented. The `cs` binary compiles local markdown sources into bounded, traceable context artifacts with weight-based precedence, provenance tracking, and recorded omissions.
 
 ## Direction
 
