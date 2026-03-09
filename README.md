@@ -4,24 +4,18 @@
 
 ---
 
-Context Synth takes knowledge from multiple sources, lets you declare how important each one is, and compiles it into a single structured document. You can see exactly what was included, what was left out, and why.
+Context Synth is a pipeline for compiling multiple knowledge sources into a single governed context document for AI-assisted workflows.
 
-## What It Does
+The pipeline:
 
-Four inputs govern a synthesis run:
-
-- **Sources** — knowledge inputs to the pipeline (local files, repository documents, MCP-fetched content)
-- **Weight** — each source's declared authority (0.0–1.0)
-- **Structure** — the shape of the output (user-defined sections)
-- **Budget** — a token bound on the output
-
-The pipeline compiles these into a reviewable artifact:
+- Accepts sources with declared weights that control how much each source influences the output
+- Compiles source material into a structured, budget-bounded context document
+- Tracks provenance so every item in the output traces back to its source
+- Records what was included, what was omitted, and why
 
 ```
 Sources → Snap → Extract → Rank → Assemble → Verify → Contextfile
 ```
-
-Weight carries through every stage — higher-weight sources get more space in the output. The result stays within budget, traces back to its sources, and records what didn't make the cut.
 
 See the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md) for details on the inner workings.
 
