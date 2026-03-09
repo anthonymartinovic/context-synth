@@ -3,6 +3,7 @@ cs
 *.exe
 
 # Build
+.env
 /bin/
 /dist/
 

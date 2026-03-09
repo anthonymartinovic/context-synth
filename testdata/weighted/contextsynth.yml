@@ -1,0 +1,14 @@
+version: "1"
+
+output:
+  path: Contextfile
+
+budget: 100
+
+sources:
+  - path: high.md
+    weight: 1.0
+  - path: medium.md
+    weight: 0.6
+  - path: low.md
+    weight: 0.3

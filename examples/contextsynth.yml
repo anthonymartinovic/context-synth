@@ -1,0 +1,27 @@
+version: "1"
+
+output:
+  path: Contextfile
+
+budget: 10000
+
+sources:
+  - path: sources/BUSINESS_DOMAIN_KNOWLEDGE.md
+    weight: 1.0
+  - path: sources/PRODUCT_REQUIREMENTS.md
+    weight: 0.8
+  - path: sources/TECHNICAL_SPEC.md
+    weight: 0.6
+
+sections:
+  - name: Domain Knowledge
+    budget: 0.40
+  - name: Requirements
+    budget: 0.35
+  - name: Technical Architecture
+    budget: 0.25
+
+llm:
+  provider: gemini
+  model: gemini-2.5-pro
+  api_key_env: GEMINI_API_KEY

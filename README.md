@@ -28,9 +28,106 @@ For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) 
 - Not an agent
 - Not a prompt manager or model provider
 
+## Installation
+
+Requires Go 1.22+.
+
+```bash
+go install github.com/anthonymartinovic/context-synth/cmd/cs@latest
+```
+
+Or build from source:
+
+```bash
+git clone https://github.com/anthonymartinovic/context-synth.git
+cd context-synth
+go build -o cs ./cmd/cs/
+```
+
+## Quick Start
+
+```bash
+# Generate a starter config
+cs init
+
+# Edit contextsynth.yml to declare your sources, weights, and budget
+
+# Preview resolved sources
+cs snap
+
+# Produce a context artifact (deterministic, no LLM)
+cs synth --no-llm
+
+# Produce a context artifact with LLM-backed extraction
+export GEMINI_API_KEY="your-key"
+cs synth
+```
+
+## Usage
+
+### `cs init`
+
+Creates a starter `contextsynth.yml` in the current directory.
+
+### `cs snap`
+
+Resolves sources and prints a snapshot table showing each source's weight, token count, and content hash.
+
+```
+Source                                   Weight   Tokens Hash
+docs/domain/overview.md                    1.00    2,340 a1b2c3d4
+docs/adr/001-rest.md                       0.70    1,100 c9d0e1f2
+3 sources | 3,440 tokens estimated | budget: 10,000
+```
+
+### `cs synth`
+
+Runs the full pipeline and writes a context artifact.
+
+| Flag | Description |
+|------|-------------|
+| `--config` | Path to config file (default: `contextsynth.yml`) |
+| `--output` | Output file path (overrides config) |
+| `--no-llm` | Deterministic mode — no LLM, flat weight-ordered output |
+| `--dry-run` | Print output to stdout instead of writing a file |
+| `--verbose` | Print pipeline summary to stderr |
+
+## Configuration
+
+```yaml
+version: "1"
+
+output:
+  path: Contextfile
+
+budget: 10000
+
+sources:
+  - path: docs/domain/overview.md
+    weight: 1.0
+  - path: docs/adrs/*.md
+    weight: 0.7
+
+sections:
+  - name: Domain Knowledge
+    budget: 0.30
+  - name: Architecture Decisions
+    budget: 0.25
+
+llm:
+  provider: gemini
+  model: gemini-2.5-pro
+  api_key_env: GEMINI_API_KEY
+```
+
+- **Sources** declare file paths (globs supported) with weights from 0.0 to 1.0.
+- **Sections** define the output structure with proportional budget allocation.
+- **LLM** is optional. Without it, the pipeline runs in deterministic fallback mode.
+- Section classification requires the LLM. In `--no-llm` mode, output is flat weight-ordered.
+
 ## Status
 
-Pre-implementation. The project specification, system design, and v0.1 design are complete. The v0.1 implementation target is a single Go binary (`cs`) operating over local markdown sources.
+v0.1 implemented. The `cs` binary compiles local markdown sources into bounded, traceable context artifacts with weight-based precedence, provenance tracking, and recorded omissions.
 
 ## Direction
 
@@ -41,6 +138,7 @@ Long term, Context Synth is intended to become the infrastructure layer that gov
 - [Project Spec](docs/PROJECT_SPEC.md) — what Context Synth is for and the rules it follows
 - [System Design](docs/SYSTEM_DESIGN.md) — how the system is put together
 - [v0.1 Design](docs/design/v0.1.md) — the first build target
+- [v0.1 Plan](docs/plan/v0.1.md) — implementation milestones
 
 ## License
 

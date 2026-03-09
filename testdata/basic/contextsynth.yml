@@ -1,0 +1,12 @@
+version: "1"
+
+output:
+  path: Contextfile
+
+budget: 10000
+
+sources:
+  - path: source_a.md
+    weight: 1.0
+  - path: source_b.md
+    weight: 0.7

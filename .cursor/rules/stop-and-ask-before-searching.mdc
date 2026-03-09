@@ -1,0 +1,10 @@
+---
+description: Stop and ask the user before escalating searches
+alwaysApply: true
+---
+
+# Stop and Ask Before Searching
+
+- If a required tool, binary, dependency, or resource is not found after checking standard locations (PATH, common install paths), stop and ask the user.
+- Never escalate into broad filesystem searches (find /, mdfind, recursive scans, etc.) without explicit approval.
+- State what is missing, suggest how to fix it, and wait for the user's response.
