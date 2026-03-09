@@ -18,9 +18,7 @@ func Render(artifact model.Artifact) string {
 		}
 	}
 
-	if len(artifact.Omissions) > 0 {
-		writeOmissions(&b, artifact.Omissions)
-	}
+	writeOmissions(&b, artifact.Omissions)
 
 	return b.String()
 }

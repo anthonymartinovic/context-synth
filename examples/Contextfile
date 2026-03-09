@@ -1,162 +1,176 @@
 ---
-generator: cs v0.1.0
+generator: cs v0.0.1-alpha.0.20260309025542-afa3ebeb98c7+dirty
 mode: full
 snapshot: 6bd84590b377c7ae7e58339d9d271af70db92caaf37c493aabbc72539989bc73
 config: 0e279d206081582024ebd6d3754b08dd7ec02bef94461618083708f10489bca5
-timestamp: 2026-03-09T02:20:47Z
+timestamp: 2026-03-09T03:01:39Z
 budget: 10000
-tokens_used: 2572
+tokens_used: 2447
 ---
 
 # Core Concepts and Glossary
 
-The project aims to build a unified commerce platform for small-to-medium e-commerce merchants. This single system will handle products, orders, customers, and inventory, serving as a single source of truth. Currently, these businesses rely on fragmented tools like spreadsheets, Shopify, and email, leading to manual processes and data discrepancies.
+The project aims to build a unified commerce platform for small-to-medium e-commerce merchants. The goal is to create a single system that serves as the source of truth for products, orders, customers, and inventory, replacing current disparate tools like spreadsheets, Shopify, and email threads.
 
-The initial version (v1) of the platform will include product catalog management, comprehensive order lifecycle handling, customer account management, and inventory tracking capabilities across multiple warehouses.
+A **Customer** is defined as a registered user who browses products and places orders on the platform.
 
-A Customer is defined as a registered user of the platform who has the ability to browse products and place orders.
+A **Product** refers to an item available for sale, characterized by its price, description, and current stock level.
 
-A Product represents an item available for sale, characterized by its price, a descriptive overview, and its current stock level.
+An **Order** represents a transaction that links a specific customer to one or more products they wish to purchase.
 
-An Order signifies a completed transaction, linking a specific customer to one or more products they have purchased.
+**Inventory** tracks the stock counts for each product, broken down by individual warehouse locations.
 
-Inventory refers to the recorded stock counts for each product, meticulously tracked on a per-warehouse basis.
+A **Line Item** is a specific entry within an order, detailing a single product, its quantity, and the unit price at the time of purchase.
 
-A Line Item is a distinct entry within an order, detailing a single product along with its purchased quantity and the unit price at the time of sale.
+A **Merchant** is the business entity that operates the storefront and utilizes the commerce platform.
 
-A Merchant is the business entity that operates the e-commerce storefront and utilizes this unified commerce platform.
+Key roles involved in the system include **Customers** who browse and purchase, **Merchant Admins** who manage products and orders, and **Operations** personnel responsible for picking, packing, and shipping. **Platform Engineering** builds and maintains the system.
 
-Key roles involved in the system include Customers who browse and purchase, Merchant Admins who manage products and review orders, Operations staff handling picking, packing, and shipping, and Platform Engineering responsible for system development and maintenance.
+The core business logic dictates that customers place orders, which contain line items referencing products. Each product's inventory is tracked per warehouse. Order fulfillment involves decrementing inventory and initiating a shipment.
 
-The business process involves customers placing orders, which contain line items referencing specific products. Each product's inventory is tracked by warehouse. Order fulfillment triggers inventory decrementation and initiates the shipment process.
+> source: examples/sources/BUSINESS_DOMAIN_KNOWLEDGE.md | weight: 1.0 | hash: ae5c880e
 
-Currently, most merchants manage their e-commerce operations using a fragmented toolset. This typically involves Shopify for storefront management, Google Sheets for inventory tracking, and email for coordinating order fulfillment. This multi-system approach often leads to data existing in disparate locations and frequently falling out of synchronization.
+Backward compatibility is maintained during the transition. Shopify product catalogs can be imported via CSV. Historical order data will be migrated without any loss, and both old and new systems will run in parallel during the transitional period to ensure a smooth handover.
 
-A key indicator of project success is achieving a report from 95% of pilot merchants that indicates faster order processing times after adopting the new platform.
-
-Another critical success criterion is the elimination of inventory discrepancies, aiming for zero discrepancies after 30 days of parallel operation with the new system.
-
-> source: sources/BUSINESS_DOMAIN_KNOWLEDGE.md | weight: 1.0 | hash: ae5c880e
-
-Prior to beta release, the system will undergo a load test simulating 500 concurrent users. This validation step aims to assess performance and stability under expected load conditions.
-
-A 2-week parallel run will be conducted to compare the outputs of the new system against the old system. This validation method ensures functional equivalence and identifies discrepancies.
-
-An automated regression suite will be developed to cover every acceptance criterion. This suite will be used to ensure that new changes do not introduce regressions in existing functionality.
-
-The delivery plan is structured into several phases. Weeks 1-3 will focus on core product CRUD functionality and customer registration, establishing foundational capabilities.
-
-Weeks 4-6 of the delivery plan are dedicated to implementing order placement and comprehensive inventory management features. This phase expands the system's transactional capabilities.
-
-Payment integration and the development of the admin dashboard are scheduled for Weeks 7-9. This phase finalizes key operational and management components of the product.
-
-The go-to-market strategy begins in Week 10 with a beta launch involving 10 pilot merchants. This initial phase will gather real-world feedback and validate core functionality.
-
-Following the initial beta, the program will expand to include 50 merchants in Week 12. General availability (GA) is targeted for Week 16, marking the broad release of the product.
-
-Four weeks after General Availability, the old system will be officially sunsetted. This final step completes the migration and fully transitions operations to the new platform.
-
-> source: sources/PRODUCT_REQUIREMENTS.md | weight: 0.8 | hash: b94185cd
-
-Key design decisions include selecting PostgreSQL over DynamoDB to prioritize strong data consistency, accepting that manual scaling is currently acceptable. For API interaction, REST was chosen over GraphQL for simpler integration with v1 clients, with a plan to revisit GraphQL later. A synchronous inventory check is performed at checkout to prevent overselling, a trade-off that adds approximately 50ms of latency to the process.
-
-> source: sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
+> source: examples/sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
 
 # User Journeys and Workflows
 
-The typical customer journey begins with browsing the product catalog and adding items to a cart. Upon checkout, the system validates stock availability and calculates the total. After successful payment processing, the order is confirmed, triggering warehouse operations for picking, packing, and shipping, which in turn decrements inventory. Finally, the customer receives a shipping confirmation with tracking details.
+The typical customer journey begins with browsing the catalog and adding items to a cart. This is followed by checkout, where the system validates stock and calculates the total. After successful payment processing, the order is confirmed.
 
-> source: sources/BUSINESS_DOMAIN_KNOWLEDGE.md | weight: 1.0 | hash: ae5c880e
+Post-order confirmation, the warehouse team picks, packs, and ships the items, which automatically decrements inventory. Finally, the customer receives a shipping confirmation including tracking information.
 
-Customers can browse and search the product catalog, add items to their cart, place orders, view their order history, and track shipments. Administrators are able to add, update, and remove products, as well as view and manage all orders within the system.
+A key success metric for the project is achieving 95% of pilot merchants reporting faster order processing, indicating improved efficiency in workflows.
 
-Customers must be able to view a paginated list of products, with a default of 20 items displayed per page. Upon placing an order, customers should receive an order confirmation within 3 seconds.
+> source: examples/sources/BUSINESS_DOMAIN_KNOWLEDGE.md | weight: 1.0 | hash: ae5c880e
 
-Administrators are required to be able to Create, Read, Update, and Delete (CRUD) products through the dedicated admin API.
+Customers are expected to be able to browse and search the product catalog, add items to their cart, place orders, view their order history, and track shipments. This covers the full lifecycle of a customer interaction with the system.
 
-> source: sources/PRODUCT_REQUIREMENTS.md | weight: 0.8 | hash: b94185cd
+Administrators need the capability to add, update, and remove products from the catalog. Additionally, they must be able to view and manage all orders placed by customers, providing comprehensive control over the product and order lifecycle.
 
-The new system replaces several existing workflows. Per-merchant spreadsheets for data management will be replaced by a centralized PostgreSQL database. The previous email-based order flow will transition to a REST API with automated state transitions, and nightly batch inventory reconciliation will be upgraded to a real-time synchronization process.
+Customers must be able to view a paginated list of products. The default pagination setting is 20 products per page, ensuring a manageable browsing experience.
 
-The migration strategy involves three phases. In Phase 1, the new API will be deployed alongside existing tools, allowing merchants to opt in. Phase 2 focuses on importing historical data for the last two years per merchant, using CSV files. Finally, in Phase 3, old workflows will be sunsetted once each merchant confirms parity and functionality with the new system.
+Upon placing an order, customers must receive a confirmation within 3 seconds. This sets a strict performance requirement for a critical user interaction.
 
-> source: sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
+Admins must be able to perform Create, Read, Update, and Delete (CRUD) operations on products. These operations will be facilitated through a dedicated administrative API.
+
+> source: examples/sources/PRODUCT_REQUIREMENTS.md | weight: 0.8 | hash: b94185cd
+
+The new system replaces several existing manual and batch processes. Per-merchant spreadsheets for data management are being replaced by a centralized PostgreSQL database. The email-based order flow will be superseded by a REST API with automated state transitions, and nightly batch inventory reconciliation will be updated to a real-time synchronization process.
+
+The migration strategy is phased, beginning with Phase 1 where the new API is deployed alongside existing tools, allowing merchants to opt in. Phase 2 involves importing two years of historical data per merchant, typically via CSV files. Finally, in Phase 3, old workflows will be sunsetted only after each merchant confirms full parity with the new system.
+
+> source: examples/sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
 
 # Constraints and Hard Rules
 
-Features such as marketplace/multi-vendor support, subscription billing functionality, and analytics dashboards are explicitly out of scope for v1. These advanced capabilities are planned for consideration in subsequent versions (v2) of the platform.
+In scope for v1 are product catalog management, order lifecycle, customer accounts, and inventory tracking across warehouses. Out of scope for v1, and considered for v2, are marketplace/multi-vendor support, subscription billing, and analytics dashboards.
 
-A critical performance requirement for the platform is to maintain customer-facing API uptime above 99.9% throughout the first quarter of operation.
+A critical success criterion is achieving zero inventory discrepancies after 30 days of parallel operation, emphasizing the requirement for high data accuracy and consistency.
 
-> source: sources/BUSINESS_DOMAIN_KNOWLEDGE.md | weight: 1.0 | hash: ae5c880e
+> source: examples/sources/BUSINESS_DOMAIN_KNOWLEDGE.md | weight: 1.0 | hash: ae5c880e
 
-All API endpoints must enforce JWT authentication for security. This is a mandatory requirement for accessing any part of the system's programmatic interface.
+Every API endpoint developed for the product requires JSON Web Token (JWT) authentication. This is a fundamental security requirement for all interactions with the system's APIs.
 
-Order totals must be computed exclusively on the server-side, with any client-provided totals being disregarded. This ensures accuracy and prevents client-side manipulation of order values.
+Order totals must be computed exclusively on the server-side. Any order totals supplied or calculated on the client-side will be ignored to prevent manipulation and ensure data integrity.
 
-Inventory levels are strictly prohibited from going negative. Any order that would result in an understocked inventory position must be rejected by the system to maintain stock accuracy.
+Inventory levels must never fall below zero. The system is designed to reject any order that would lead to an understocked product, preventing negative inventory counts.
 
-The product search functionality must return results within 200 milliseconds for catalogs containing up to 100,000 items. This is a critical performance acceptance criterion for the system.
+Search functionality must return results within 200 milliseconds. This performance target applies to product catalogs containing up to 100,000 items, ensuring a fast search experience even for large inventories.
 
-The system must achieve and maintain PCI-DSS compliance for all payment handling operations. This ensures that sensitive payment card data is processed and stored securely according to industry standards.
+All processes involved in handling payments must comply with PCI-DSS standards. This ensures the secure processing, storage, and transmission of credit card data.
 
-All sensitive user data must be encrypted both at rest using AES-256 encryption and in transit using TLS 1.3. This protocol ensures confidentiality and integrity of data across its lifecycle.
+Sensitive user data must be encrypted both at rest and in transit. AES-256 encryption is mandated for data at rest, while TLS 1.3 is required for data in transit, ensuring robust data protection.
 
-Public API endpoints will enforce a rate limit of 100 requests per minute per IP address. This measure helps protect the system from abuse and ensures service availability.
+Public endpoints are subject to a rate limiting policy of 100 requests per minute per IP address. This measure helps to prevent abuse and ensure system stability.
 
-Product prices must adhere to a strict format: they must be positive decimal numbers and always have exactly two decimal places. This ensures accurate financial calculations.
+Prices for products must be positive decimal numbers. They are required to be formatted with exactly two decimal places, ensuring consistency and accuracy in pricing.
 
-The order status will follow a strict state machine progression. Orders will transition from 'pending' to 'confirmed', then to 'shipped', and finally to 'delivered'. This ensures consistent order lifecycle management.
+Order status must adhere to a strict state machine progression. The defined states are pending, confirmed, shipped, and delivered, ensuring clear and consistent order tracking.
 
-The system will not perform any hard deletes for core entities such as customers, orders, or products. Instead, these entities will only be soft-deleted, allowing for potential recovery and maintaining historical integrity.
+Hard deletes are not permitted for customers, orders, or products. Instead, all such entities must only be soft-deleted, allowing for potential recovery and maintaining historical data integrity.
 
-A critical stop condition for the beta rollout is an order error rate exceeding 1%. If this threshold is breached, the rollout will be halted to address underlying issues.
+If the order error rate exceeds 1% during the beta phase, the product rollout must be halted. This is a critical stop condition to ensure product quality before wider release.
 
-If the 95th percentile latency on any API endpoint exceeds 5 seconds, a performance review will be triggered. This indicates a potential bottleneck requiring investigation and optimization.
+Should the p95 latency on any endpoint exceed 5 seconds, a comprehensive performance review must be initiated. This threshold triggers an investigation into potential performance bottlenecks.
 
-In the event of a critical failure, the system mandates an immediate revert to the legacy workflow. This recovery action must be completed within 2 hours to minimize disruption.
+In the event of a critical failure, the system must be capable of reverting to the legacy workflow within 2 hours. This provides a rapid recovery mechanism for severe incidents.
 
-> source: sources/PRODUCT_REQUIREMENTS.md | weight: 0.8 | hash: b94185cd
+> source: examples/sources/PRODUCT_REQUIREMENTS.md | weight: 0.8 | hash: b94185cd
 
-Backward compatibility is ensured by allowing Shopify product catalogs to be imported via CSV. A critical requirement is that historical order data must be migrated without any loss. During the transition period, both the old and new systems will run in parallel to facilitate a smooth handover.
+A design decision was made to use PostgreSQL over DynamoDB, prioritizing data consistency, with the understanding that manual scaling will be acceptable. This choice reflects a trade-off favoring data integrity.
 
-Specific latency and throughput targets have been established. The p95 latency for loading a product list must be less than 200ms, even with up to 100,000 products. End-to-end order placement should complete in under 3 seconds. Search queries against a 100,000-item catalog must return results in less than 200ms, and individual inventory lookups are targeted to complete in under 50ms per SKU.
+The initial API design favors REST over GraphQL, chosen for its simplicity for v1 clients. The team plans to revisit the decision regarding GraphQL at a later stage, implying a potential future evolution.
 
-> source: sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
+To prevent overselling, a synchronous inventory check is performed at checkout. This design decision introduces approximately 50ms of additional latency but is considered an acceptable trade-off for ensuring accurate stock levels.
+
+The system has a target p95 latency of less than 200ms for displaying a product list, even with catalogs containing up to 100,000 products.
+
+End-to-end order placement operations must complete within 3 seconds to ensure a smooth user experience.
+
+Search functionality is targeted to respond in less than 200ms for a catalog of 100,000 items.
+
+Inventory lookups are required to complete within 50ms per SKU, ensuring rapid stock availability checks.
+
+> source: examples/sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
 
 # Risks and Open Questions
 
-Existing operational challenges include significant inventory drift between systems, causing merchants to regularly oversell products. Order processing is labor-intensive, often involving manual copy-pasting between emails and spreadsheets. Additionally, there is no unified view of customer data, requiring support staff to check multiple tools for inquiries, and reporting necessitates weekly manual data aggregation across various platforms.
+A significant problem is inventory drift between systems, causing merchants to regularly oversell products. Order processing is manual and inefficient, relying on copy-paste between email and spreadsheets.
 
-> source: sources/BUSINESS_DOMAIN_KNOWLEDGE.md | weight: 1.0 | hash: ae5c880e
+Merchants lack a unified customer view, forcing support teams to check multiple tools for each inquiry. Reporting is also cumbersome, requiring manual data aggregation across various platforms on a weekly basis.
 
-The specific Shopify webhook payload format required for inventory synchronization is an open question that needs a dedicated technical spike. This will inform how external inventory updates are processed.
+> source: examples/sources/BUSINESS_DOMAIN_KNOWLEDGE.md | weight: 1.0 | hash: ae5c880e
 
-It is currently unknown whether existing merchants utilize consistent CSV formats for product import. This inconsistency could pose challenges for data migration and onboarding new merchants.
+The specific payload format for Shopify webhooks, essential for inventory synchronization, is currently an open question. A dedicated 'spike' investigation is required to determine its structure and requirements.
 
-There is no historical traffic baseline available for new merchants, which means their peak usage patterns are currently unknown. This presents a risk for capacity planning and potential performance issues during high load.
+It is currently uncertain whether existing merchants utilize consistent CSV formats for product import. This lack of standardization could pose challenges for data ingestion and migration.
 
-In the event of a Stripe outage, orders will be queued and retried automatically. During this period, customers will see their order status as "processing" to manage expectations.
+There is no historical traffic baseline available for new merchants, which means potential peak usage patterns are unknown. This uncertainty could impact capacity planning and system scaling.
 
-A database failover event is expected to result in a 10–30 second read-only window, particularly during critical periods like promotions. This temporary state will affect transactional operations.
+In the scenario of a Stripe outage, orders should be queued with retry mechanisms. Customers will be informed by seeing a 'processing' status, indicating that their order is being handled despite the external service disruption.
 
-Should an S3 outage occur, product pages will render without images. This is considered a graceful degradation, meaning the system will avoid a hard failure and remain partially functional.
+A database failover event is anticipated to result in a 10–30 second read-only window. This temporary state could impact user experience, especially if it occurs during high-traffic periods or promotions.
 
-> source: sources/PRODUCT_REQUIREMENTS.md | weight: 0.8 | hash: b94185cd
+An S3 outage would cause product pages to render without images, however, it is designed not to result in a hard system failure. This ensures partial functionality even during an asset storage service disruption.
 
-Several tricky scenarios have been identified that require careful consideration. These include managing inventory race conditions, such as when two customers simultaneously attempt to order the last available unit. Another complexity arises with products that have variants like size or color, but share a common base SKU. Additionally, the system must handle split shipments effectively when ordered items originate from different warehouses.
+> source: examples/sources/PRODUCT_REQUIREMENTS.md | weight: 0.8 | hash: b94185cd
 
-> source: sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
+Several tricky scenarios have been identified that require careful handling. These include potential inventory race conditions if two customers order the last unit simultaneously. The system also needs to manage products with variants, such as size or color, that share a common base SKU. Additionally, the system must accommodate split shipments when items for a single order originate from different warehouses.
+
+> source: examples/sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
 
 # Infrastructure and Integration
 
-The platform's backend is built with Node.js/Express, utilizing PostgreSQL as the primary database and Redis for caching and rate limiting. Product images are stored in AWS S3, payments are processed through Stripe, and transactional emails are handled by SendGrid. The frontend is a React single-page application (SPA) that interacts with the backend via REST APIs.
+Currently, most merchants rely on a fragmented system landscape, using Shopify for their storefront, Google Sheets for inventory management, and email for order coordination. This results in data residing in multiple places, frequently leading to synchronization issues.
 
-Shopify will remain the storefront for merchants currently using it, with integration to the new platform occurring via webhooks. Stripe will also continue to be used as the payment processor, maintaining an existing external dependency.
+The platform aims for a customer-facing API uptime above 99.9% in the first quarter, setting a high bar for system reliability and performance.
 
-The system relies on several key external dependencies. PostgreSQL 15 or higher serves as the primary data store, while Redis is used for managing sessions, rate limiting, and caching. The Stripe API handles all payment processing, and AWS S3 is utilized for storing product images. SendGrid is integrated for sending transactional emails.
+> source: examples/sources/BUSINESS_DOMAIN_KNOWLEDGE.md | weight: 1.0 | hash: ae5c880e
 
-The infrastructure must support 500 concurrent users while maintaining sub-second response times. Database operations require point-in-time recovery capabilities with a Recovery Point Objective (RPO) of 5 minutes. Deployments will be Docker-based, enabling zero-downtime rolling updates for continuous service availability.
+The system will integrate with Shopify for inventory synchronization. This integration is planned to use webhooks, and the specific payload format for these webhooks needs to be defined.
 
-> source: sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
+External services like Stripe are integral for payment processing. The system must account for potential outages of such services, including implementing queuing and retry mechanisms for orders.
 
+Product images and other assets will be stored on a service like S3. The system design includes considerations for S3 outages, where product pages would render without images but without a hard failure.
+
+> source: examples/sources/PRODUCT_REQUIREMENTS.md | weight: 0.8 | hash: b94185cd
+
+The platform's backend is built with Node.js/Express and uses PostgreSQL as its primary database. Redis is utilized for caching and rate limiting. Product images are stored in AWS S3, while payments are processed through Stripe, and transactional emails are sent via SendGrid. The frontend is a React Single Page Application (SPA) that consumes REST APIs.
+
+Shopify will continue to serve as the storefront for merchants already using it; the new system will integrate with Shopify via webhooks. Stripe will remain the chosen payment processor for all transactions within the platform.
+
+Key external dependencies include PostgreSQL version 15 or higher, which serves as the primary data store. Redis is used for managing user sessions, implementing rate limiting, and caching data. The Stripe API handles all payment processing, while AWS S3 stores product images. SendGrid is used for sending transactional emails.
+
+The infrastructure is required to support 500 concurrent users while maintaining sub-second response times across the platform.
+
+Database recovery capabilities must include point-in-time recovery, with a Recovery Point Objective (RPO) of no more than 5 minutes to minimize data loss.
+
+Deployment processes will be Docker-based, enabling zero-downtime rolling updates to ensure continuous service availability.
+
+> source: examples/sources/TECHNICAL_SPEC.md | weight: 0.6 | hash: 9dd2897a
+
+# Omissions
+
+| Source | Reason | Weight | Tokens |
+|--------|--------|--------|--------|
