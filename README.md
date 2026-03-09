@@ -4,9 +4,7 @@
 
 ---
 
-A weighted epistemic runtime for governed AI reasoning.
-
-AI frames probability as certainty. Context Synth governs what shapes the answer, and by how much. It compiles knowledge from diverse sources into a bounded, source-backed context artifact where every inclusion, omission, and influence is traceable and reviewable.
+Context Synth is a governed context runtime. It compiles knowledge from declared sources into a bounded, traceable context artifact shaped by explicit source weight. Every inclusion, omission, and influence is inspectable.
 
 ## What It Does
 
@@ -30,7 +28,7 @@ See the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DES
 ## What It Is Not
 
 - Not a wiki or documentation system
-- Not a generic RAG layer
+- Not a RAG layer
 - Not an agent
 - Not a prompt manager or model provider
 
@@ -43,21 +41,6 @@ Pre-implementation. The project specification, system design, and v0.1 design ar
 - [Project Spec](docs/PROJECT_SPEC.md) — thesis, pipeline, data model, invariants
 - [System Design](docs/SYSTEM_DESIGN.md) — system-level technical shape
 - [v0.1 Design](docs/design/v0.1.md) — first implementation slice
-
-## Project Structure
-
-```
-docs/
-  PROJECT_SPEC.md          # durable spec: thesis, pipeline, invariants
-  SYSTEM_DESIGN.md         # system-level component and boundary design
-  design/
-    v0.1.md                # first implementation slice (Go, markdown-only)
-  examples/
-    sources/               # example source documents for testing
-  archive/
-    founding_insight.md    # origin document: the observation that motivated the project
-    v0.0.1-alpha/          # artifacts from the prior TypeScript iteration
-```
 
 ## License
 
