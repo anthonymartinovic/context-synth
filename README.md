@@ -4,9 +4,9 @@
 
 ---
 
-Context Synth is a pipeline for compiling multiple knowledge sources into a single governed context document for AI-assisted workflows.
+Context Synth is a governed context runtime for AI-assisted workflows. It compiles multiple knowledge sources into a single structured context document.
 
-The pipeline:
+It:
 
 - Accepts sources with declared weights that control how much each source influences the output
 - Compiles source material into a structured, budget-bounded context document
