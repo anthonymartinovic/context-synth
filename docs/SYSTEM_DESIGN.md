@@ -1,4 +1,4 @@
-# Context Synth -- Architecture
+# Context Synth -- System Design
 
 ## Purpose
 
