@@ -1,6 +1,0 @@
-.git/**
-src/**
-node_modules/**
-tsconfig.json
-*.ts
-!dist/**
