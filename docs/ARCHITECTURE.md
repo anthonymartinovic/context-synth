@@ -2,179 +2,116 @@
 
 ## Purpose
 
-This document describes the technical shape of Context Synth at a system level. Unlike `docs/VISION.md`, which defines the enduring product thesis and invariants, and `docs/design/v0.1.md`, which defines the first release target, this file focuses on components, data flow, and implementation boundaries. Details here are expected to evolve as the implementation evolves.
+This document describes the technical shape of Context Synth at a system level. It is derived from and subordinate to `docs/PROJECT_SPEC.md`. Details here are expected to evolve as the implementation evolves.
 
 ## System Overview
 
-Context Synth is an agent context compiler. It turns configured external knowledge sources into a repo-local context artifact for AI agents. The initial release supports local markdown files to validate the pipeline architecture. The intended primary ingestion path is MCP-fetched content -- Confluence, Notion, Jira, and other external sources accessed through MCP servers. The architecture must not assume local files are the only source type.
+Context Synth is a governed context runtime. It compiles knowledge from configured sources into a bounded, source-backed context artifact for humans, agents, and tools.
+
+The pipeline accepts four governing inputs — sources, weight, structure, and budget — and produces a reviewable artifact where every included item traces to its origin and every omission is recorded.
 
 ```
-Configured source documents
+Sources with weight
         │
         ▼
-     Snap sources
+   Snap (deterministic)
         │
         ▼
-   Extract candidates
+   Extract (LLM-backed, non-deterministic)
         │
         ▼
-     Rank by section
+   Rank (deterministic)
         │
         ▼
-    Assemble artifact
+   Assemble (deterministic)
         │
         ▼
-  Verify source alignment
+   Verify (review surface)
         │
         ▼
-       context.md
+   Contextfile
 ```
 
-## Main Components
+## Components
 
-### CLI Layer
+### CLI
 
-Owns command entry points such as:
-- `cs init`
-- `cs snap`
-- `cs synth`
+Entry point. Loads configuration, validates inputs, invokes the pipeline, reports results.
 
-Responsibilities:
-- load configuration
-- validate inputs
-- invoke the synthesis pipeline
-- report progress and results
+### Config
 
-### Config Layer
+Parses and validates the configuration file. Responsible for expressing the four governing inputs:
 
-Parses and validates `contextsynth.yml`.
+- **Sources** with declared weights
+- **Structure** as user-defined sections with budget allocations
+- **Budget** as a total token bound
+- **LLM** configuration (optional)
 
-Responsibilities:
-- resolve source declarations (file paths and globs in v0.1; MCP resources and URIs later)
-- apply defaults
-- validate section and budget configuration
-- expose a normalized runtime config
+### Source / Snapshot
 
-### Source and Snapshot Layer
-
-Captures configured source material into a deterministic snapshot. This layer owns the boundary between "content has been fetched" and "content enters the pipeline." Downstream stages operate on normalized content with provenance references and do not know or care whether the content originated from a local file, an MCP resource, or another source type.
-
-The v0.1 implementation reads local markdown files. The abstraction boundary should be clean enough that adding MCP-fetched sources later is a new adapter behind the same interface, not a rework of the pipeline.
+Fetches and normalizes configured sources into a source-type-agnostic snapshot. This is the boundary between content acquisition and pipeline processing. Downstream stages do not know or care about source type.
 
 Responsibilities:
-- resolve and fetch source content (local files in v0.1, MCP resources later)
-- normalize contents into a source-type-agnostic representation
-- attach provenance references (file path, URI, or MCP resource identifier)
+- resolve and fetch source content
+- normalize into a source-type-agnostic representation
+- attach provenance references
 - compute content hashes
 - estimate token counts
-- record the source set used for a synthesis run
 
-### Extraction Layer
+Adding a new source type is a new adapter behind this interface, not a pipeline change.
 
-Produces candidate context items from the snapshot.
+### Extraction
 
-Responsibilities:
-- operate over source content
-- preserve source references on derived items
-- classify or structure extracted context
-- optionally cache intermediate outputs
+Decomposes snapshot content into discrete, attributable knowledge items and classifies each into user-provided sections. A single source may yield many items. Each item inherits its source's weight and provenance.
 
-This layer may be LLM-backed, but the exact prompting and item shape are intentionally still flexible.
+This is the judgment layer. It is LLM-backed and non-deterministic. The governance stages on either side exist to bound and make that judgment reviewable.
 
-### Ranking Layer
+### Ranking
 
-Orders candidate items within sections.
+Orders items within sections by declared source weight descending. When sources share equal weight, declaration order is the tiebreaker. Deterministic given the same extracted inputs.
 
-Responsibilities:
-- prioritize for agent usefulness
-- work within section-level budgets
-- preserve auditable ordering decisions
-- optionally cache ranked plans
+### Assembly
 
-### Assembly Layer
+Builds the artifact within budget. Higher-weight items are included first. Omissions are recorded, not silently dropped. Deterministic.
 
-Builds the final artifact from ranked items.
+### Verification
 
-Responsibilities:
-- allocate section budgets
-- include or omit items deterministically
-- render output markdown
-- attach artifact metadata
-
-### Verification Layer
-
-Performs an independent source-alignment check on derived items.
-
-Responsibilities:
-- compare included items against referenced source material
-- record pass/fail outcomes
-- surface excluded items and reasons where applicable
-
-This layer increases confidence in derived context, but it does not replace canonical sources.
+Produces a reviewable surface showing what was included, what was omitted, and the source basis for each. Not an automated pass/fail gate. The output is material for human or agent review.
 
 ## Data Model
 
-The main runtime objects are:
-
-- `Source`: canonical input (local file, MCP resource, or other external content)
-- `Snapshot`: normalized set of sources for a run
-- `Extraction`: candidate item with source reference
-- `SynthesisPlan`: ranked extractions grouped by section
-- `ContextArtifact`: final rendered output plus metadata
-
-The exact source-reference model remains open. It may eventually use paragraphs, spans, or another stable unit.
-
-## Data Flow
-
-### 1. Capture
-
-The pipeline begins by resolving configured sources and producing a snapshot tied to specific content hashes.
-
-### 2. Derive
-
-The system derives candidate context items from source material, preserving references back to the snapshot.
-
-### 3. Prioritize
-
-Candidate items are ordered within sections so the most useful context is considered first during assembly.
-
-### 4. Render
-
-The final artifact is assembled within a configured budget and emitted as markdown with metadata.
-
-### 5. Validate
-
-Derived items are checked for source alignment so humans can inspect what was accepted, rejected, or omitted.
+- **Source** — a knowledge input with a declared weight
+- **Snapshot** — normalized, hashed set of sources for a run
+- **Extraction** — a candidate item with inherited weight and source reference
+- **SynthPlan** — ranked extractions grouped by section
+- **ContextArtifact** — the final bounded, source-backed output
 
 ## Operating Modes
 
-### Full Synthesis Mode
+### Full Synthesis
 
-Uses the full pipeline, including derivation, prioritization, and verification.
+Uses the complete pipeline including LLM-backed extraction, ranking, and verification.
 
-### Deterministic Fallback Mode
+### Deterministic Fallback
 
-Skips LLM-backed stages and assembles source contents directly in config order within budget.
-
-This mode is less intelligent, but it preserves the core governance properties:
-- bounded artifact generation
-- source traceability
-- reviewability
+Skips LLM-backed stages. Assembles source contents directly in weight order within budget. Core governance properties — boundedness, provenance, reviewability, omission recording — are preserved.
 
 ## Architectural Boundaries
 
 These boundaries should remain stable even if internals change:
 
-- the source/snapshot layer should present a source-type-agnostic interface to the rest of the pipeline; adding a new source type (e.g. MCP resources) should be a new adapter, not a pipeline change
-- deterministic source capture should stay separate from LLM-backed derivation
-- assembly should remain deterministic and inspectable
-- source tracking should survive all modes
-- the artifact should remain a derived working set, not a new source of truth
+- Source/snapshot layer presents a source-type-agnostic interface. New source types are new adapters.
+- Deterministic source capture is separate from LLM-backed derivation.
+- Assembly is deterministic and inspectable.
+- Source tracking survives all pipeline stages and modes.
+- The artifact is a derived working set, not a new source of truth.
+
+## Future Capabilities
+
+- **Per-section LLM configuration.** Sections represent different kinds of knowledge. The architecture should accommodate per-section LLM overrides so users can match model capability to the judgment required for each section's knowledge type. Sections without overrides inherit the global default. Sections with no LLM config fall back to deterministic mode individually.
 
 ## Open Technical Questions
 
-- What is the best canonical source-reference model?
-- What should the primary extracted item type be?
-- How much caching should exist in the initial implementation?
-- How provider-specific should the architecture be early on?
+- What is the best canonical source-reference model (paragraph, span, or other stable unit)?
 - How should verification handle items supported by multiple source fragments?
+- What caching strategy, if any, should exist across runs?
