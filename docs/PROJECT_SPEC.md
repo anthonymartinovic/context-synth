@@ -2,17 +2,17 @@
 
 ## Summary
 
-**Context Synth** is a weighted epistemic runtime for AI reasoning over repository-relevant knowledge.
+**Context Synth** is a weighted epistemic runtime for governed AI reasoning.
 
 In plain English: **AI frames probability as certainty. This is not a bug at the edge of the system - it is a consequence of how current AI systems are designed to answer. To account for this, Context Synth governs what shapes the answer, and by how much.**
 
-It compiles repository-relevant knowledge into a governed, reasoning-ready context environment for humans, agents, and tools.
+It compiles knowledge from diverse sources into a governed, reasoning-ready context environment for humans, agents, and tools.
 
 Its purpose is not to help models access more information in the abstract, but to ensure that downstream reasoning operates over a bounded, reviewable, source-backed knowledge environment.
 
 It accepts knowledge from local and external sources, including repository documents, file systems, and MCP-fetched systems such as Notion, Confluence, Jira, or other machine-readable knowledge stores. It normalizes those inputs, applies explicit source influence, and produces governed outputs that can be inspected, versioned, and used for grounded reasoning.
 
-In this framing, repository-relevant does not mean repository-hosted. It means materially relevant to work performed in or around a repository.
+The scope of "relevant knowledge" is not limited to what lives in a repository. It means any knowledge materially relevant to the reasoning context — whether that context is a codebase, a project, a team, or a decision.
 
 ## Problem
 
@@ -40,271 +40,85 @@ The project exists to answer a stricter question than "what information is avail
 
 **What knowledge is allowed to influence this reasoning process, in what form, under what constraints, and with what traceability?**
 
-## Project Definition
+## User Inputs
 
-Context Synth is a project for constructing governed context from multiple sources and making that context available for reliable downstream use.
+Four inputs govern a synthesis run:
 
-It produces two closely related outputs:
+- **Sources**: knowledge inputs to the pipeline — local files, repository documents, directories, or MCP-fetched content. External sources are first-class.
+- **Weight**: each source's declared authority, expressed as a value between 0.0 and 1.0. 1.0 is full authority; 0.0 is none. Weight propagates through the pipeline: it governs extraction prominence, ranking order, and budget allocation during assembly.
+- **Structure**: the shape of the output — sections and categories. The system fills the structure the user provides. It does not invent structure. If source material does not map to a declared section, that section is left empty and the user is notified.
+- **Budget**: a token bound on the output. Forces the system to choose. Weight governs how it chooses.
 
-### 1. Governed Context Artifact
+## Pipeline
 
-A bounded, inspectable, source-backed artifact representing the working set of context selected for a given use.
+```
+Sources → Snap → Extract → Rank → Assemble → Verify → Context Artifact
+```
 
-This artifact is intended to be:
+**Snap** — fetch and normalize configured sources into a source-type-agnostic snapshot. Attach provenance references and content hashes. This is the boundary between fetching and processing.
 
-- reviewable by humans
-- versionable
-- auditable
-- portable across tools and models
-- derived rather than canonical
+**Extract** — decompose snapshot content into discrete, attributable units of knowledge and classify each unit into the user-provided structure. A single source may yield many items; extractions are not 1:1 with sources. Each item inherits its source's weight and provenance. This is the judgment layer of the pipeline — segmentation and classification are LLM-backed and non-deterministic. The governance stages on either side (Snap before, Rank/Assemble/Verify after) exist to bound and make that judgment reviewable.
 
-### 2. Reasoning-Ready Snapshot
+**Rank** — order items within sections by weight and relevance. This is where declared source influence becomes operational. When sources share equal weight, declaration order is the tiebreaker — earlier-declared sources take precedence.
 
-A structured context state suitable for grounded synthesis, assessment, and conclusion generation.
+**Assemble** — build the artifact within budget. Higher-weight items included first. Omissions recorded, not dropped.
 
-This snapshot is intended to support:
+**Verify** — surface what was included, what was omitted, and the source basis for each. Produces a reviewable verification surface — not an automated pass/fail gate. The output of Verify is material for human or agent review.
 
-- weighted synthesis across multiple sources
-- traceable claims
-- conflict-aware interpretation
-- bounded reasoning
-- reproducibility across runs and models
+## Data Model
 
-The artifact and the snapshot are related but not identical. The artifact is the human-visible governed output. The snapshot is the machine-usable epistemic state derived from governed inputs.
+- **Source** — a canonical knowledge input with a declared weight
+- **Snapshot** — normalized, hashed set of sources for a run
+- **Extraction** — a candidate context item with inherited weight and source reference
+- **SynthPlan** — ranked extractions grouped by section
+- **ContextArtifact** — the final bounded, source-backed output
 
-## What Makes Context Synth Distinct
+## Invariants
 
-Context Synth is not primarily a search layer, a note-taking system, or a generic RAG implementation.
+These hold across all modes and versions:
 
-Its distinguishing idea is that source influence is explicit and governed.
+- **Source traceability** — every included item traces to a specific source, reference, and content hash
+- **Boundedness** — output stays within the declared budget
+- **Human reviewability** — what was included, omitted, and why is always inspectable
+- **Evidence-backed synthesis** — generated output is never self-justifying; source alignment remains visible
+- **Governance without LLMs** — provenance, boundedness, weight ordering, and reviewability all survive without LLM-backed stages. Synthesis capability does not — semantic extraction and classification require the judgment layer. Without it, the pipeline falls back to assembling source contents directly in config order within budget.
+- **Deterministic conflict resolution** — when sources of equal weight conflict, declaration order governs precedence. Conflict resolution is always inspectable, never implicit.
+- **Derived, not canonical** — the artifact is a working set, not a replacement for source documents
 
-Users do not merely select sources. They declare how those sources should matter. Context Synth then preserves and operationalizes that influence through assembly and synthesis.
+## Architectural Boundaries
 
-This enables a different kind of system:
-
-- not "retrieve what seems relevant"
-- not "summarize everything available"
-- not "let the model decide what matters"
-
-Instead:
-
-- select relevant knowledge sources
-- assign epistemic influence
-- normalize and bound the working set
-- produce outputs whose claims can be traced to inputs
-
-## Core Inputs
-
-Context Synth is controlled through a small number of user-declared inputs.
-
-### Sources
-
-A source is any knowledge input relevant to the task, repository, or decision space.
-
-Sources may include:
-
-- local files
-- repository documents
-- directories or globbed file sets
-- remote content snapshots
-- MCP-fetched resources
-- external knowledge systems
-- structured or semi-structured documents
-
-The project must treat external MCP-backed sources as first-class inputs, not as future edge cases or integrations bolted onto a repository-only model.
-
-### Weight
-
-Each source carries a weight representing its epistemic influence.
-
-Weight is not just ordering. It is a declared signal about how much a source should shape the resulting context and synthesis.
-
-By default, weight represents a blend of:
-
-- authority: how trustworthy or canonical the source is
-- relevance: how pertinent the source is to the current task or domain
-- priority: how strongly the user wants the source to influence the result
-
-Weight should not imply absolute truth. It is a governance signal, not a guarantee.
-
-### Budget
-
-Budget defines how much context is allowed into the governed output and reasoning state.
-
-Budget exists to preserve intentionality. Without boundedness, context accumulation becomes another form of noise.
-
-### Structure
-
-The user may also define the desired output structure, such as sections, templates, categories, or expected synthesis shape.
-
-Structure matters because governed context is not merely collected. It is shaped for use.
-
-## Core Outputs
-
-Context Synth should support outputs such as:
-
-- context artifacts
-- reasoning snapshots
-- weighted assessments
-- grounded summaries
-- synthesis memos
-- decision-support outputs
-- conflict-aware conclusions
-
-The long-term goal is not merely a better context document. It is a governed substrate for trustworthy synthesis.
-
-## Source Weight Semantics
-
-Weight should be treated as epistemic influence that propagates through the system.
-
-At a minimum, that means weight affects:
-
-- prioritization during context selection
-- inclusion under budget constraints
-- conflict resolution behavior
-- ordering and prominence in outputs
-- synthesis emphasis
-- explanation of why a conclusion leaned in one direction
-
-A higher-weight source should generally have more influence on the final governed result than a lower-weight source, all else equal.
-
-However, weight must not override source traceability, provenance, or reviewability. A highly weighted source may dominate a conclusion, but that dominance must remain visible and inspectable.
-
-## Project Principles
-
-### Governed, Not Generative-First
-
-Generated output is never self-justifying. Source alignment must remain visible.
-
-### Bounded By Design
-
-Useful context is constrained context. Budgeting is a core project feature, not an implementation detail.
-
-### Source-Backed By Default
-
-Outputs must preserve provenance and maintain clear links to the sources that shaped them.
-
-### Reviewable By Humans
-
-A reviewer must be able to inspect what was included, what was omitted, and why the result looks the way it does.
-
-### External-Source Native
-
-The project must assume that important context may live outside the repository and be fetched through MCP or similar interfaces.
-
-### Reproducible Enough To Trust
-
-The same governed inputs should yield materially stable outputs, especially in deterministic or semi-deterministic modes.
-
-### Derived, Not Canonical
-
-Context Synth does not replace source systems. It produces governed working sets and reasoning states from canonical inputs.
-
-## What Context Synth Is
-
-- A governance layer for context
-- A compiler for repository-relevant knowledge
-- A weighted reasoning substrate
-- Developer infrastructure for bounded, auditable synthesis
-- A bridge between scattered knowledge and grounded downstream use
+- The source/snapshot layer presents a source-type-agnostic interface. Adding a new source type is a new adapter, not a pipeline change.
+- The pipeline has an explicit determinism boundary. Snap is deterministic. Extract is LLM-backed and non-deterministic — this is where the system exercises judgment. Rank, Assemble, and Verify are deterministic: same ranked inputs and budget produce the same output.
+- Source tracking survives all pipeline stages and modes.
 
 ## What Context Synth Is Not
 
-- Not a new system of record
-- Not a wiki
-- Not a general note-taking system
+- Not a new source of truth
+- Not a wiki or documentation system
+- Not a generic RAG layer — RAG retrieves context at query time to augment a prompt. Context Synth compiles a governed artifact *before* any query. Sources are declared, weighted, and bounded into a reviewable snapshot. RAG answers "what is relevant to this question"; Context Synth answers "what knowledge is allowed to shape reasoning, and how much."
+- Not an agent — Context Synth is a runtime. It does not set goals, select actions, or decide what to do next. It executes a declared pipeline over declared inputs. Agents and humans use its output as a foundation for reasoning — it does not reason on their behalf.
 - Not a prompt manager
-- Not a generic RAG layer over arbitrary data
-- Not an agent framework
 - Not a model provider
-- Not a substitute for canonical documentation systems
 
-## Primary Use Cases
+## Design Hypotheses
 
-### Repository Context Compilation
+The thesis, inputs, pipeline shape, and invariants above are intended to be durable. The following are hypotheses this project exists to validate. They guide implementation but are expected to evolve as the system is built.
 
-A team compiles architecture, requirements, constraints, and external references into a bounded working artifact that travels with the repository.
-
-### Grounded Agent Workflows
-
-An agent receives a governed reasoning-ready snapshot instead of unconstrained raw context and can generate outputs with better traceability and lower hallucination risk.
-
-### Weighted Multi-Source Assessment
-
-A user supplies multiple sources with explicit influence signals and asks for a grounded conclusion that reflects those declared priorities.
-
-### Review and Decision Support
-
-A reviewer or lead uses Context Synth to surface the most influential evidence behind a recommendation, change, or implementation path.
-
-### Knowledge Portability Across Models and Tools
-
-The same governed context state can be consumed by different models, tools, or workflows without redefining the knowledge environment each time.
-
-## Project Experience
-
-The expected project experience is:
-
-1. Define sources.
-2. Assign source influence.
-3. Declare structure and budget.
-4. Produce governed context.
-5. Produce or enable grounded synthesis from that governed context.
-6. Inspect provenance, omissions, and influence.
-7. Reuse the result across tools, runs, and consumers.
-
-The key shift is that the user governs the reasoning environment before downstream consumption begins.
-
-## Key Project Claims
-
-Context Synth should prove the following claims:
-
-1. Multiple knowledge sources can be turned into a bounded, governed working set.
-2. Repository-relevant knowledge can be compiled even when the most important sources live outside the repository.
-3. User-declared source influence can materially shape the output in transparent ways.
-4. Downstream reasoning can be more trustworthy when performed over a governed context state.
-5. Teams can review not only outputs, but the context basis that produced them.
-6. The same governed context can serve humans, agents, and tools.
-
-## Success Criteria
-
-Context Synth is successful if:
-
-- teams treat the output as a meaningful working asset
-- users can explain why a result looks the way it does
-- conclusions are inspectable against source material
-- source weighting produces visible, intelligible effects
-- external MCP-based knowledge participates as naturally as local files
-- consumers trust the governed context more than ad hoc prompting or loose document gathering
-- the system reduces context-related ambiguity, repeated explanation, or unsupported synthesis
-
-## Near-Term Project Goal
-
-The first meaningful milestone is not full automation of reasoning. It is proving that governed, weighted, source-backed context is a better substrate for downstream work than ad hoc context collection.
-
-A strong first version should demonstrate:
-
-- mixed-source ingestion, including external MCP-backed inputs
-- explicit weight assignment
-- bounded artifact creation
-- provenance visibility
-- reviewable omissions and inclusions
-- a grounded synthesis or assessment mode that shows why a conclusion was reached
+1. Multiple knowledge sources — including sources outside the repository — can be compiled into a bounded, governed working set.
+2. User-declared source influence visibly and materially shapes the output.
+3. Downstream reasoning over governed context is more trustworthy than reasoning over ad hoc context.
+4. Teams can review the source basis, weight distribution, and omissions behind any output.
+5. The same governed artifact serves humans, agents, and tools.
+6. Governance properties hold without LLM-backed stages.
 
 ## Long-Term Direction
 
-Over time, Context Synth can evolve from context compilation into a full reasoning governance layer.
+*The following are orientations, not planned features or commitments. They describe where the project points, not what it promises.*
 
-That longer-term direction may include:
+Prove that governed, weighted, source-backed context is a better foundation for downstream work than ad hoc context collection.
 
-- richer source influence models
-- conflict-aware synthesis
-- claim-level traceability
-- reusable reasoning snapshots
-- cross-model portability
-- policy-aware agent context environments
-- institutional knowledge governance for engineering systems
+Mixed-source ingestion including MCP-backed inputs, explicit weight with visible downstream effects, bounded artifact creation with recorded omissions, provenance on every item, and a synthesis mode that shows why a conclusion was reached.
 
-The enduring project idea should remain stable:
+Context compilation evolves into reasoning governance — richer influence models, conflict-aware synthesis, claim-level traceability, reusable reasoning snapshots, cross-model portability, policy-aware agent context environments.
 
 **Context Synth governs what knowledge is allowed to shape reasoning, how strongly it shapes it, and how that influence remains visible.**
