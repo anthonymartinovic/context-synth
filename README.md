@@ -32,6 +32,10 @@ For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) 
 
 Pre-implementation. The project specification, system design, and v0.1 design are complete. The v0.1 implementation target is a single Go binary (`cs`) operating over local markdown sources.
 
+## Direction
+
+Long term, Context Synth is intended to become the infrastructure layer that governs how context is constructed, versioned, and supplied to AI systems.
+
 ## Documentation
 
 - [Project Spec](docs/PROJECT_SPEC.md) — what Context Synth is for and the rules it follows

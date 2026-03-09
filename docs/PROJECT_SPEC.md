@@ -121,4 +121,4 @@ Mixed-source ingestion including MCP-backed inputs, explicit weight with visible
 
 Context compilation evolves into reasoning governance — richer influence models, conflict-aware synthesis, claim-level traceability, reusable reasoning snapshots, cross-model portability, policy-aware agent context environments.
 
-**Context Synth governs what knowledge is allowed to shape reasoning, how strongly it shapes it, and how that influence remains visible.**
+**Context Synth governs what knowledge is allowed to shape reasoning, how strongly it shapes it, and how that influence remains visible. The aim is for it to become the infrastructure layer for constructing, versioning, and supplying context to AI systems.**
