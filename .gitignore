@@ -25,3 +25,7 @@ coverage.html
 # OS
 .DS_Store
 Thumbs.db
+
+# DJ-V
+examples/dj-v/sources/audio/*
+examples/dj-v/artifact.json

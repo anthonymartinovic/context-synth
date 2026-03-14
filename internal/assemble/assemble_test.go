@@ -3,11 +3,11 @@ package assemble
 import (
 	"testing"
 
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 )
 
 func TestAssemble_WithinBudget(t *testing.T) {
-	ranked := []model.Extraction{
+	ranked := []protocol.Extraction{
 		{SourcePath: "a.md", TokenCount: 100, Weight: 1.0},
 		{SourcePath: "b.md", TokenCount: 100, Weight: 0.5},
 	}
@@ -22,7 +22,7 @@ func TestAssemble_WithinBudget(t *testing.T) {
 }
 
 func TestAssemble_ExceedsBudget(t *testing.T) {
-	ranked := []model.Extraction{
+	ranked := []protocol.Extraction{
 		{SourcePath: "a.md", TokenCount: 100, Weight: 1.0},
 		{SourcePath: "b.md", TokenCount: 150, Weight: 0.5},
 	}
@@ -43,7 +43,7 @@ func TestAssemble_ExceedsBudget(t *testing.T) {
 }
 
 func TestAssemble_NeverExceedsBudget(t *testing.T) {
-	ranked := []model.Extraction{
+	ranked := []protocol.Extraction{
 		{SourcePath: "a.md", TokenCount: 500, Weight: 1.0},
 		{SourcePath: "b.md", TokenCount: 400, Weight: 0.9},
 		{SourcePath: "c.md", TokenCount: 300, Weight: 0.8},

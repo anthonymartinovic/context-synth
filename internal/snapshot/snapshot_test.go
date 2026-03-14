@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/anthonymartinovic/context-synth/internal/config"
-	"github.com/anthonymartinovic/context-synth/internal/source"
+	"github.com/anthonymartinovic/context-synth/integrations/source/markdown"
 )
 
 func TestBuild_Deterministic(t *testing.T) {
@@ -17,12 +17,12 @@ func TestBuild_Deterministic(t *testing.T) {
 
 	cfg := config.Config{
 		Sources: []config.SourceDecl{
-			{Path: filepath.Join(dir, "a.md"), Weight: 1.0},
-			{Path: filepath.Join(dir, "b.md"), Weight: 0.5},
+			{Markdown: filepath.Join(dir, "a.md"), Weight: 1.0},
+			{Markdown: filepath.Join(dir, "b.md"), Weight: 0.5},
 		},
 	}
 
-	provider := &source.MarkdownProvider{}
+	provider := &markdown.Provider{}
 	snap1, err := Build(context.Background(), cfg, provider)
 	if err != nil {
 		t.Fatal(err)
@@ -47,12 +47,12 @@ func TestBuild_DeclOrder(t *testing.T) {
 
 	cfg := config.Config{
 		Sources: []config.SourceDecl{
-			{Path: filepath.Join(dir, "first.md"), Weight: 0.3},
-			{Path: filepath.Join(dir, "second.md"), Weight: 0.9},
+			{Markdown: filepath.Join(dir, "first.md"), Weight: 0.3},
+			{Markdown: filepath.Join(dir, "second.md"), Weight: 0.9},
 		},
 	}
 
-	provider := &source.MarkdownProvider{}
+	provider := &markdown.Provider{}
 	snap, err := Build(context.Background(), cfg, provider)
 	if err != nil {
 		t.Fatal(err)

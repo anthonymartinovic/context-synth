@@ -4,15 +4,15 @@ import (
 	"context"
 
 	"github.com/anthonymartinovic/context-synth/internal/config"
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 )
 
 type PassthroughExtractor struct{}
 
-func (p *PassthroughExtractor) Extract(_ context.Context, snap model.Snapshot, _ []config.SectionDecl) ([]model.Extraction, error) {
-	var extractions []model.Extraction
+func (p *PassthroughExtractor) Extract(_ context.Context, snap protocol.Snapshot, _ []config.SectionDecl) ([]protocol.Extraction, error) {
+	var extractions []protocol.Extraction
 	for _, item := range snap.Items {
-		extractions = append(extractions, model.Extraction{
+		extractions = append(extractions, protocol.Extraction{
 			Content:     string(item.Source.Content),
 			Section:     "",
 			TokenCount:  item.Source.TokenCount,

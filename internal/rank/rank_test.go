@@ -3,11 +3,11 @@ package rank
 import (
 	"testing"
 
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 )
 
 func TestRank_WeightOrder(t *testing.T) {
-	extractions := []model.Extraction{
+	extractions := []protocol.Extraction{
 		{SourcePath: "low.md", Weight: 0.3, DeclOrder: 0},
 		{SourcePath: "high.md", Weight: 0.9, DeclOrder: 1},
 		{SourcePath: "mid.md", Weight: 0.5, DeclOrder: 2},
@@ -27,7 +27,7 @@ func TestRank_WeightOrder(t *testing.T) {
 }
 
 func TestRank_TiebreakByDeclOrder(t *testing.T) {
-	extractions := []model.Extraction{
+	extractions := []protocol.Extraction{
 		{SourcePath: "second.md", Weight: 0.5, DeclOrder: 1},
 		{SourcePath: "first.md", Weight: 0.5, DeclOrder: 0},
 	}
@@ -43,7 +43,7 @@ func TestRank_TiebreakByDeclOrder(t *testing.T) {
 }
 
 func TestRank_DoesNotMutateOriginal(t *testing.T) {
-	extractions := []model.Extraction{
+	extractions := []protocol.Extraction{
 		{SourcePath: "b.md", Weight: 0.3, DeclOrder: 1},
 		{SourcePath: "a.md", Weight: 0.9, DeclOrder: 0},
 	}

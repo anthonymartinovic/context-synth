@@ -1,0 +1,30 @@
+version: "1"
+
+output:
+  path: artifact.json
+
+budget: 10000
+
+sources:
+  - markdown: sources/vibe.md
+    weight: 0.9
+  - audio: sources/audio/midnight_drive.mp3
+    weight: 0.8
+  - audio: sources/audio/neon_pulse.mp3
+    weight: 0.7
+  - audio: sources/audio/deep_current.mp3
+    weight: 0.6
+  - audio: sources/audio/test_track.mp3
+    weight: 0.6
+
+sections:
+  - name: Musical Context
+    budget: 0.50
+  - name: Creative Direction
+    budget: 0.30
+  - name: Constraints
+    budget: 0.20
+
+llm:
+  provider: llama
+  model: llama3.1:8b

@@ -3,15 +3,15 @@ package verify
 import (
 	"testing"
 
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 )
 
 func TestVerify_IncludedAndOmitted(t *testing.T) {
-	plan := model.SynthPlan{
-		Included: []model.Extraction{
+	plan := protocol.SynthPlan{
+		Included: []protocol.Extraction{
 			{SourcePath: "a.md", ContentHash: "abc123", Weight: 1.0, TokenCount: 100},
 		},
-		Omitted: []model.Omission{
+		Omitted: []protocol.Omission{
 			{SourcePath: "b.md", Reason: "exceeded budget", Weight: 0.5, TokenCount: 200},
 		},
 	}

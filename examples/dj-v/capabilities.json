@@ -1,0 +1,31 @@
+{
+  "capabilities": [
+    {
+      "id": "interpret_context",
+      "description": "Derive music parameters and a natural language music description from governed context",
+      "inputs": ["artifact"],
+      "outputs": ["music_parameters"],
+      "depends_on": [],
+      "executor": {
+        "type": "llm",
+        "config": {
+          "prompt_template": "You are a music director AI. Analyze the following governed context artifact and produce music parameters.\n\nThe artifact contains source material from documents and audio analysis data. Use all available information — document mood/themes, audio features (tempo, key, energy, spectral contrast, harmonic ratio), and creative direction — to derive parameters for generating a musical piece.\n\nContext artifact:\n{{artifact}}\n\nRespond with ONLY a JSON object (no markdown, no explanation) with these fields:\n- tempo_bpm: number (60-180)\n- key: string (C, C#, D, D#, E, F, F#, G, G#, A, A#, B)\n- mode: string (major or minor)\n- energy: number (0.0-1.0)\n- mood: string (one word: euphoric, melancholic, aggressive, dreamy, triumphant, mysterious, playful, intense)\n- density: number (0.0-1.0, how layered/complex)\n- description: string (a 1-2 sentence natural language description of the music to generate, e.g. 'An energetic electronic track with driving bass and shimmering synth pads in D minor at 128 BPM')"
+        }
+      }
+    },
+    {
+      "id": "generate_audio",
+      "description": "Generate audio from music description using MusicGen",
+      "inputs": ["music_parameters"],
+      "outputs": ["audio_file"],
+      "depends_on": ["interpret_context"],
+      "executor": {
+        "type": "subprocess",
+        "config": {
+          "command": "python3",
+          "args": ["musicgen/generate.py"]
+        }
+      }
+    }
+  ]
+}

@@ -3,11 +3,11 @@ package rank
 import (
 	"sort"
 
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 )
 
-func Rank(extractions []model.Extraction) []model.Extraction {
-	ranked := make([]model.Extraction, len(extractions))
+func Rank(extractions []protocol.Extraction) []protocol.Extraction {
+	ranked := make([]protocol.Extraction, len(extractions))
 	copy(ranked, extractions)
 
 	sort.SliceStable(ranked, func(i, j int) bool {
