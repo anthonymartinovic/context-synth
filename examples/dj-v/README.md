@@ -1,6 +1,6 @@
 # DJ-V — Context-Driven Music Generation
 
-DJ-V is the first example application built on Context Synth. It turns governed context (documents + audio reference tracks) into generative music using Meta's MusicGen model.
+DJ-V is the first example application built on Context Synth. It is intended to turn governed context (documents + audio reference tracks) into generative music using Meta's MusicGen model (subject to change).
 
 ## Prerequisites
 
