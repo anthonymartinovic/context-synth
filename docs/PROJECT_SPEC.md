@@ -1,5 +1,7 @@
 # Context Synth -- Project Spec
 
+> **Note:** This document reflects the v0.1.0 architecture — a two-phase pipeline where sources compile into a single artifact, and a capability graph resolves downstream of it. The v1 direction inverts this: a collection of artifacts form the dependency graph, and the application emerges from the graph rather than from a single terminal artifact. This spec needs to be revised to account for that structural change. See [STATUS.md](../STATUS.md) and [Reflections — v0.1.0](reflections/v0.1.0.md) for the full rationale.
+
 ## Summary
 
 **Context Synth** is a context-driven orchestration framework for governed AI reasoning.

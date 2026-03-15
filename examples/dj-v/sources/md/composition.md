@@ -3,41 +3,42 @@
 ## Bars 1–4: Intro
 
 <!-- Describe the opening — what enters first, what sets the tone -->
-* Start with a steady kick drum as the primary rhythmic anchor
-* Introduce a subtle bass layer to establish tone and low-end support
+* Kick drum the salient factor
+* Industrial / Noise bassline synth (subtle)
 
 ## Bars 5–7: Build
 
 <!-- Describe what layers are introduced, how energy increases -->
-* Add an off-beat snare with a sharp attack and light reverb
-* Introduce a syncopated sweep or transition effect to increase motion
-* Add a restrained sub-bass layer to build tension gradually
+* Snare on the off-beat, with a sharp attack but a long tail, creating a washy reverb effect
+* Syncopated sweeping-effect to contrast kick drum, creating subtle triplet effect
+* Introduce very subtle sub-bass synth, building tension
 
 ## Bar 8: Drum Fill
 
-* Use a full-bar tom fill as the main transition moment
-* Reduce or pause the other instrumentation during this bar for emphasis
+* Have 16/16 tom-tom drum fill front and center
+* For this bar only, stop all other instrumentation
 
 ## Bars 9–12: Core
 
 <!-- Describe the peak section — full arrangement, main groove -->
 
-* End the drum fill and return to the full arrangement
-* Reintroduce the main rhythmic and low-end elements
-* Add syncopated hi-hats with a bright, crisp character
-* Introduce a lead or melodic element that adds movement and contrast
-* Slightly increase the impact of the kick and snare in the mix
+* Stop Drum fill
+* Re-introduce all instrumentation
+* Add syncopated hi-hats - again, want these to be noise-induced, keeping with theme
+    * Cut the lower-mid frequencies from these hats - want it sharp and crisp
+* Add chaotic melody, Skrillex-vibes - fun, but slightly unhinged
+* Slight Increase of compression to kick and snare to give more visceral impact
 
 ## Bars 13–14: Core Increase
 
 <!-- Describe what drops out, what sustains, how tension is managed -->
 
-* Increase rhythmic density with faster snare hits
-* Increase hi-hat activity to raise perceived energy
+* Snare to have 16/16 hits instead of on the off-beat
+* Hi-hats also to be 16/16 hits
 
 ## Bars 15-End: Outro
 
 <!-- Describe how the track closes — what fades, what's the last sound -->
 
-* Remove the lead and upper layers, leaving the core rhythm and bass
-* Fade the remaining elements out gradually
+* Cut all instrumentation except kick, industrial / noise bassline, and sub-bas synth
+* Fade everything out

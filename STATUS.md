@@ -60,6 +60,32 @@ _Last updated: v0.1.0_
 
 **MusicGen on Apple Silicon MPS.** EnCodec decoder hits a conv1d channel limitation (>65536 channels). Generation falls back to CPU, taking ~2 minutes for 30 seconds of audio. Combined with context interpretation latency, `cs run` alone can take several minutes. This is a PyTorch/MPS constraint, not a framework issue.
 
+## v1 Direction
+
+v0.1.0 validates the pieces: the capability graph, topological resolution, protocol boundaries, adapter projection, and governed context compilation all work. But the architecture has a structural assumption that v1 needs to invert.
+
+Today the system is a two-phase pipeline. Sources compile into a single monolithic artifact, and the capability graph is downstream of that artifact. The graph exists to process the artifact — the artifact is the point, and the graph is a means to an end.
+
+```
+v0.1.0 model:
+
+sources → [engine] → artifact.json → [runtime] → capability graph → adapter
+```
+
+The v1 direction inverts this. Instead of a pipeline that produces one artifact which then feeds a graph, the artifacts themselves form the dependency graph. Each artifact is a node — carrying its own context, capabilities, and declared dependencies on other artifacts. The application emerges from the live graph of artifacts, not from any single one of them.
+
+```
+v1 model:
+
+context graph (collection of artifacts with dependencies)
+   ↓
+application emerges from the graph
+```
+
+This is closer to how an operating system works than how an application works. An OS doesn't have "one artifact at the end" — it has a collection of capabilities (processes, drivers, services) that form a dependency graph, and what the user experiences emerges from that graph at runtime. With AI, this model becomes far more achievable: a dependency graph runtime that turns context into capabilities, delivering real-time user experiences.
+
+The building blocks are already in the repo — graph resolution, protocol types, source abstraction, adapter projection. The structural change is fusing the engine and runtime so that sources don't compile *into* a graph but *are* the graph.
+
 ## What's Deferred
 
 - TypeScript SDK

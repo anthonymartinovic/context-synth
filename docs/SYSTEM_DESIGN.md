@@ -1,5 +1,7 @@
 # Context Synth -- System Design
 
+> **Note:** This document reflects the v0.1.0 architecture — a two-phase pipeline (context compilation → capability resolution) mediated by a single monolithic artifact. The v1 direction inverts this model: artifacts themselves form the dependency graph, and the application emerges from the live graph rather than from a pipeline endpoint. This document needs to be revised to account for that structural change. See [STATUS.md](../STATUS.md) and [Reflections — v0.1.0](reflections/v0.1.0.md) for the full rationale.
+
 ## Purpose
 
 This document describes the technical shape of Context Synth at a system level. It is derived from and subordinate to `docs/PROJECT_SPEC.md`. Details here are expected to evolve as the implementation evolves.

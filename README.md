@@ -1,28 +1,43 @@
 <div align="center">
   <img width="196" height="150" alt="Context Synth Logo" src="logo.png" />
+
+  **A dependency graph runtime that turns context into capabilities, delivering real-time user experiences.**
 </div>
 
-## Status
+Context Synth is a runtime where applications emerge from context rather than being written ahead of time. A collection of artifacts form a dependency graph — each carrying its own context, capabilities, and declared dependencies — and the application emerges from the live graph.
 
-**v0.1.0** — first end-to-end release. Context Synth compiles diverse sources (markdown documents, MP3 audio files) into governed, machine-readable context artifacts (JSON), then resolves a capability graph over that artifact to produce dynamic output. Llama (via ollama) is the default LLM provider. The artifact format is unstable and will change.
+```
+context graph (collection of artifacts with dependencies)
+   ↓
+application emerges from the graph
+```
 
-For a detailed account of what's working, what isn't, and what's deferred, see [STATUS.md](STATUS.md).
+This is closer to how an operating system works than how any application works. An OS has no single artifact at the end — it has a collection of capabilities forming a dependency graph, and the user experience emerges from that graph at runtime. With AI, this model becomes far more achievable.
+
+### What It Is Not
+
+- Not a wiki or documentation system
+- Not a RAG layer
+- Not an agent
+- Not a capability runtime — it orchestrates capabilities that external systems provide
+- Not a prompt manager or model provider
 
 ---
 
-Context Synth is a context-driven orchestration framework for governed AI reasoning. It compiles knowledge from configured sources into a bounded, traceable context artifact, then uses that artifact to construct and resolve a dependency graph of external capabilities into dynamic output.
+## Current State: v0.1.0
+
+v0.1.0 is the first end-to-end release. It validates the core building blocks — governed context compilation, capability graph resolution, adapter projection — through a two-phase pipeline:
 
 ```
-Phase 1: Context Compilation
 Sources → Snap → Extract → Rank → Assemble → Verify → Context Artifact (JSON)
-
-Phase 2: Capability Resolution
 Context Artifact → Graph Construction → Dependency Resolution → Projection
 ```
 
-For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md).
+Today, sources compile into a single governed artifact, and a capability graph resolves downstream of it. This proves the pieces work. The v1 direction inverts the architecture so that artifacts form the graph directly rather than feeding into one. See [STATUS.md](STATUS.md) for full details on what's working, what isn't, and what's next.
 
-### What v0.1.0 supports
+For details on the v0.1.0 architecture, see the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md).
+
+#### What v0.1.0 supports
 
 - **Markdown and MP3 audio** source types
 - Per-source weight declaration (markdown supports globs)
@@ -35,20 +50,6 @@ For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) 
 - Adapter interface for output projection
 - Llama as the default LLM provider (local inference via ollama)
 - [DJ-V](examples/dj-v/) — first example application (documents + audio → governed artifact → capability graph → generative music)
-
-### Long-term direction
-
-Context Synth is intended to become an infrastructure layer for orchestrating system capabilities over governed context — ingesting from repositories, MCP servers, and other external sources; supporting stable artifact versioning, diffing, and drift detection; richer dependency semantics and reactive graph resolution; and integrating into CI pipelines.
-
-At v1, the vision is that Context Synth will become a framework for composing artifact-scoped agents into governed networks, where each artifact defines the bounded context, capability graph, and traceable inputs that shape an agent's behavior.
-
-## What It Is Not
-
-- Not a wiki or documentation system
-- Not a RAG layer
-- Not an agent
-- Not a capability runtime — it orchestrates capabilities that external systems provide
-- Not a prompt manager or model provider
 
 ## Installation
 

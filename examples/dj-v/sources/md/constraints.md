@@ -6,13 +6,12 @@ Target tempo: 142 BPM
 
 ## Key and Tonality
 
-* Prefer minor keys
-* Overall style should align with dark electronic / techno-inspired music
+* Industrial / Noise / Techno
 
 ## Structure
 
-* Keep the arrangement structured and consistent, with the melodic layer providing contrast
-* Core sections should feel dense and energetic; transitional sections should feel lighter and more restrained
+* Keep arrangement rigid, except for melody (when it is introduced) - that should contrast well.
+* Core sections should feel dense; Non-core ominous but less chaotic
 
 ## Duration
 
