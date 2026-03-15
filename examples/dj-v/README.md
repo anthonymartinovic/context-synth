@@ -36,32 +36,48 @@ sources:
     weight: 0.8
 ```
 
-Set `CS_AUDIO_ANALYZER` to point to the analysis script (or add it to `.env`):
+Copy the environment template and fill in the analyzer path:
 
 ```bash
-export CS_AUDIO_ANALYZER="/path/to/examples/dj-v/scripts/analyze.py"
+cp ../../.env.example ../../.env
 ```
+
+Edit `.env` so `CS_AUDIO_ANALYZER` points to the absolute path of the analysis script:
+
+```
+CS_AUDIO_ANALYZER=/full/path/to/examples/dj-v/scripts/analyze.py
+```
+
+If you use `make`, this is handled automatically — the Makefile sets `CS_AUDIO_ANALYZER` for you.
 
 ## Running DJ-V
 
-### Step 1: Compile the context artifact
+The fastest way is `make`:
 
 ```bash
 cd examples/dj-v
-cs synth --no-llm
+make          # synth + run in one shot
 ```
 
-This compiles `sources/md/vibe.md`, `sources/md/constraints.md`, and audio track features into `artifact.json`.
-
-With Llama for full LLM-backed extraction:
+Or run each step individually:
 
 ```bash
-cs synth
+make synth    # compile context artifact
+make run      # resolve capabilities, generate + play audio
 ```
 
-### Step 2: Resolve capabilities and generate music
+`make build` rebuilds the `cs` binary from source. `make clean` removes generated artifacts and output.
+
+### Manual invocation
+
+If you prefer not to use Make, the two steps are:
 
 ```bash
+cd examples/dj-v
+export CS_AUDIO_ANALYZER="$(pwd)/scripts/analyze.py"
+
+cs synth --verbose --output artifact.json
+
 cs run \
   --artifact artifact.json \
   --capabilities capabilities.json \
