@@ -901,6 +901,7 @@
     /* --- Slide 10: What the graph is --- */
     .slide-graph {
       justify-content: center;
+      align-items: center;
       gap: 22px;
     }
 
@@ -913,156 +914,52 @@
 
     .slide-graph h2 .accent { color: var(--cs-orange); }
 
-    .slide-graph .graph-layout {
-      display: grid;
-      grid-template-columns: 180px 200px 1fr;
-      gap: 18px;
-      width: 100%;
-      align-items: start;
-    }
-
-    .slide-graph .graph-col {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .slide-graph .col-label {
-      font-size: 0.76em;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(245, 245, 245, 0.72);
-      margin-bottom: 2px;
-    }
-
-    .slide-graph .mini-card,
-    .slide-graph .artifact-card {
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .slide-graph .mini-card {
-      padding: 9px 12px;
-    }
-
-    .slide-graph .artifact-card {
-      padding: 12px 14px;
-    }
-
-    .slide-graph .mini-card .name,
-    .slide-graph .artifact-card .name {
-      font-size: 0.88em;
-      font-weight: 700;
-      color: var(--cs-light);
-      margin-bottom: 3px;
-    }
-
-    .slide-graph .mini-card .meta,
-    .slide-graph .artifact-card .meta {
-      font-size: 0.76em;
-      line-height: 1.4;
-      color: rgba(245, 245, 245, 0.88);
-    }
-
-    .slide-graph .mini-card.orange,
-    .slide-graph .artifact-card.orange { border-color: rgba(244, 123, 32, 0.26); }
-    .slide-graph .mini-card.purple,
-    .slide-graph .artifact-card.purple { border-color: rgba(123, 79, 191, 0.26); }
-    .slide-graph .mini-card.green,
-    .slide-graph .artifact-card.green { border-color: rgba(45, 181, 84, 0.26); }
-
-    .slide-graph .distill-note {
-      font-size: 0.78em;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(245, 245, 245, 0.68);
-      margin: 2px 0 4px;
-    }
-
-    .slide-graph .graph-board {
+    .slide-graph .dag {
       position: relative;
-      min-height: 380px;
-      border-radius: 22px;
-      padding: 18px;
-      border: 1px solid rgba(244, 123, 32, 0.24);
-      background:
-        radial-gradient(circle at top, rgba(244, 123, 32, 0.12), transparent 42%),
-        rgba(255, 255, 255, 0.04);
-      overflow: hidden;
+      width: 960px;
+      height: 380px;
     }
 
-    .slide-graph .graph-board .name {
-      font-size: 1em;
-      font-weight: 700;
-      color: var(--cs-light);
-      position: relative;
-      z-index: 2;
-      margin-bottom: 8px;
-    }
-
-    .slide-graph .graph-board .meta {
-      font-size: 0.82em;
-      line-height: 1.45;
-      color: rgba(245, 245, 245, 0.86);
-      max-width: 360px;
-      position: relative;
-      z-index: 2;
-      margin-bottom: 12px;
-    }
-
-    .slide-graph .graph-svg {
+    .slide-graph .dag svg {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 1;
     }
 
-    .slide-graph .graph-svg path {
+    .slide-graph .dag svg path {
       fill: none;
-      stroke: rgba(245, 245, 245, 0.26);
-      stroke-width: 2.2;
-      stroke-linecap: round;
+      stroke: rgba(245, 245, 245, 0.28);
+      stroke-width: 2;
     }
 
-    .slide-graph .graph-node {
+    .slide-graph .dag .n {
       position: absolute;
-      min-width: 112px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(20, 20, 20, 0.92);
-      border: 2px solid rgba(255, 255, 255, 0.18);
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 2px solid rgba(245, 245, 245, 0.2);
+      background: var(--cs-dark);
       color: var(--cs-light);
-      font-size: 0.82em;
+      font-size: 0.88em;
       font-weight: 700;
       text-align: center;
+      white-space: nowrap;
       z-index: 2;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
     }
 
-    .slide-graph .graph-node.orange { border-color: var(--cs-orange); }
-    .slide-graph .graph-node.purple { border-color: var(--cs-purple); }
-    .slide-graph .graph-node.green { border-color: var(--cs-green); }
+    .slide-graph .dag .n.orange { border-color: var(--cs-orange); color: var(--cs-orange); }
+    .slide-graph .dag .n.purple { border-color: var(--cs-purple); color: var(--cs-purple); }
+    .slide-graph .dag .n.green  { border-color: var(--cs-green);  color: var(--cs-green); }
+    .slide-graph .dag .n.white  { border-color: rgba(245, 245, 245, 0.5); color: var(--cs-light); }
 
-    .slide-graph .node-profile { top: 84px; left: 34px; }
-    .slide-graph .node-privacy { top: 84px; left: 230px; }
-    .slide-graph .node-photos { top: 188px; left: 132px; }
-    .slide-graph .node-request { top: 188px; left: 360px; }
-    .slide-graph .node-experience { top: 300px; left: 228px; min-width: 148px; }
-
-    .slide-graph .graph-caption {
+    .slide-graph .dag .zone-label {
       position: absolute;
-      left: 18px;
-      right: 18px;
-      bottom: 16px;
-      font-size: 0.84em;
-      line-height: 1.45;
-      color: rgba(245, 245, 245, 0.9);
+      font-size: 0.68em;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.45);
       z-index: 2;
     }
 
@@ -1457,78 +1354,66 @@
   <!-- Slide 10: What the graph is made of -->
   <div class="slide slide-graph" data-slide="9">
     <h2>What the <span class="accent">Graph</span> Is Made Of</h2>
-    <p class="subhead">
-      In a social media example, simple <span class="accent-purple">sources</span> are turned into <span class="accent-green">artifacts</span>. Those artifacts depend on each other, and together form the live context graph.
-    </p>
 
-    <div class="graph-layout">
-      <div class="graph-col">
-        <div class="col-label">Context Sources</div>
-        <div class="mini-card orange">
-          <div class="name">Profile Data</div>
-          <div class="meta">who the user is</div>
-        </div>
-        <div class="mini-card purple">
-          <div class="name">Privacy Settings</div>
-          <div class="meta">their preferences</div>
-        </div>
-        <div class="mini-card green">
-          <div class="name">Photos</div>
-          <div class="meta">available media</div>
-        </div>
-        <div class="mini-card orange">
-          <div class="name">User Request</div>
-          <div class="meta">what they want to do</div>
-        </div>
-      </div>
+    <div class="dag">
+      <svg viewBox="0 0 960 380" aria-hidden="true">
+        <!-- Sources → Artifacts (many-to-many, asymmetric) -->
+        <path d="M 148,38  C 210,38  240,56  298,78"/>
+        <path d="M 148,38  C 200,60  250,130 298,148"/>
+        <path d="M 148,100 C 210,96  250,84  298,78"/>
+        <path d="M 148,100 C 200,130 250,200 298,214"/>
+        <path d="M 148,160 C 210,158 250,152 298,148"/>
+        <path d="M 148,160 C 200,180 250,208 298,214"/>
+        <path d="M 148,220 C 210,210 250,190 298,148"/>
+        <path d="M 148,220 C 200,240 250,268 298,278"/>
+        <path d="M 148,280 C 210,280 250,278 298,278"/>
+        <path d="M 148,280 C 200,260 250,224 298,214"/>
+        <path d="M 148,340 C 200,320 250,290 298,278"/>
 
-      <div class="graph-col">
-        <div class="col-label">Context Artifacts</div>
-        <div class="distill-note">Distilled into artifacts</div>
-        <div class="artifact-card orange">
-          <div class="name">Profile Artifact</div>
-          <div class="meta">user context</div>
-        </div>
-        <div class="artifact-card purple">
-          <div class="name">Privacy Artifact</div>
-          <div class="meta">privacy rules</div>
-        </div>
-        <div class="artifact-card green">
-          <div class="name">Photo Artifact</div>
-          <div class="meta">media context</div>
-        </div>
-        <div class="artifact-card purple">
-          <div class="name">Intent Artifact</div>
-          <div class="meta">current goal</div>
-        </div>
-      </div>
+        <!-- Artifacts → Artifacts (cross-deps) -->
+        <path d="M 420,88  C 440,110 440,130 420,148"/>
+        <path d="M 420,218 C 440,240 440,260 420,278"/>
+        <path d="M 390,98  C 370,140 370,190 390,208"/>
 
-      <div class="graph-board">
-        <div class="name">Live Context Graph</div>
-        <div class="meta">
-          These artifacts connect like a <span class="accent-purple">dependency graph</span>. Together they shape what the user gets <span class="accent-green">at runtime</span>.
-        </div>
-        <svg class="graph-svg" viewBox="0 0 520 380" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M 116 108 C 160 108, 188 108, 230 108"></path>
-          <path d="M 286 120 C 320 145, 328 160, 350 198"></path>
-          <path d="M 118 120 C 148 158, 164 188, 186 214"></path>
-          <path d="M 242 214 C 286 214, 314 214, 360 214"></path>
-          <path d="M 174 226 C 198 262, 220 286, 256 318"></path>
-          <path d="M 418 226 C 390 262, 368 286, 332 318"></path>
-        </svg>
-        <div class="graph-node orange node-profile">Profile</div>
-        <div class="graph-node purple node-privacy">Privacy</div>
-        <div class="graph-node green node-photos">Photos</div>
-        <div class="graph-node purple node-request">Intent</div>
-        <div class="graph-node orange node-experience">Experience</div>
-        <div class="graph-caption">
-          The graph is the <span class="accent-purple">relationships</span> between these artifacts. That is what lets the final experience <span class="accent-green">emerge</span>.
-        </div>
-      </div>
+        <!-- Artifacts → Graph -->
+        <path d="M 430,88  C 520,100 560,130 600,160"/>
+        <path d="M 430,152 C 510,160 550,170 600,176"/>
+        <path d="M 430,218 C 510,210 550,200 600,192"/>
+        <path d="M 430,282 C 520,270 560,230 600,208"/>
+
+        <!-- Graph → Runtime -->
+        <path d="M 726,190 C 770,190 790,190 830,190"/>
+      </svg>
+
+      <!-- Zone labels -->
+      <div class="zone-label" style="top:6px; left:38px">Sources</div>
+      <div class="zone-label" style="top:6px; left:310px">Artifacts</div>
+      <div class="zone-label" style="top:6px; left:596px">Graph</div>
+      <div class="zone-label" style="top:6px; right:28px">Runtime</div>
+
+      <!-- Sources (left edge, stacked) -->
+      <div class="n white" style="top:22px;  left:24px">Spreadsheet</div>
+      <div class="n white" style="top:84px;  left:24px">MCP Server</div>
+      <div class="n white" style="top:144px; left:24px">API Feed</div>
+      <div class="n white" style="top:204px; left:24px">Document</div>
+      <div class="n white" style="top:264px; left:24px">Database</div>
+      <div class="n white" style="top:324px; left:24px">User Input</div>
+
+      <!-- Artifacts (middle-left) -->
+      <div class="n orange" style="top:62px;  left:298px">Profile</div>
+      <div class="n purple" style="top:132px; left:298px">Media Assets</div>
+      <div class="n green"  style="top:198px; left:298px">Comments</div>
+      <div class="n purple" style="top:262px; left:298px">User Permissions</div>
+
+      <!-- Live Graph (center-right) -->
+      <div class="n orange" style="top:148px; left:600px; padding:16px 26px; font-size:0.96em">Context Graph</div>
+
+      <!-- Runtime (right edge) -->
+      <div class="n green" style="top:148px; left:836px; padding:16px 22px; font-size:0.96em">Experience</div>
     </div>
 
-    <p class="footer">
-      Instead of one final app file, there is a collection of <span class="accent-green">artifacts</span> that <span class="accent">form the graph</span>.
+    <p class="subhead" style="font-size:1em; color:rgba(245,245,245,0.9); text-align:center; max-width:800px; align-self:center;">
+      External <span class="accent-purple">sources</span> stream into ContextSynth, are distilled into <span class="accent-green">artifacts</span>, those artifacts form the <span class="accent">context graph</span>, and the user engages with what <span class="accent-green">emerges</span> from it at runtime.
     </p>
   </div>
 
