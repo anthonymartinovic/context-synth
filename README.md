@@ -2,8 +2,6 @@
   <img width="196" height="150" alt="Context Synth Logo" src="logo.png" />
 </div>
 
----
-
 ## Status
 
 **v0.1.0** — first end-to-end release. Context Synth compiles diverse sources (markdown documents, MP3 audio files) into governed, machine-readable context artifacts (JSON), then resolves a capability graph over that artifact to produce dynamic output. Llama (via ollama) is the default LLM provider. The artifact format is unstable and will change.
