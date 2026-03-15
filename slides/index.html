@@ -1159,6 +1159,198 @@
       color: rgba(245, 245, 245, 0.8);
     }
 
+    /* --- Slides 15-19: Closing section --- */
+    .slide-djv-state,
+    .slide-stack,
+    .slide-per,
+    .slide-roadmap,
+    .slide-close {
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .slide-djv-state h2,
+    .slide-stack h2,
+    .slide-per h2,
+    .slide-roadmap h2,
+    .slide-close h2 {
+      font-size: 2.2em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+      align-self: center;
+      max-width: 960px;
+    }
+
+    .slide-djv-state h2 .accent,
+    .slide-stack h2 .accent,
+    .slide-per h2 .accent,
+    .slide-roadmap h2 .accent,
+    .slide-close h2 .accent {
+      color: var(--cs-orange);
+    }
+
+    .slide-djv-state .accent-purple,
+    .slide-stack .accent-purple,
+    .slide-per .accent-purple,
+    .slide-roadmap .accent-purple,
+    .slide-close .accent-purple {
+      color: var(--cs-purple);
+    }
+
+    .slide-djv-state .accent-green,
+    .slide-stack .accent-green,
+    .slide-per .accent-green,
+    .slide-roadmap .accent-green,
+    .slide-close .accent-green {
+      color: var(--cs-green);
+    }
+
+    .slide-djv-state .subhead,
+    .slide-stack .subhead,
+    .slide-per .subhead,
+    .slide-roadmap .subhead,
+    .slide-close .subhead {
+      font-size: 1.02em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+      text-align: center;
+      max-width: 820px;
+      align-self: center;
+    }
+
+    .slide-djv-state .compare-grid,
+    .slide-stack .stack-grid,
+    .slide-per .per-grid,
+    .slide-roadmap .roadmap-grid,
+    .slide-close .invite-grid {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .slide-djv-state .compare-card,
+    .slide-stack .stack-card,
+    .slide-per .per-card,
+    .slide-roadmap .roadmap-card,
+    .slide-close .invite-card {
+      flex: 1;
+      border-radius: 22px;
+      padding: 24px 26px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .slide-djv-state .compare-card { max-width: 430px; }
+    .slide-stack .stack-card,
+    .slide-per .per-card,
+    .slide-roadmap .roadmap-card,
+    .slide-close .invite-card { max-width: 300px; }
+
+    .slide-djv-state .today { border-color: rgba(123, 79, 191, 0.24); }
+    .slide-djv-state .future { border-color: rgba(45, 181, 84, 0.24); }
+    .slide-stack .go { border-color: rgba(244, 123, 32, 0.24); }
+    .slide-stack .ts { border-color: rgba(123, 79, 191, 0.24); }
+    .slide-stack .llama { border-color: rgba(45, 181, 84, 0.24); }
+    .slide-per .protocol { border-color: rgba(123, 79, 191, 0.24); }
+    .slide-per .engine { border-color: rgba(244, 123, 32, 0.24); }
+    .slide-per .runtime { border-color: rgba(45, 181, 84, 0.24); }
+    .slide-roadmap .roadmap-card:nth-child(1) { border-color: rgba(244, 123, 32, 0.24); }
+    .slide-roadmap .roadmap-card:nth-child(2) { border-color: rgba(123, 79, 191, 0.24); }
+    .slide-roadmap .roadmap-card:nth-child(3) { border-color: rgba(45, 181, 84, 0.24); }
+    .slide-close .invite-card:nth-child(1) { border-color: rgba(244, 123, 32, 0.24); }
+    .slide-close .invite-card:nth-child(2) { border-color: rgba(123, 79, 191, 0.24); }
+    .slide-close .invite-card:nth-child(3) { border-color: rgba(45, 181, 84, 0.24); }
+
+    .slide-djv-state .card-tag,
+    .slide-stack .card-tag,
+    .slide-per .card-tag,
+    .slide-roadmap .card-tag,
+    .slide-close .card-tag {
+      font-size: 0.76em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .slide-djv-state .today .card-tag,
+    .slide-stack .ts .card-tag,
+    .slide-per .protocol .card-tag { color: var(--cs-purple); }
+    .slide-djv-state .future .card-tag,
+    .slide-stack .llama .card-tag,
+    .slide-per .runtime .card-tag { color: var(--cs-green); }
+    .slide-stack .go .card-tag,
+    .slide-per .engine .card-tag,
+    .slide-roadmap .card-tag,
+    .slide-close .card-tag { color: var(--cs-orange); }
+
+    .slide-djv-state .card-title,
+    .slide-stack .card-title,
+    .slide-per .card-title,
+    .slide-roadmap .card-title,
+    .slide-close .card-title {
+      font-size: 1.16em;
+      font-weight: 700;
+      color: var(--cs-light);
+      line-height: 1.35;
+    }
+
+    .slide-djv-state ul,
+    .slide-stack ul,
+    .slide-per ul,
+    .slide-roadmap ul,
+    .slide-close ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slide-djv-state li,
+    .slide-stack li,
+    .slide-per li,
+    .slide-roadmap li,
+    .slide-close li {
+      font-size: 0.94em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .slide-djv-state li::before,
+    .slide-stack li::before,
+    .slide-per li::before,
+    .slide-roadmap li::before,
+    .slide-close li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cs-green);
+    }
+
+    .slide-djv-state .footer,
+    .slide-stack .footer,
+    .slide-per .footer,
+    .slide-roadmap .footer,
+    .slide-close .footer {
+      font-size: 0.98em;
+      line-height: 1.6;
+      color: rgba(245, 245, 245, 0.9);
+      text-align: center;
+      max-width: 900px;
+      align-self: center;
+    }
+
     /* --- Slide counter --- */
     .slide-counter {
       position: fixed;
@@ -1666,6 +1858,220 @@
 
     <p class="subhead" style="font-size:1em; color:rgba(245,245,245,0.9); text-align:center; max-width:800px; align-self:center;">
       For DJ-V, different <span class="accent-purple">sources</span> like tracks, stems, and song notes are distilled into musical <span class="accent-green">artifacts</span>. Those artifacts form the <span class="accent">context graph</span>, and from that graph a live <span class="accent-green">stream of music</span> can emerge.
+    </p>
+  </div>
+
+  <!-- Slide 15: DJ-V today vs future -->
+  <div class="slide slide-djv-state" data-slide="14">
+    <h2>DJ-V: <span class="accent">Today</span> vs <span class="accent-green">Future</span></h2>
+    <p class="subhead">
+      The current example validates the <span class="accent-green">end-to-end flow</span>, but it is still far from the fidelity and granularity needed. The goal is to move toward something that better fits the <span class="accent-purple">graph-native</span> philosophy.
+    </p>
+
+    <div class="compare-grid">
+      <div class="compare-card today">
+        <p class="card-tag">Today</p>
+        <p class="card-title">Generating music with <span class="accent-green">Meta's MusicGen</span></p>
+        <ul>
+          <li>It proves the path from <span class="accent-purple">sources to music</span> works end to end.</li>
+          <li>But it still takes minutes to produce even a <span class="accent-green">30-second sample</span>.</li>
+          <li>The output is still nowhere near close enough to the original context sources.</li>
+          <li>So it is a strong proof of the flow, but <span class="accent-purple">not nearly good enough</span> yet.</li>
+          <li><span class="accent-green">MusicGen</span> is a temporary backend. The plan is to replace it with software that allows much finer control.</li>
+        </ul>
+      </div>
+
+      <div class="compare-card future">
+        <p class="card-tag">Future</p>
+        <p class="card-title">A <span class="accent-green">graph-native</span> music agent</p>
+        <ul>
+          <li>DJ-V should take in stems, notes, references, constraints, and hosted tracks together.</li>
+          <li>Those inputs should resolve into musical <span class="accent-green">artifacts</span> like beat, tempo, melody, and song shape.</li>
+          <li>The music should emerge from that graph, not from one flat instruction.</li>
+          <li>That would make DJ-V a much better proof of what ContextSynth is trying to become.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">
+      So the current example proves the pipeline, but the longer-term goal is software that can synthesize music from a richer set of <span class="accent-purple">relationships</span>, not just a single <span class="accent-green">prompt</span>.
+    </p>
+  </div>
+
+  <!-- Slide 16: Tech stack -->
+  <div class="slide slide-stack" data-slide="15">
+    <h2>The <span class="accent">Tech Stack</span></h2>
+    <p class="subhead">
+      The stack is intentionally narrow today: one core language for infrastructure, one SDK language for builders, and one officially supported model family for the judgment layer, <span class="accent-green">for now</span>.
+    </p>
+
+    <div class="stack-grid">
+      <div class="stack-card go">
+        <p class="card-tag">Go</p>
+        <p class="card-title">The main language for the <span class="accent">engine and runtime</span></p>
+        <ul>
+          <li>Concurrency primitives suit parallel compilation and graph resolution.</li>
+          <li>Single-binary deployment keeps the infrastructure simple.</li>
+          <li>Explicit error handling fits a governed system.</li>
+        </ul>
+      </div>
+
+      <div class="stack-card ts">
+        <p class="card-tag">TypeScript</p>
+        <p class="card-title">The <span class="accent-purple">SDK</span> for people building on top</p>
+        <ul>
+          <li>Good ecosystem reach for developers making applications and adapters.</li>
+          <li>Type safety helps at the boundary where contracts matter.</li>
+          <li>Natural fit for external integrations and developer-facing tools.</li>
+        </ul>
+      </div>
+
+      <div class="stack-card llama">
+        <p class="card-tag">Llama</p>
+        <p class="card-title">The only officially supported <span class="accent-green">LLM</span> right now</p>
+        <ul>
+          <li>Open-source by default fits the infrastructure philosophy.</li>
+          <li>It keeps the system controllable and deployable without proprietary dependence.</li>
+          <li>Other providers may exist later, but they are not the default.</li>
+        </ul>
+      </div>
+    </div>
+
+    <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; align-self:center; max-width:760px;">
+      <li>Prefer <span class="accent-green">open-source</span> foundations.</li>
+      <li>Prefer languages with strong <span class="accent-purple">concurrency</span> and explicit error handling.</li>
+      <li>Prefer <span class="accent">single-binary</span> or minimal-dependency deployment.</li>
+      <li>Prioritize <span class="accent-green">ecosystem reach</span> and type safety on the developer surface.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 17: Protocol + Engine + Runtime -->
+  <div class="slide slide-per" data-slide="16">
+    <h2><span class="accent">Protocol</span> + Engine + <span class="accent-green">Runtime</span></h2>
+    <p class="subhead">
+      One way to think about ContextSynth is as three layers working together: how context is described, how it is resolved, and how the result is actually used.
+    </p>
+
+    <div class="per-grid">
+      <div class="per-card protocol">
+        <p class="card-tag">Protocol</p>
+        <p class="card-title">What gets <span class="accent-purple">described</span></p>
+        <ul>
+          <li>Sources, weights, budgets, sections, outputs, and contracts.</li>
+          <li>A shared structure for how context enters the system.</li>
+          <li>The language that makes the rest of the pipeline possible.</li>
+        </ul>
+      </div>
+
+      <div class="per-card engine">
+        <p class="card-tag">Engine</p>
+        <p class="card-title">What gets <span class="accent">resolved</span></p>
+        <ul>
+          <li>Ingests the inputs and synthesizes governed artifacts.</li>
+          <li>Uses model judgment where needed for parsing, extraction, and classification.</li>
+          <li>Builds the relationships that turn inputs into something meaningful.</li>
+        </ul>
+      </div>
+
+      <div class="per-card runtime">
+        <p class="card-tag">Runtime</p>
+        <p class="card-title">What gets <span class="accent-green">experienced</span></p>
+        <ul>
+          <li>Reads the resulting graph and resolves what matters for this moment.</li>
+          <li>Turns the graph into a live interface, workflow, or output.</li>
+          <li>That is where the application or experience actually emerges.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">
+      So the protocol describes the world, the engine resolves it, and the runtime lets a user engage with what <span class="accent-green">emerges</span>.
+    </p>
+  </div>
+
+  <!-- Slide 18: What's next -->
+  <div class="slide slide-roadmap" data-slide="17">
+    <h2>What's <span class="accent">Next</span>?</h2>
+    <p class="subhead">
+      The current repo proves important pieces, but the next phase is about moving from partial validation toward a more fully <span class="accent-purple">graph-native</span> system.
+    </p>
+
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <p class="card-tag">Near term</p>
+        <p class="card-title">Strengthen the current <span class="accent">foundations</span></p>
+        <ul>
+          <li>Richer source ingestion.</li>
+          <li>Better artifact synthesis and governance.</li>
+          <li>Clearer boundaries between protocol, engine, and runtime.</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-card">
+        <p class="card-tag">Middle</p>
+        <p class="card-title">Move closer to the <span class="accent-purple">graph-native</span> model</p>
+        <ul>
+          <li>Let artifacts behave more like the graph itself.</li>
+          <li>Deepen relationships between context pieces.</li>
+          <li>Make runtime resolution more dynamic and more direct.</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-card">
+        <p class="card-tag">Longer term</p>
+        <p class="card-title">Enable real <span class="accent-green">products</span> on top</p>
+        <ul>
+          <li>Support more applications like DJ-V.</li>
+          <li>Make the developer surface stronger for external builders.</li>
+          <li>Turn the philosophy into usable context infrastructure.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">
+      The bigger goal is not just one demo. It is a path toward software that can be formed from <span class="accent-purple">context</span> more directly across many domains.
+    </p>
+  </div>
+
+  <!-- Slide 19: Closing / invitation -->
+  <div class="slide slide-close" data-slide="18">
+    <h2>An <span class="accent">Invitation</span></h2>
+    <p class="subhead">
+      If this idea resonates, there is now a simple place to find the project, follow along, and get involved.
+    </p>
+
+    <div class="invite-grid">
+      <div class="invite-card">
+        <p class="card-tag">Website</p>
+        <p class="card-title"><span class="accent">contextsynth.dev</span></p>
+        <ul>
+          <li>A reference to this YouTube video.</li>
+          <li>A clear starting point for the project.</li>
+        </ul>
+      </div>
+
+      <div class="invite-card">
+        <p class="card-tag">Project</p>
+        <p class="card-title">The <span class="accent-purple">GitHub repo</span></p>
+        <ul>
+          <li>Explore the code and direction in public.</li>
+          <li>Follow the development as ContextSynth evolves.</li>
+        </ul>
+      </div>
+
+      <div class="invite-card">
+        <p class="card-tag">Community</p>
+        <p class="card-title">Join the <span class="accent-green">Discord</span></p>
+        <ul>
+          <li>Contribute to ContextSynth.</li>
+          <li>Learn more about the project.</li>
+          <li>Or explore building on top of it in the future, when it is ready.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">
+      Whether you want to <span class="accent-green">contribute</span>, follow the ideas, or eventually build your own product on top of ContextSynth, that is the best place to start.
     </p>
   </div>
 
