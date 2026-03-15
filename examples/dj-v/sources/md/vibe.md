@@ -2,17 +2,17 @@
 
 ## Mood & Atmosphere
 
-Drawing on the Berlin Industrial techno scene and the Matrix films, I want this track to have a ominous feel, but ultimately rhythmic and danceable.
+The track should feel dark, focused, and energetic while remaining rhythmic and danceable.
 
-I want there to be a pulsing effect (consider utilizing side-chain compression on the kick to emphasize this effect).
+It should have a clear pulsing sensation, with the kick helping drive that movement.
 
-Think of the drums and the bassline to be the foundation for the check, and when the melody introduced to provide the more dynamic flavor for the track.
+The drums and bass should provide the foundation of the track, with the melody adding variation and forward motion when introduced.
 
 ## Sonic Palette
 
-Think analog synthesizers meeting digital precision. Want this to be heavily inspired by late-80's / early 90's Electronic Body Music (EBM), along with more modern Industrial Techno / Rave music.
+Aim for a blend of analog-style synth textures and clean modern electronic production.
 
-I want a good balance of noisy effects and crisp hats / melody. Contrast is key here.
+Balance rougher textural elements with crisp percussion and a defined melodic layer. Contrast should be noticeable but controlled.
 
 ## Energy Arc
 
