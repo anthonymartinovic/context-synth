@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Synth — Video Slides</title>
+  <link rel="icon" type="image/png" href="../site/assets/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1/dist/fonts/geist-sans/style.min.css">
+  <style>
+    :root {
+      --cs-orange: #F47B20;
+      --cs-purple: #7B4FBF;
+      --cs-green: #2DB554;
+      --cs-dark: #1A1A1A;
+      --cs-light: #F5F5F5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: inherit; }
+
+    html, body {
+      height: 100%;
+      background: var(--cs-dark);
+      font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--cs-light);
+      overflow: hidden;
+    }
+
+    .slide {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      padding: 80px 100px;
+    }
+
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- Slide 1: Title (white bg) --- */
+    .slide-title {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #ffffff;
+      color: var(--cs-dark);
+    }
+
+    .slide-title .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .slide-title .logo-container img {
+      max-width: 380px;
+      width: 100%;
+      height: auto;
+      margin-bottom: 16px;
+    }
+
+    .slide-title .tagline {
+      font-size: 1.05em;
+      font-weight: 500;
+      color: #1a1a1a;
+      line-height: 1.35;
+      max-width: 700px;
+    }
+
+    .slide-title .subtitle {
+      margin-top: 40px;
+      font-size: 0.9em;
+      font-weight: 500;
+      color: rgba(26, 26, 26, 0.5);
+      letter-spacing: 0.04em;
+    }
+
+    /* --- Content slides (left-aligned, vertically centered) --- */
+    .slide-content {
+      justify-content: center;
+    }
+
+    .slide-content h2 {
+      font-size: 2em;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 40px;
+    }
+
+    .slide-content h2 .accent {
+      color: var(--cs-orange);
+    }
+
+    .slide-content ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .slide-content ul li {
+      font-size: 1.05em;
+      font-weight: 400;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.85);
+      padding-left: 28px;
+      position: relative;
+    }
+
+    .slide-content ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .slide-content ul li:nth-child(5n+1)::before { background: var(--cs-orange); }
+    .slide-content ul li:nth-child(5n+2)::before { background: var(--cs-purple); }
+    .slide-content ul li:nth-child(5n+3)::before { background: var(--cs-green); }
+    .slide-content ul li:nth-child(5n+4)::before { background: var(--cs-orange); }
+    .slide-content ul li:nth-child(5n+5)::before { background: var(--cs-purple); }
+
+    /* --- Slide 3: What is ContextSynth? --- */
+    .slide-question {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .slide-question h2 {
+      font-size: 3em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .slide-question h2 .accent { color: var(--cs-orange); }
+
+    /* --- Slide 4: Today's model --- */
+    .slide-today {
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .slide-today h2 {
+      font-size: 2.15em;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .slide-today h2 .accent { color: var(--cs-orange); }
+
+    .slide-today .subhead {
+      font-size: 1.05em;
+      line-height: 1.5;
+      color: rgba(245, 245, 245, 0.92);
+      text-align: center;
+      max-width: 760px;
+      align-self: center;
+    }
+
+    .slide-today .story {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 34px;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .slide-today .system-card,
+    .slide-today .app-card {
+      min-height: 330px;
+      border-radius: 22px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .slide-today .system-card {
+      width: 420px;
+      background:
+        radial-gradient(circle at top left, rgba(123, 79, 191, 0.22), transparent 42%),
+        radial-gradient(circle at bottom right, rgba(45, 181, 84, 0.18), transparent 40%),
+        rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .slide-today .app-card {
+      width: 330px;
+      background:
+        radial-gradient(circle at top, rgba(244, 123, 32, 0.18), transparent 44%),
+        rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(244, 123, 32, 0.22);
+      align-items: center;
+      text-align: center;
+    }
+
+    .slide-today .eyebrow {
+      font-size: 0.78em;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.7);
+      margin-bottom: 14px;
+    }
+
+    .slide-today .system-title,
+    .slide-today .app-title {
+      font-size: 1.35em;
+      font-weight: 700;
+      color: var(--cs-light);
+    }
+
+    .slide-today .system-copy,
+    .slide-today .app-copy {
+      font-size: 0.95em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+    }
+
+    .slide-today .chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 18px 0 8px;
+    }
+
+    .slide-today .chip {
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 0.86em;
+      font-weight: 700;
+      white-space: nowrap;
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .slide-today .chip.orange { background: var(--cs-orange); }
+    .slide-today .chip.purple { background: var(--cs-purple); }
+    .slide-today .chip.green  { background: var(--cs-green); }
+
+    .slide-today .compression {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      min-width: 110px;
+    }
+
+    .slide-today .compression-line {
+      width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--cs-purple), var(--cs-orange));
+    }
+
+    .slide-today .compression-arrow {
+      font-size: 2em;
+      color: var(--cs-orange);
+      line-height: 1;
+    }
+
+    .slide-today .compression-label {
+      font-size: 0.8em;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.8);
+      text-align: center;
+    }
+
+    .slide-today .app-artifact {
+      border: 2px solid var(--cs-orange);
+      border-radius: 18px;
+      padding: 22px 28px;
+      min-width: 210px;
+      background: rgba(244, 123, 32, 0.08);
+      margin: 18px 0;
+    }
+
+    .slide-today .app-artifact .artifact-name {
+      font-size: 1.35em;
+      font-weight: 700;
+      color: var(--cs-orange);
+      margin-bottom: 6px;
+    }
+
+    .slide-today .app-artifact .artifact-meta {
+      font-size: 0.82em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.75);
+    }
+
+    .slide-today .users {
+      display: flex;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .slide-today .user {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95em;
+      font-weight: 700;
+      color: var(--cs-light);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .slide-today .footer-note {
+      font-size: 1.02em;
+      line-height: 1.5;
+      color: rgba(245, 245, 245, 0.95);
+      text-align: center;
+      max-width: 760px;
+      align-self: center;
+    }
+
+    .slide-today .footer-note .accent-orange { color: var(--cs-orange); }
+    .slide-today .footer-note .accent-purple { color: var(--cs-purple); }
+
+    /* --- Slide 5: AI shift --- */
+    .slide-ai {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 32px;
+    }
+
+    .slide-ai h2 {
+      font-size: 2.5em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.18;
+      max-width: 860px;
+    }
+
+    .slide-ai h2 .accent {
+      color: var(--cs-orange);
+    }
+
+    .slide-ai .ai-panel {
+      max-width: 760px;
+      padding: 28px 34px;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background:
+        radial-gradient(circle at top left, rgba(123, 79, 191, 0.18), transparent 42%),
+        radial-gradient(circle at bottom right, rgba(244, 123, 32, 0.14), transparent 40%),
+        rgba(255, 255, 255, 0.04);
+    }
+
+    .slide-ai .ai-panel p {
+      font-size: 1.02em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.94);
+    }
+
+    .slide-ai .ai-panel .accent-purple { color: var(--cs-purple); }
+    .slide-ai .ai-panel .accent-green { color: var(--cs-green); }
+
+    .slide-ai .footer {
+      font-size: 1.02em;
+      line-height: 1.5;
+      color: rgba(245, 245, 245, 0.88);
+      max-width: 720px;
+    }
+
+    /* --- Slide 6: Enter ContextSynth --- */
+    .slide-enter {
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .slide-enter h2 {
+      font-size: 2.5em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    .slide-enter h2 .accent {
+      color: var(--cs-orange);
+    }
+
+    .slide-enter .compare {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: 26px;
+      width: 100%;
+    }
+
+    .slide-enter .model-card {
+      flex: 1;
+      max-width: 470px;
+      border-radius: 22px;
+      padding: 26px 28px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .slide-enter .model-card.context-card {
+      border-color: rgba(244, 123, 32, 0.24);
+      background:
+        radial-gradient(circle at top right, rgba(244, 123, 32, 0.12), transparent 42%),
+        rgba(255, 255, 255, 0.04);
+    }
+
+    .slide-enter .card-label {
+      font-size: 0.78em;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.7);
+    }
+
+    .slide-enter .card-title {
+      font-size: 1.35em;
+      font-weight: 700;
+      color: var(--cs-light);
+      line-height: 1.3;
+    }
+
+    .slide-enter .card-title .accent {
+      color: var(--cs-orange);
+    }
+
+    .slide-enter .graph-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .slide-enter .node {
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 0.84em;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .slide-enter .node.orange { background: var(--cs-orange); }
+    .slide-enter .node.purple { background: var(--cs-purple); }
+    .slide-enter .node.green { background: var(--cs-green); }
+
+    .slide-enter .contain-box,
+    .slide-enter .ship-box,
+    .slide-enter .emerge-box {
+      border-radius: 18px;
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    .slide-enter .contain-box {
+      border: 1px solid rgba(123, 79, 191, 0.34);
+      background: rgba(123, 79, 191, 0.08);
+    }
+
+    .slide-enter .ship-box {
+      border: 1px solid rgba(244, 123, 32, 0.34);
+      background: rgba(244, 123, 32, 0.08);
+    }
+
+    .slide-enter .emerge-box {
+      border: 1px solid rgba(45, 181, 84, 0.34);
+      background: rgba(45, 181, 84, 0.08);
+    }
+
+    .slide-enter .contain-box .box-title,
+    .slide-enter .ship-box .box-title,
+    .slide-enter .emerge-box .box-title {
+      font-size: 0.8em;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .slide-enter .contain-box .box-title { color: var(--cs-purple); }
+    .slide-enter .ship-box .box-title { color: var(--cs-orange); }
+    .slide-enter .emerge-box .box-title { color: var(--cs-green); }
+
+    .slide-enter .box-main {
+      font-size: 1.15em;
+      font-weight: 700;
+      color: var(--cs-light);
+    }
+
+    .slide-enter .arrow-down {
+      text-align: center;
+      font-size: 1.5em;
+      color: rgba(245, 245, 245, 0.34);
+      line-height: 1;
+    }
+
+    .slide-enter .card-copy {
+      font-size: 0.95em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+    }
+
+    .slide-enter .footer {
+      font-size: 1.04em;
+      line-height: 1.5;
+      color: rgba(245, 245, 245, 0.92);
+      text-align: center;
+      max-width: 820px;
+      align-self: center;
+    }
+
+    /* --- Slide 7: Example in practice --- */
+    .slide-example {
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .slide-example h2 {
+      font-size: 2.35em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    .slide-example h2 .accent { color: var(--cs-orange); }
+
+    .slide-example .subhead {
+      font-size: 1.02em;
+      line-height: 1.5;
+      color: rgba(245, 245, 245, 0.92);
+      text-align: center;
+      max-width: 820px;
+      align-self: center;
+    }
+
+    .slide-example .flow {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .slide-example .panel {
+      flex: 1;
+      max-width: 470px;
+      border-radius: 22px;
+      padding: 26px 28px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .slide-example .panel.generated {
+      border-color: rgba(45, 181, 84, 0.24);
+      background:
+        radial-gradient(circle at top right, rgba(45, 181, 84, 0.12), transparent 42%),
+        rgba(255, 255, 255, 0.04);
+    }
+
+    .slide-example .label {
+      font-size: 0.78em;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.7);
+    }
+
+    .slide-example .chat-bubble {
+      border-radius: 18px;
+      padding: 18px 20px;
+      background: rgba(123, 79, 191, 0.12);
+      border: 1px solid rgba(123, 79, 191, 0.3);
+      color: rgba(245, 245, 245, 0.95);
+      font-size: 1em;
+      line-height: 1.55;
+    }
+
+    .slide-example .chat-bubble strong {
+      color: var(--cs-purple);
+    }
+
+    .slide-example .request-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .slide-example .request-pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.82em;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .slide-example .request-pill.orange { background: var(--cs-orange); }
+    .slide-example .request-pill.purple { background: var(--cs-purple); }
+    .slide-example .request-pill.green { background: var(--cs-green); }
+
+    .slide-example .mid-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      color: var(--cs-orange);
+      min-width: 44px;
+    }
+
+    .slide-example .ui-shell {
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .slide-example .ui-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .slide-example .ui-title {
+      font-size: 1.05em;
+      font-weight: 700;
+      color: var(--cs-light);
+    }
+
+    .slide-example .ui-badge {
+      font-size: 0.74em;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cs-green);
+    }
+
+    .slide-example .ui-card {
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: rgba(26, 26, 26, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slide-example .ui-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 0.92em;
+      color: rgba(245, 245, 245, 0.92);
+    }
+
+    .slide-example .toggle {
+      width: 48px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .slide-example .toggle.on {
+      background: rgba(45, 181, 84, 0.55);
+    }
+
+    .slide-example .toggle::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .slide-example .toggle.on::after {
+      left: 24px;
+    }
+
+    .slide-example .upload-area {
+      border: 1.5px dashed rgba(244, 123, 32, 0.45);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      color: rgba(245, 245, 245, 0.82);
+      font-size: 0.88em;
+      line-height: 1.5;
+    }
+
+    .slide-example .upload-thumbs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .slide-example .thumb {
+      width: 58px;
+      height: 58px;
+      border-radius: 12px;
+      background:
+        linear-gradient(135deg, rgba(244, 123, 32, 0.55), rgba(123, 79, 191, 0.65));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .slide-example .panel-copy,
+    .slide-example .footer {
+      font-size: 0.97em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+    }
+
+    .slide-example .footer {
+      text-align: center;
+      max-width: 820px;
+      align-self: center;
+    }
+
+    /* --- Slide 8: Why this is different --- */
+    .slide-diff {
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .slide-diff h2 {
+      font-size: 2.3em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    .slide-diff h2 .accent { color: var(--cs-orange); }
+
+    .slide-diff .diff-grid {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .slide-diff .diff-card {
+      flex: 1;
+      max-width: 300px;
+      border-radius: 20px;
+      padding: 22px 22px 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .slide-diff .diff-card .card-title {
+      font-size: 1.08em;
+      font-weight: 700;
+      color: var(--cs-light);
+    }
+
+    .slide-diff .diff-card .card-tag {
+      font-size: 0.76em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .slide-diff .diff-card.federation .card-tag { color: var(--cs-purple); }
+    .slide-diff .diff-card.micro .card-tag { color: var(--cs-green); }
+    .slide-diff .diff-card.wrapper .card-tag { color: var(--cs-orange); }
+
+    .slide-diff .diff-card p {
+      font-size: 0.93em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+    }
+
+    .slide-diff .bottom {
+      max-width: 860px;
+      align-self: center;
+      text-align: center;
+      font-size: 1.05em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.94);
+    }
+
+    .slide-diff .bottom .accent-orange { color: var(--cs-orange); }
+    .slide-diff .bottom .accent-purple { color: var(--cs-purple); }
+
+    /* --- Slide 9: Context infrastructure --- */
+    .slide-infra {
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .slide-infra h2 {
+      font-size: 2.35em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    .slide-infra h2 .accent { color: var(--cs-orange); }
+    .slide-infra .accent-purple,
+    .slide-graph .accent-purple,
+    .slide-state .accent-purple { color: var(--cs-purple); }
+    .slide-infra .accent-green,
+    .slide-graph .accent-green,
+    .slide-state .accent-green { color: var(--cs-green); }
+
+    .slide-infra .subhead,
+    .slide-graph .subhead,
+    .slide-state .subhead {
+      font-size: 1.02em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+      text-align: center;
+      max-width: 820px;
+      align-self: center;
+    }
+
+    .slide-infra .infra-grid {
+      display: flex;
+      gap: 22px;
+      width: 100%;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .slide-infra .infra-card {
+      flex: 1;
+      max-width: 270px;
+      border-radius: 20px;
+      padding: 22px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slide-infra .infra-card .tag {
+      font-size: 0.76em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .slide-infra .infra-card.interfaces .tag { color: var(--cs-orange); }
+    .slide-infra .infra-card.workflows .tag { color: var(--cs-purple); }
+    .slide-infra .infra-card.outputs .tag { color: var(--cs-green); }
+
+    .slide-infra .infra-card .title {
+      font-size: 1.08em;
+      font-weight: 700;
+      color: var(--cs-light);
+    }
+
+    .slide-infra .infra-card p {
+      font-size: 0.93em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+    }
+
+    .slide-infra .footer,
+    .slide-graph .footer,
+    .slide-state .footer {
+      text-align: center;
+      max-width: 840px;
+      align-self: center;
+      font-size: 1.03em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.94);
+    }
+
+    /* --- Slide 10: What the graph is --- */
+    .slide-graph {
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .slide-graph h2 {
+      font-size: 2.3em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    .slide-graph h2 .accent { color: var(--cs-orange); }
+
+    .slide-graph .graph-flow {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    .slide-graph .flow-column {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+      max-width: 290px;
+    }
+
+    .slide-graph .column-label {
+      font-size: 0.76em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.72);
+      margin-bottom: 2px;
+    }
+
+    .slide-graph .source-card,
+    .slide-graph .artifact-card,
+    .slide-graph .runtime-card {
+      border-radius: 18px;
+      padding: 18px 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .slide-graph .source-card .name,
+    .slide-graph .artifact-card .name,
+    .slide-graph .runtime-card .name {
+      font-size: 1em;
+      font-weight: 700;
+      color: var(--cs-light);
+      margin-bottom: 8px;
+    }
+
+    .slide-graph .source-card .meta,
+    .slide-graph .artifact-card .meta,
+    .slide-graph .runtime-card .meta {
+      font-size: 0.88em;
+      line-height: 1.5;
+      color: rgba(245, 245, 245, 0.9);
+    }
+
+    .slide-graph .source-card.orange { border-color: rgba(244, 123, 32, 0.24); }
+    .slide-graph .source-card.purple { border-color: rgba(123, 79, 191, 0.24); }
+    .slide-graph .source-card.green { border-color: rgba(45, 181, 84, 0.24); }
+
+    .slide-graph .artifact-card.orange { border-color: rgba(244, 123, 32, 0.24); }
+    .slide-graph .artifact-card.purple { border-color: rgba(123, 79, 191, 0.24); }
+    .slide-graph .artifact-card.green { border-color: rgba(45, 181, 84, 0.24); }
+
+    .slide-graph .graph-arrow {
+      font-size: 2em;
+      color: var(--cs-orange);
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+    }
+
+    .slide-graph .relationship-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-content: center;
+      min-width: 170px;
+    }
+
+    .slide-graph .relationship-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.78em;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .slide-graph .relationship-pill.orange { background: var(--cs-orange); }
+    .slide-graph .relationship-pill.purple { background: var(--cs-purple); }
+    .slide-graph .relationship-pill.green { background: var(--cs-green); }
+
+    .slide-graph .distill-note {
+      text-align: center;
+      font-size: 0.82em;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.7);
+    }
+
+    .slide-graph .runtime-card {
+      min-height: 236px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-color: rgba(244, 123, 32, 0.24);
+      background:
+        radial-gradient(circle at top, rgba(244, 123, 32, 0.12), transparent 42%),
+        rgba(255, 255, 255, 0.04);
+    }
+
+    /* --- Slide 11: Current state --- */
+    .slide-state {
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .slide-state h2 {
+      font-size: 2.3em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    .slide-state h2 .accent { color: var(--cs-orange); }
+
+    .slide-state .state-grid {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .slide-state .state-card {
+      flex: 1;
+      max-width: 430px;
+      border-radius: 22px;
+      padding: 24px 26px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .slide-state .state-card.today { border-color: rgba(123, 79, 191, 0.24); }
+    .slide-state .state-card.direction { border-color: rgba(244, 123, 32, 0.24); }
+
+    .slide-state .state-tag {
+      font-size: 0.76em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .slide-state .state-card.today .state-tag { color: var(--cs-purple); }
+    .slide-state .state-card.direction .state-tag { color: var(--cs-orange); }
+
+    .slide-state .state-title {
+      font-size: 1.18em;
+      font-weight: 700;
+      color: var(--cs-light);
+    }
+
+    .slide-state ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slide-state li {
+      font-size: 0.94em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .slide-state li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cs-green);
+    }
+
+    /* --- Slide counter --- */
+    .slide-counter {
+      position: fixed;
+      bottom: 24px;
+      right: 32px;
+      font-size: 0.8em;
+      color: rgba(245, 245, 245, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Slide 1: Title -->
+  <div class="slide slide-title active" data-slide="0">
+    <div class="main-content">
+      <div class="logo-container">
+        <img src="../site/assets/logo.png" alt="Context Synth">
+      </div>
+      <p class="tagline">
+        A context graph runtime that turns knowledge into capabilities,<br>
+        delivering real-time user experiences.
+      </p>
+    </div>
+    <p class="subtitle">Open-Source Software, In Active Development</p>
+  </div>
+
+  <!-- Slide 2: Goals -->
+  <div class="slide slide-content" data-slide="1">
+    <h2>Goals of These <span class="accent">Videos</span></h2>
+    <ul>
+      <li>Document the development of ContextSynth in public, as it evolves.</li>
+      <li>Get better at turning complex ideas into simple, useful analogies.</li>
+      <li>Make AI more understandable for people outside the tech bubble.</li>
+      <li>Attract builders, users, and contributors around ContextSynth.</li>
+      <li>Get honest feedback on the project, the ideas, and how I communicate them.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 3: What is ContextSynth? -->
+  <div class="slide slide-question" data-slide="2">
+    <h2>What is <span class="accent">ContextSynth</span>?</h2>
+  </div>
+
+  <!-- Slide 4: Today's State of Development -->
+  <div class="slide slide-today" data-slide="3">
+    <h2>Today, users receive software that was <span class="accent">assembled ahead of time</span></h2>
+    <p class="subhead">
+      Posts, messages, videos, notifications, profiles, settings. Lots of different pieces, but they are put together before the user ever arrives.
+    </p>
+
+    <div class="story">
+      <div class="system-card">
+        <div>
+      <p class="eyebrow">A social media app behind the scenes</p>
+          <p class="system-title">A lot is happening before you ever open it.</p>
+        </div>
+        <div class="chip-grid">
+          <span class="chip orange">Posts</span>
+          <span class="chip purple">Messages</span>
+          <span class="chip green">Photos</span>
+          <span class="chip orange">Videos</span>
+          <span class="chip purple">Profiles</span>
+          <span class="chip green">Settings</span>
+          <span class="chip orange">Likes</span>
+          <span class="chip purple">Notifications</span>
+        </div>
+        <p class="system-copy">
+          All of these pieces are put together ahead of time into one finished app.
+        </p>
+      </div>
+
+      <div class="compression">
+        <div class="compression-line"></div>
+        <div class="compression-arrow">&rarr;</div>
+        <div class="compression-label">Build and ship</div>
+        <div class="compression-line"></div>
+      </div>
+
+      <div class="app-card">
+        <div>
+          <p class="eyebrow">What users receive</p>
+          <p class="app-title">One finished app</p>
+        </div>
+        <div class="app-artifact">
+          <div class="artifact-name">Social Media App</div>
+          <div class="artifact-meta">compiled output</div>
+        </div>
+        <div class="users">
+          <div class="user">A</div>
+          <div class="user">B</div>
+          <div class="user">C</div>
+        </div>
+        <p class="app-copy">
+          It can update, personalize, and react, but it still arrives as something that was put together before you used it.
+        </p>
+      </div>
+    </div>
+
+    <p class="footer-note">
+      Users receive software that has already been <span class="accent-orange">assembled</span> before they use it.
+    </p>
+  </div>
+
+  <!-- Slide 5: AI / LLM transition -->
+  <div class="slide slide-ai" data-slide="4">
+    <h2>
+      With <span class="accent">large language models</span>,
+      new possibilities are emerging.
+    </h2>
+
+    <div class="ai-panel">
+      <p>
+        Software does not always have to arrive fully assembled. More of the experience can now take shape <span class="accent-green">at runtime</span>, in response to the <span class="accent-purple">user</span> and the moment.
+      </p>
+    </div>
+
+    <p class="footer">
+      This is where a different model of software starts to become possible.
+    </p>
+  </div>
+
+  <!-- Slide 6: Enter ContextSynth -->
+  <div class="slide slide-enter" data-slide="5">
+    <h2>Enter <span class="accent">ContextSynth</span></h2>
+
+    <div class="compare">
+      <div class="model-card">
+        <p class="card-label">The usual model</p>
+        <p class="card-title">You ship the <span class="accent">app</span>, and the features live inside it.</p>
+        <div class="graph-cluster">
+          <span class="node orange">Posts</span>
+          <span class="node purple">Messages</span>
+          <span class="node green">Photos</span>
+          <span class="node orange">Profiles</span>
+          <span class="node purple">Notifications</span>
+          <span class="node green">Settings</span>
+        </div>
+        <div class="arrow-down">&darr;</div>
+        <div class="contain-box">
+          <div class="box-title">Shipped as</div>
+          <div class="box-main">Social Media App</div>
+        </div>
+        <p class="card-copy">
+          The relationships are there, but they are packaged inside the app the user downloads.
+        </p>
+      </div>
+
+      <div class="model-card context-card">
+        <p class="card-label">ContextSynth</p>
+        <p class="card-title">ContextSynth <span class="accent">ships the features directly</span>.</p>
+        <div class="graph-cluster">
+          <span class="node orange">Posts</span>
+          <span class="node purple">Messages</span>
+          <span class="node green">Photos</span>
+          <span class="node orange">Profiles</span>
+          <span class="node purple">Notifications</span>
+          <span class="node green">Settings</span>
+        </div>
+        <div class="arrow-down">&darr;</div>
+        <div class="ship-box">
+          <div class="box-title">Shipped directly</div>
+          <div class="box-main">Feature Graph</div>
+        </div>
+        <div class="arrow-down">&darr;</div>
+        <div class="emerge-box">
+          <div class="box-title">At runtime</div>
+          <div class="box-main">App for This User</div>
+        </div>
+        <p class="card-copy">
+          The features are the thing you ship first. The experience can then take shape around who the user is and what they are trying to do.
+        </p>
+      </div>
+    </div>
+
+    <p class="footer">
+      Instead of shipping an app that contains the features, ContextSynth ships the <span class="accent">features</span> and lets the app emerge in real time for the user and the moment.
+    </p>
+  </div>
+
+  <!-- Slide 7: Example in practice -->
+  <div class="slide slide-example" data-slide="6">
+    <h2>An Example <span class="accent">in Practice</span></h2>
+    <p class="subhead">
+      A user opens a social media page, is greeted by a chatbot, and describes what they want to do.
+    </p>
+
+    <div class="flow">
+      <div class="panel">
+        <p class="label">User request</p>
+        <div class="chat-bubble">
+          <strong>Chatbot:</strong> What would you like to do?<br><br>
+          <strong>User:</strong> I want to change my privacy settings and upload a couple of photos.
+        </div>
+        <div class="request-pills">
+          <span class="request-pill purple">Privacy Settings</span>
+          <span class="request-pill orange">Photo Upload</span>
+          <span class="request-pill green">This User</span>
+        </div>
+        <p class="panel-copy">
+          The system understands the user, the task, and the relevant pieces needed for this moment.
+        </p>
+      </div>
+
+      <div class="mid-arrow">&rarr;</div>
+
+      <div class="panel generated">
+        <p class="label">Generated for this moment</p>
+        <div class="ui-shell">
+          <div class="ui-header">
+            <div class="ui-title">Privacy + Photo Upload</div>
+            <div class="ui-badge">Generated UI</div>
+          </div>
+          <div class="ui-card">
+            <div class="ui-row">
+              <span>Private account</span>
+              <div class="toggle on"></div>
+            </div>
+            <div class="ui-row">
+              <span>Only friends can comment</span>
+              <div class="toggle on"></div>
+            </div>
+          </div>
+          <div class="upload-area">
+            Upload photos for this post
+            <div class="upload-thumbs">
+              <div class="thumb"></div>
+              <div class="thumb"></div>
+            </div>
+          </div>
+        </div>
+        <p class="panel-copy">
+          Instead of navigating a fixed app structure, the interface appears around exactly what the user is trying to achieve.
+        </p>
+      </div>
+    </div>
+
+    <p class="footer">
+      The application is no longer just a fixed set of screens. It can be formed around the <span class="accent">user</span> and the <span class="accent">task</span> in real time.
+    </p>
+  </div>
+
+  <!-- Slide 8: Why this is different -->
+  <div class="slide slide-diff" data-slide="7">
+    <h2>Why This Is <span class="accent">Different</span></h2>
+
+    <div class="diff-grid">
+      <div class="diff-card federation">
+        <p class="card-tag">Module Federation</p>
+        <p class="card-title">Still ships pre-built modules</p>
+        <p>
+          It changes how code is loaded, but the building blocks are still authored ahead of time inside an existing application model.
+        </p>
+      </div>
+
+      <div class="diff-card micro">
+        <p class="card-tag">Microfrontends</p>
+        <p class="card-title">Still splits one app into smaller apps</p>
+        <p>
+          Teams can ship separately, but the result is still an application assembled from predefined frontend boundaries.
+        </p>
+      </div>
+
+      <div class="diff-card wrapper">
+        <p class="card-tag">Generative UI Layers</p>
+        <p class="card-title">Often sits on top of existing frameworks</p>
+        <p>
+          Many systems can generate interfaces, but they often still rely on frameworks and components that assume the old application model underneath.
+        </p>
+      </div>
+    </div>
+
+    <p class="bottom">
+      ContextSynth points to something deeper: <span class="accent-orange">the engine underneath may need to be fundamentally rethought</span>. Not just new wrappers, not just better composition, but a runtime model where software can emerge from context. And not only for UI, but as a more general form of <span class="accent-purple">context infrastructure</span>.
+    </p>
+  </div>
+
+  <!-- Slide 9: Context infrastructure -->
+  <div class="slide slide-infra" data-slide="8">
+    <h2>Not Just <span class="accent">UI</span></h2>
+    <p class="subhead">
+      ContextSynth is not only about generating screens. The larger idea is <span class="accent-purple">context infrastructure</span>: a system that can shape different kinds of software around the <span class="accent-green">user</span>, the task, and the moment.
+    </p>
+
+    <div class="infra-grid">
+      <div class="infra-card interfaces">
+        <p class="tag">Interfaces</p>
+        <p class="title">UI can take shape <span class="accent-green">in real time</span></p>
+        <p>Pages, forms, flows, and controls can be formed around what the user is actually trying to do.</p>
+      </div>
+
+      <div class="infra-card workflows">
+        <p class="tag">Workflows</p>
+        <p class="title">Actions can be composed <span class="accent-purple">in context</span></p>
+        <p>Different capabilities can be resolved together at runtime to support a task, not just render a screen.</p>
+      </div>
+
+      <div class="infra-card outputs">
+        <p class="tag">Outputs</p>
+        <p class="title">The result is not limited to an <span class="accent-green">interface</span></p>
+        <p>Context can shape media, automations, tools, and other outputs, depending on what the graph resolves.</p>
+      </div>
+    </div>
+
+    <p class="footer">
+      UI is one <span class="accent-purple">projection</span> of the system. The broader idea is software that can be formed from <span class="accent">context</span>, not just displayed through fixed screens.
+    </p>
+  </div>
+
+  <!-- Slide 10: What the graph is made of -->
+  <div class="slide slide-graph" data-slide="9">
+    <h2>What the <span class="accent">Graph</span> Is Made Of</h2>
+    <p class="subhead">
+      Various <span class="accent-purple">context sources</span> are distilled into <span class="accent-green">context artifacts</span>. Those artifacts relate to each other, and together they generate the live context graph.
+    </p>
+
+    <div class="graph-flow">
+      <div class="flow-column">
+        <div class="column-label">Context Sources</div>
+        <div class="source-card orange">
+          <div class="name">User Profile</div>
+          <div class="meta">Preferences, settings, history, identity</div>
+        </div>
+        <div class="source-card purple">
+          <div class="name">User Intent</div>
+          <div class="meta">What they are trying to do in this moment</div>
+        </div>
+        <div class="source-card green">
+          <div class="name">Available Capabilities</div>
+          <div class="meta">Tools, actions, outputs, and constraints</div>
+        </div>
+      </div>
+
+      <div class="graph-arrow">&rarr;</div>
+
+      <div class="flow-column">
+        <div class="column-label">Context Artifacts</div>
+        <div class="distill-note">Distilled into artifacts</div>
+        <div class="artifact-card orange">
+          <div class="name">Profile Artifact</div>
+          <div class="meta">Carries user-specific context and declared dependencies</div>
+        </div>
+        <div class="artifact-card purple">
+          <div class="name">Intent Artifact</div>
+          <div class="meta">Carries the current task, goal, and situational context</div>
+        </div>
+        <div class="artifact-card green">
+          <div class="name">Capability Artifact</div>
+          <div class="meta">Carries available actions, outputs, and capability edges</div>
+        </div>
+      </div>
+
+      <div class="graph-arrow">&rarr;</div>
+
+      <div class="relationship-strip">
+        <div class="relationship-pill purple">depends on</div>
+        <div class="relationship-pill green">enables</div>
+        <div class="relationship-pill orange">constrains</div>
+        <div class="relationship-pill purple">informs</div>
+      </div>
+
+      <div class="graph-arrow">&rarr;</div>
+
+      <div class="runtime-card">
+        <div class="name">Live Context Graph</div>
+        <div class="meta">
+          Resolve the artifacts together, follow their relationships, and let the application or output emerge from the graph <span class="accent-green">at runtime</span>.
+        </div>
+      </div>
+    </div>
+
+    <p class="footer">
+      Instead of one terminal artifact at the end, there is a collection of <span class="accent-green">artifacts</span> that <span class="accent">form the graph</span>.
+    </p>
+  </div>
+
+  <!-- Slide 11: What exists today -->
+  <div class="slide slide-state" data-slide="10">
+    <h2>What Exists <span class="accent">Today</span></h2>
+    <p class="subhead">
+      The idea is larger than the current implementation. The repo today proves core building blocks, while the full <span class="accent-purple">graph-native</span> model is still the direction.
+    </p>
+
+    <div class="state-grid">
+      <div class="state-card today">
+        <p class="state-tag">Current repo</p>
+        <p class="state-title">v0.1.0 proves the <span class="accent-green">pieces</span></p>
+        <ul>
+          <li>Sources compile into a governed artifact.</li>
+          <li>A <span class="accent-purple">capability graph</span> resolves downstream of that artifact.</li>
+          <li>This validates the runtime pieces, but still keeps an <span class="accent-green">artifact boundary</span>.</li>
+        </ul>
+      </div>
+
+      <div class="state-card direction">
+        <p class="state-tag">Direction</p>
+        <p class="state-title"><span class="accent-green">Artifacts</span> become the graph</p>
+        <ul>
+          <li>Artifacts themselves form the <span class="accent-purple">dependency graph</span>.</li>
+          <li>The application is no longer primary; it <span class="accent-green">emerges</span> from the graph.</li>
+          <li>That is the graph-native, <span class="accent-purple">context infrastructure</span> direction.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">
+      So the current repo is not the final model. It is a <span class="accent-green">step</span> toward a runtime where software can emerge from <span class="accent-purple">context</span> more directly.
+    </p>
+  </div>
+
+  <div class="slide-counter"></div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.querySelector('.slide-counter');
+    let current = 0;
+
+    function show(index) {
+      if (index < 0 || index >= slides.length) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      counter.textContent = (current + 1) + ' / ' + slides.length;
+    }
+
+    show(0);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') show(current + 1);
+      if (e.key === 'ArrowLeft') show(current - 1);
+    });
+  </script>
+
+</body>
+</html>
