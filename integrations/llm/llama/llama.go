@@ -51,7 +51,7 @@ func (c *Client) Complete(ctx context.Context, prompt, systemPrompt string) (str
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("ollama API call: %w", err)
+		return "", fmt.Errorf("ollama API call failed (is ollama running? try: ollama serve): %w", err)
 	}
 	defer resp.Body.Close()
 

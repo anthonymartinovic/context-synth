@@ -42,6 +42,13 @@ def generate(params: dict, output_dir: str) -> str:
     import scipy.io.wavfile
 
     device = get_device()
+
+    # MPS has a known limitation with EnCodec's conv1d decoder (>65536 output channels).
+    # Fall back to CPU on Apple Silicon to avoid this.
+    if device == "mps":
+        print("MPS detected but EnCodec decoder is incompatible; using CPU", file=sys.stderr)
+        device = "cpu"
+
     print(f"Using device: {device}", file=sys.stderr)
 
     melody_path = params.get("melody_audio_path", "")
@@ -56,7 +63,7 @@ def generate(params: dict, output_dir: str) -> str:
         model = model.to(device)
 
     description = params.get("description", "A melodic electronic track")
-    duration_seconds = 15
+    duration_seconds = 30
 
     max_tokens = int(duration_seconds * 50)
 
@@ -124,7 +131,7 @@ def main():
     result = {
         "audio_file": output_path,
         "format": "wav",
-        "duration_seconds": 15,
+        "duration_seconds": 30,
     }
     print(json.dumps(result))
 

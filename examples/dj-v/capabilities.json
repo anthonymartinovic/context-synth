@@ -23,7 +23,7 @@
         "type": "subprocess",
         "config": {
           "command": "python3",
-          "args": ["musicgen/generate.py"]
+          "args": ["scripts/generate.py"]
         }
       }
     }

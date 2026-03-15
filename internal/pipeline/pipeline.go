@@ -29,8 +29,9 @@ type Options struct {
 }
 
 type Result struct {
-	Artifact protocol.Artifact
-	Output   string
+	Artifact     protocol.Artifact
+	Output       string
+	Verification verify.VerificationData
 }
 
 type Deps struct {
@@ -77,8 +78,27 @@ func Run(ctx context.Context, cfg config.Config, opts Options, deps Deps) (Resul
 
 	vd := verify.Verify(plan, mode)
 	if opts.Verbose {
-		fmt.Fprintf(os.Stderr, "verify: mode=%s included=%d omitted=%d\n",
-			vd.Mode, len(vd.Included), len(vd.Omitted))
+		fmt.Fprintf(os.Stderr, "\n--- verification surface ---\n")
+		fmt.Fprintf(os.Stderr, "mode: %s\n\n", vd.Mode)
+		if len(vd.Included) > 0 {
+			fmt.Fprintf(os.Stderr, "%-40s %6s %8s %s\n", "Included", "Weight", "Tokens", "Section")
+			for _, item := range vd.Included {
+				section := item.Section
+				if section == "" {
+					section = "(flat)"
+				}
+				fmt.Fprintf(os.Stderr, "%-40s %6.2f %8d %s\n",
+					item.SourcePath, item.Weight, item.TokenCount, section)
+			}
+		}
+		if len(vd.Omitted) > 0 {
+			fmt.Fprintf(os.Stderr, "\n%-40s %6s %8s %s\n", "Omitted", "Weight", "Tokens", "Reason")
+			for _, item := range vd.Omitted {
+				fmt.Fprintf(os.Stderr, "%-40s %6.2f %8d %s\n",
+					item.SourcePath, item.Weight, item.TokenCount, item.Reason)
+			}
+		}
+		fmt.Fprintf(os.Stderr, "---\n\n")
 	}
 
 	configHash := computeConfigHash(opts.ConfigPath)
@@ -131,7 +151,7 @@ func Run(ctx context.Context, cfg config.Config, opts Options, deps Deps) (Resul
 		return Result{}, fmt.Errorf("render: %w", err)
 	}
 
-	return Result{Artifact: artifact, Output: output}, nil
+	return Result{Artifact: artifact, Output: output, Verification: vd}, nil
 }
 
 func binaryVersion() string {

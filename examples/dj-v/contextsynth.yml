@@ -6,16 +6,20 @@ output:
 budget: 10000
 
 sources:
-  - markdown: sources/vibe.md
-    weight: 0.9
-  - audio: sources/audio/midnight_drive.mp3
-    weight: 0.8
-  - audio: sources/audio/neon_pulse.mp3
-    weight: 0.7
-  - audio: sources/audio/deep_current.mp3
+  - markdown: sources/md/composition.md
+    weight: 1.0
+  - markdown: sources/md/vibe.md
     weight: 0.6
-  - audio: sources/audio/test_track.mp3
-    weight: 0.6
+  - markdown: sources/md/constraints.md
+    weight: 0.5
+  - audio: sources/audio/nitzer-ebb---captivate.mp3
+    weight: 0.4
+  - audio: sources/audio/front-line-assembly---final-impact.mp3
+    weight: 0.35
+  - audio: sources/audio/Dylan-Fogarty---Injection-[RYS001].mp3
+    weight: 0.3
+  - audio: sources/audio/Kander---Absence-[CVPH01].mp3
+    weight: 0.25
 
 sections:
   - name: Musical Context

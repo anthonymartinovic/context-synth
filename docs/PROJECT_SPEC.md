@@ -26,7 +26,9 @@ The problem is therefore epistemic, not merely ergonomic. Uncertainty is being c
 
 ## Project Thesis
 
-Context Synth introduces a governance layer between raw knowledge and downstream system behavior.
+AI is non-deterministic. Context Synth doesn't fight that — it accepts it wholesale. Instead of trying to clamp down AI's reasoning, it creates the structural conditions that incentivize AI to make decisions within a bounded, governed context.
+
+To do this, Context Synth introduces a governance layer between raw knowledge and downstream system behavior.
 
 Instead of:
 

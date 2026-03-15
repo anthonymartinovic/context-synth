@@ -1,6 +1,6 @@
 # DJ-V — Context-Driven Music Generation
 
-DJ-V is the first product built on Context Synth. It turns governed context (documents + audio reference tracks) into generative music using Meta's MusicGen model.
+DJ-V is the first example application built on Context Synth. It turns governed context (documents + audio reference tracks) into generative music using Meta's MusicGen model.
 
 ## Prerequisites
 
@@ -15,31 +15,31 @@ ollama pull llama3.1:8b
 ### Python + MusicGen dependencies
 
 ```bash
-pip3 install -r musicgen/requirements.txt
+pip3 install -r scripts/requirements.txt
 ```
 
 This installs MusicGen (transformers, torch, torchaudio, scipy) and librosa for audio analysis. The MusicGen model (`facebook/musicgen-small`, ~1.2GB) downloads automatically on first run.
 
 ### Audio reference tracks
 
-Place MP3 files into `sources/tracks/`. Each track is declared as an `mp3:` source in `contextsynth.yml` with its own weight. During `cs synth`, librosa analyzes each track and extracts rich audio features (tempo, key, spectral characteristics, timbre fingerprint) that become part of the context artifact.
+Place MP3 files into `sources/audio/`. Each track is declared as an `audio:` source in `contextsynth.yml` with its own weight. During `cs synth`, librosa analyzes each track and extracts rich audio features (tempo, key, spectral characteristics, timbre fingerprint) that become part of the context artifact.
 
-The example config ships with placeholder track names. Replace them with your own files and update `contextsynth.yml` to match:
+The example config ships with four reference tracks. To use your own, add MP3 files to `sources/audio/` and update `contextsynth.yml` to match:
 
 ```yaml
 sources:
-  - markdown: sources/vibe.md
+  - markdown: sources/md/vibe.md
     weight: 1.0
-  - markdown: sources/constraints.md
+  - markdown: sources/md/constraints.md
     weight: 0.9
-  - mp3: sources/tracks/your_track.mp3
+  - audio: sources/audio/your_track.mp3
     weight: 0.8
 ```
 
 Set `CS_AUDIO_ANALYZER` to point to the analysis script (or add it to `.env`):
 
 ```bash
-export CS_AUDIO_ANALYZER="/path/to/examples/dj-v/musicgen/analyze.py"
+export CS_AUDIO_ANALYZER="/path/to/examples/dj-v/scripts/analyze.py"
 ```
 
 ## Running DJ-V
@@ -51,7 +51,7 @@ cd examples/dj-v
 cs synth --no-llm
 ```
 
-This compiles `sources/vibe.md`, `sources/constraints.md`, and audio track features into `artifact.json`.
+This compiles `sources/md/vibe.md`, `sources/md/constraints.md`, and audio track features into `artifact.json`.
 
 With Llama for full LLM-backed extraction:
 
@@ -72,7 +72,7 @@ cs run \
 This:
 1. Loads the context artifact
 2. Resolves `interpret_context` via Llama (derives music parameters)
-3. Resolves `generate_audio` via MusicGen (generates 15s WAV file)
+3. Resolves `generate_audio` via MusicGen (generates 30s WAV file)
 4. The adapter plays the audio
 
 ## How it works
@@ -80,9 +80,9 @@ This:
 ```
 contextsynth.yml
   │
-  ├── sources/vibe.md (creative direction)
-  ├── sources/constraints.md (musical constraints)
-  └── sources/tracks/*.mp3 (audio features via librosa + HPSS)
+  ├── sources/md/vibe.md (creative direction)
+  ├── sources/md/constraints.md (musical constraints)
+  └── sources/audio/*.mp3 (audio features via librosa + HPSS)
         │
         ▼
     cs synth → artifact.json
@@ -94,7 +94,7 @@ contextsynth.yml
         │   → music parameters + description
         │
         ├── generate_audio (MusicGen)
-        │   → 15s WAV file
+        │   → 30s WAV file
         │
         └── adapter (Deno)
             → audio playback
@@ -102,8 +102,33 @@ contextsynth.yml
 
 ## Changing the output
 
-- Edit `sources/vibe.md` to change the creative direction
-- Edit `sources/constraints.md` to change musical constraints
-- Add or swap audio tracks in `sources/tracks/` to change the musical reference
+- Edit `sources/md/vibe.md` to change the creative direction
+- Edit `sources/md/constraints.md` to change musical constraints
+- Edit `sources/md/composition.md` to describe the bar-by-bar structure
+- Add or swap audio tracks in `sources/audio/` to change the musical reference
 - Change source weights in `contextsynth.yml` to shift influence
 - Re-run `cs synth` then `cs run` to hear the difference
+
+## Contributing
+
+DJ-V is an example application built on Context Synth — it uses the framework but is not part of it. Contributions that make DJ-V a better example are welcome. The framework itself lives in `internal/`, `integrations/`, and `cmd/` at the repo root.
+
+### Extension points
+
+**Richer context sources** — Add new markdown source documents (`sources/md/`) that describe genre, arrangement philosophy, or per-instrument direction. Each source gets its own weight in `contextsynth.yml`, so you control how much influence it has on the output.
+
+**Melody conditioning** — `scripts/generate.py` already has a code path for melody-conditioned generation via `facebook/musicgen-melody`. Wire it by adding a `melody_audio_path` field to the music parameters produced by `interpret_context`, pointing at one of the reference tracks.
+
+**Better prompt engineering** — The `interpret_context` prompt template in `capabilities.json` can be refined to produce more nuanced music parameters. The current template derives tempo, key, mode, energy, mood, density, and a description — there's room for instrumentation hints, dynamics, or arrangement instructions.
+
+**Web-based adapter** — The current adapter plays audio via the system player (`afplay`/`aplay`). A browser-based adapter that renders a waveform visualization or streams playback would make the demo more shareable.
+
+**Multi-track generation** — Generate separate stems (drums, bass, pads, leads) as individual capabilities in the graph, then mix them in the adapter. This would exercise deeper capability graphs with more dependency relationships.
+
+**Output format options** — Support MP3/FLAC output, configurable duration, or sample rate via music parameters rather than hardcoded values in the generation script.
+
+### What to keep in mind
+
+- DJ-V does not import or modify anything in `internal/`. It communicates with the framework through the CLI (`cs synth`, `cs run`) and the protocol (artifact JSON, capability declarations, adapter interface).
+- Changes to DJ-V should not require changes to the framework. If they do, that's a signal that something is missing from the framework's interfaces — raise it as an issue.
+- The capability declarations in `capabilities.json` are DJ-V's, not the framework's. Add new capabilities, change prompts, swap executors — this is application-level configuration.
