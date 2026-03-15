@@ -901,7 +901,7 @@
     /* --- Slide 10: What the graph is --- */
     .slide-graph {
       justify-content: center;
-      gap: 24px;
+      gap: 22px;
     }
 
     .slide-graph h2 {
@@ -913,23 +913,22 @@
 
     .slide-graph h2 .accent { color: var(--cs-orange); }
 
-    .slide-graph .graph-flow {
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
-      gap: 20px;
+    .slide-graph .graph-layout {
+      display: grid;
+      grid-template-columns: 180px 200px 1fr;
+      gap: 18px;
       width: 100%;
+      align-items: start;
     }
 
-    .slide-graph .flow-column {
+    .slide-graph .graph-col {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      flex: 1;
-      max-width: 290px;
+      gap: 10px;
+      min-width: 0;
     }
 
-    .slide-graph .column-label {
+    .slide-graph .col-label {
       font-size: 0.76em;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -938,90 +937,133 @@
       margin-bottom: 2px;
     }
 
-    .slide-graph .source-card,
-    .slide-graph .artifact-card,
-    .slide-graph .runtime-card {
-      border-radius: 18px;
-      padding: 18px 20px;
+    .slide-graph .mini-card,
+    .slide-graph .artifact-card {
+      border-radius: 14px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .slide-graph .source-card .name,
-    .slide-graph .artifact-card .name,
-    .slide-graph .runtime-card .name {
-      font-size: 1em;
+    .slide-graph .mini-card {
+      padding: 9px 12px;
+    }
+
+    .slide-graph .artifact-card {
+      padding: 12px 14px;
+    }
+
+    .slide-graph .mini-card .name,
+    .slide-graph .artifact-card .name {
+      font-size: 0.88em;
       font-weight: 700;
       color: var(--cs-light);
-      margin-bottom: 8px;
+      margin-bottom: 3px;
     }
 
-    .slide-graph .source-card .meta,
-    .slide-graph .artifact-card .meta,
-    .slide-graph .runtime-card .meta {
-      font-size: 0.88em;
-      line-height: 1.5;
-      color: rgba(245, 245, 245, 0.9);
+    .slide-graph .mini-card .meta,
+    .slide-graph .artifact-card .meta {
+      font-size: 0.76em;
+      line-height: 1.4;
+      color: rgba(245, 245, 245, 0.88);
     }
 
-    .slide-graph .source-card.orange { border-color: rgba(244, 123, 32, 0.24); }
-    .slide-graph .source-card.purple { border-color: rgba(123, 79, 191, 0.24); }
-    .slide-graph .source-card.green { border-color: rgba(45, 181, 84, 0.24); }
-
-    .slide-graph .artifact-card.orange { border-color: rgba(244, 123, 32, 0.24); }
-    .slide-graph .artifact-card.purple { border-color: rgba(123, 79, 191, 0.24); }
-    .slide-graph .artifact-card.green { border-color: rgba(45, 181, 84, 0.24); }
-
-    .slide-graph .graph-arrow {
-      font-size: 2em;
-      color: var(--cs-orange);
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 34px;
-    }
-
-    .slide-graph .relationship-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      align-content: center;
-      min-width: 170px;
-    }
-
-    .slide-graph .relationship-pill {
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 0.78em;
-      font-weight: 700;
-      color: #ffffff;
-      white-space: nowrap;
-    }
-
-    .slide-graph .relationship-pill.orange { background: var(--cs-orange); }
-    .slide-graph .relationship-pill.purple { background: var(--cs-purple); }
-    .slide-graph .relationship-pill.green { background: var(--cs-green); }
+    .slide-graph .mini-card.orange,
+    .slide-graph .artifact-card.orange { border-color: rgba(244, 123, 32, 0.26); }
+    .slide-graph .mini-card.purple,
+    .slide-graph .artifact-card.purple { border-color: rgba(123, 79, 191, 0.26); }
+    .slide-graph .mini-card.green,
+    .slide-graph .artifact-card.green { border-color: rgba(45, 181, 84, 0.26); }
 
     .slide-graph .distill-note {
-      text-align: center;
-      font-size: 0.82em;
+      font-size: 0.78em;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(245, 245, 245, 0.7);
+      color: rgba(245, 245, 245, 0.68);
+      margin: 2px 0 4px;
     }
 
-    .slide-graph .runtime-card {
-      min-height: 236px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-color: rgba(244, 123, 32, 0.24);
+    .slide-graph .graph-board {
+      position: relative;
+      min-height: 380px;
+      border-radius: 22px;
+      padding: 18px;
+      border: 1px solid rgba(244, 123, 32, 0.24);
       background:
         radial-gradient(circle at top, rgba(244, 123, 32, 0.12), transparent 42%),
         rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+    }
+
+    .slide-graph .graph-board .name {
+      font-size: 1em;
+      font-weight: 700;
+      color: var(--cs-light);
+      position: relative;
+      z-index: 2;
+      margin-bottom: 8px;
+    }
+
+    .slide-graph .graph-board .meta {
+      font-size: 0.82em;
+      line-height: 1.45;
+      color: rgba(245, 245, 245, 0.86);
+      max-width: 360px;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 12px;
+    }
+
+    .slide-graph .graph-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .slide-graph .graph-svg path {
+      fill: none;
+      stroke: rgba(245, 245, 245, 0.26);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+
+    .slide-graph .graph-node {
+      position: absolute;
+      min-width: 112px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(20, 20, 20, 0.92);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      color: var(--cs-light);
+      font-size: 0.82em;
+      font-weight: 700;
+      text-align: center;
+      z-index: 2;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+    }
+
+    .slide-graph .graph-node.orange { border-color: var(--cs-orange); }
+    .slide-graph .graph-node.purple { border-color: var(--cs-purple); }
+    .slide-graph .graph-node.green { border-color: var(--cs-green); }
+
+    .slide-graph .node-profile { top: 84px; left: 34px; }
+    .slide-graph .node-privacy { top: 84px; left: 230px; }
+    .slide-graph .node-photos { top: 188px; left: 132px; }
+    .slide-graph .node-request { top: 188px; left: 360px; }
+    .slide-graph .node-experience { top: 300px; left: 228px; min-width: 148px; }
+
+    .slide-graph .graph-caption {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 16px;
+      font-size: 0.84em;
+      line-height: 1.45;
+      color: rgba(245, 245, 245, 0.9);
+      z-index: 2;
     }
 
     /* --- Slide 11: Current state --- */
@@ -1416,66 +1458,77 @@
   <div class="slide slide-graph" data-slide="9">
     <h2>What the <span class="accent">Graph</span> Is Made Of</h2>
     <p class="subhead">
-      Various <span class="accent-purple">context sources</span> are distilled into <span class="accent-green">context artifacts</span>. Those artifacts relate to each other, and together they generate the live context graph.
+      In a social media example, simple <span class="accent-purple">sources</span> are turned into <span class="accent-green">artifacts</span>. Those artifacts depend on each other, and together form the live context graph.
     </p>
 
-    <div class="graph-flow">
-      <div class="flow-column">
-        <div class="column-label">Context Sources</div>
-        <div class="source-card orange">
-          <div class="name">User Profile</div>
-          <div class="meta">Preferences, settings, history, identity</div>
+    <div class="graph-layout">
+      <div class="graph-col">
+        <div class="col-label">Context Sources</div>
+        <div class="mini-card orange">
+          <div class="name">Profile Data</div>
+          <div class="meta">who the user is</div>
         </div>
-        <div class="source-card purple">
-          <div class="name">User Intent</div>
-          <div class="meta">What they are trying to do in this moment</div>
+        <div class="mini-card purple">
+          <div class="name">Privacy Settings</div>
+          <div class="meta">their preferences</div>
         </div>
-        <div class="source-card green">
-          <div class="name">Available Capabilities</div>
-          <div class="meta">Tools, actions, outputs, and constraints</div>
+        <div class="mini-card green">
+          <div class="name">Photos</div>
+          <div class="meta">available media</div>
+        </div>
+        <div class="mini-card orange">
+          <div class="name">User Request</div>
+          <div class="meta">what they want to do</div>
         </div>
       </div>
 
-      <div class="graph-arrow">&rarr;</div>
-
-      <div class="flow-column">
-        <div class="column-label">Context Artifacts</div>
+      <div class="graph-col">
+        <div class="col-label">Context Artifacts</div>
         <div class="distill-note">Distilled into artifacts</div>
         <div class="artifact-card orange">
           <div class="name">Profile Artifact</div>
-          <div class="meta">Carries user-specific context and declared dependencies</div>
+          <div class="meta">user context</div>
+        </div>
+        <div class="artifact-card purple">
+          <div class="name">Privacy Artifact</div>
+          <div class="meta">privacy rules</div>
+        </div>
+        <div class="artifact-card green">
+          <div class="name">Photo Artifact</div>
+          <div class="meta">media context</div>
         </div>
         <div class="artifact-card purple">
           <div class="name">Intent Artifact</div>
-          <div class="meta">Carries the current task, goal, and situational context</div>
-        </div>
-        <div class="artifact-card green">
-          <div class="name">Capability Artifact</div>
-          <div class="meta">Carries available actions, outputs, and capability edges</div>
+          <div class="meta">current goal</div>
         </div>
       </div>
 
-      <div class="graph-arrow">&rarr;</div>
-
-      <div class="relationship-strip">
-        <div class="relationship-pill purple">depends on</div>
-        <div class="relationship-pill green">enables</div>
-        <div class="relationship-pill orange">constrains</div>
-        <div class="relationship-pill purple">informs</div>
-      </div>
-
-      <div class="graph-arrow">&rarr;</div>
-
-      <div class="runtime-card">
+      <div class="graph-board">
         <div class="name">Live Context Graph</div>
         <div class="meta">
-          Resolve the artifacts together, follow their relationships, and let the application or output emerge from the graph <span class="accent-green">at runtime</span>.
+          These artifacts connect like a <span class="accent-purple">dependency graph</span>. Together they shape what the user gets <span class="accent-green">at runtime</span>.
+        </div>
+        <svg class="graph-svg" viewBox="0 0 520 380" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M 116 108 C 160 108, 188 108, 230 108"></path>
+          <path d="M 286 120 C 320 145, 328 160, 350 198"></path>
+          <path d="M 118 120 C 148 158, 164 188, 186 214"></path>
+          <path d="M 242 214 C 286 214, 314 214, 360 214"></path>
+          <path d="M 174 226 C 198 262, 220 286, 256 318"></path>
+          <path d="M 418 226 C 390 262, 368 286, 332 318"></path>
+        </svg>
+        <div class="graph-node orange node-profile">Profile</div>
+        <div class="graph-node purple node-privacy">Privacy</div>
+        <div class="graph-node green node-photos">Photos</div>
+        <div class="graph-node purple node-request">Intent</div>
+        <div class="graph-node orange node-experience">Experience</div>
+        <div class="graph-caption">
+          The graph is the <span class="accent-purple">relationships</span> between these artifacts. That is what lets the final experience <span class="accent-green">emerge</span>.
         </div>
       </div>
     </div>
 
     <p class="footer">
-      Instead of one terminal artifact at the end, there is a collection of <span class="accent-green">artifacts</span> that <span class="accent">form the graph</span>.
+      Instead of one final app file, there is a collection of <span class="accent-green">artifacts</span> that <span class="accent">form the graph</span>.
     </p>
   </div>
 
