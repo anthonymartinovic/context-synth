@@ -12,13 +12,13 @@ sources:
     weight: 0.2
   - markdown: sources/md/constraints.md
     weight: 0.8
-  - audio: sources/audio/nitzer-ebb---captivate.mp3
+  - audio: sources/audio/track-1.mp3
     weight: 0.2
-  - audio: sources/audio/front-line-assembly---final-impact.mp3
+  - audio: sources/audio/track-2.mp3
     weight: 0.497
-  - audio: sources/audio/Dylan-Fogarty---Injection-[RYS001].mp3
+  - audio: sources/audio/track-3.mp3
     weight: 0.3
-  - audio: sources/audio/Kander---Absence-[CVPH01].mp3
+  - audio: sources/audio/track-4.mp3
     weight: 0.6
 
 sections:
