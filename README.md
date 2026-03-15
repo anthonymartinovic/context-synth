@@ -1,8 +1,10 @@
 <div align="center">
   <img width="196" height="150" alt="Context Synth Logo" src="logo.png" />
 
-  **A dependency graph runtime that turns context into capabilities, delivering real-time user experiences.**
+  **A context graph runtime that turns knowledge into capabilities, delivering real-time user experiences.**
 </div>
+
+---
 
 Context Synth is a runtime where applications emerge from context rather than being written ahead of time. A collection of artifacts form a dependency graph — each carrying its own context, capabilities, and declared dependencies — and the application emerges from the live graph.
 
@@ -13,14 +15,6 @@ application emerges from the graph
 ```
 
 This is closer to how an operating system works than how any application works. An OS has no single artifact at the end — it has a collection of capabilities forming a dependency graph, and the user experience emerges from that graph at runtime. With AI, this model becomes far more achievable.
-
-### What It Is Not
-
-- Not a wiki or documentation system
-- Not a RAG layer
-- Not an agent
-- Not a capability runtime — it orchestrates capabilities that external systems provide
-- Not a prompt manager or model provider
 
 ---
 
