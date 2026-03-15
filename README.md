@@ -40,6 +40,8 @@ For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) 
 
 Context Synth is intended to become an infrastructure layer for orchestrating system capabilities over governed context — ingesting from repositories, MCP servers, and other external sources; supporting stable artifact versioning, diffing, and drift detection; richer dependency semantics and reactive graph resolution; and integrating into CI pipelines.
 
+At v1, the vision is that Context Synth will become a framework for composing artifact-scoped agents into governed networks, where each artifact defines the bounded context, capability graph, and traceable inputs that shape an agent's behavior.
+
 ## What It Is Not
 
 - Not a wiki or documentation system
