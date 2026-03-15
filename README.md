@@ -6,40 +6,48 @@
 
 ## Status
 
-**v0.1.0-alpha.1** — early release, not yet stable. The `cs` binary compiles local markdown sources into bounded, traceable context artifacts with weight-based precedence, provenance tracking, and recorded omissions. LLM-backed extraction runs against Gemini (the only supported provider in this release). The artifact format is unstable and will change.
+**v0.1.0** — first end-to-end release. Context Synth compiles diverse sources (markdown documents, MP3 audio files) into governed, machine-readable context artifacts (JSON), then resolves a capability graph over that artifact to produce dynamic output. Llama (via ollama) is the default LLM provider. The artifact format is unstable and will change.
 
 For a detailed account of what's working, what isn't, and what's deferred, see [STATUS.md](STATUS.md).
 
 ---
 
-Context Synth is a governed context runtime that compiles multiple knowledge sources into a single structured context document for humans, tools, and AI systems.
-
-Users declare which sources are allowed to shape the output, how much influence each source carries, what structure the output should follow, and how much can fit within it. Context Synth produces a reviewable context file that shows what was included, what was omitted, and where each part came from.
+Context Synth is a context-driven orchestration framework for governed AI reasoning. It compiles knowledge from configured sources into a bounded, traceable context artifact, then uses that artifact to construct and resolve a dependency graph of external capabilities into dynamic output.
 
 ```
-Sources → Snap → Extract → Rank → Assemble → Verify → Contextfile
+Phase 1: Context Compilation
+Sources → Snap → Extract → Rank → Assemble → Verify → Context Artifact (JSON)
+
+Phase 2: Capability Resolution
+Context Artifact → Graph Construction → Dependency Resolution → Projection
 ```
 
 For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md).
 
-### What v0.1 supports today
+### What v0.1.0 supports
 
-- **Local markdown files** as the only source type
-- Per-source weight declaration with glob expansion
+- **Markdown and MP3 audio** source types
+- Per-source weight declaration (markdown supports globs)
 - Global token budget with strict enforcement
-- User-defined section structure (with LLM-backed classification)
+- User-defined section structure with LLM-backed classification
 - Deterministic fallback mode with no LLM required
-- Provenance and omissions recorded in every artifact
+- Machine-readable JSON artifact with full governance metadata (provenance, weights, hashes, omissions)
+- Capability graph construction and topological resolution
+- LLM and subprocess executor mechanisms
+- Adapter interface for output projection
+- Llama as the default LLM provider (local inference via ollama)
+- [DJ-V](examples/dj-v/) — first example application (documents + audio → governed artifact → capability graph → generative music)
 
 ### Long-term direction
 
-Context Synth is intended to become an infrastructure layer that governs how context is constructed, versioned, and supplied to AI systems — ingesting from repositories, MCP servers, and other external sources; supporting stable artifact versioning, diffing, and drift detection; and integrating into CI pipelines. None of that is in the current version.
+Context Synth is intended to become an infrastructure layer for orchestrating system capabilities over governed context — ingesting from repositories, MCP servers, and other external sources; supporting stable artifact versioning, diffing, and drift detection; richer dependency semantics and reactive graph resolution; and integrating into CI pipelines.
 
 ## What It Is Not
 
 - Not a wiki or documentation system
 - Not a RAG layer
 - Not an agent
+- Not a capability runtime — it orchestrates capabilities that external systems provide
 - Not a prompt manager or model provider
 
 ## Installation
@@ -72,9 +80,19 @@ cs snap
 # Produce a context artifact (deterministic, no LLM)
 cs synth --no-llm
 
-# Produce a context artifact with LLM-backed extraction
-export GEMINI_API_KEY="your-key"
+# Produce a context artifact with LLM-backed extraction (requires ollama)
 cs synth
+
+# Resolve a capability graph over the artifact
+cs run --artifact artifact.json --capabilities capabilities.json --adapter "your-adapter-cmd"
+```
+
+LLM-backed extraction requires ollama running locally with a Llama model:
+
+```bash
+brew install ollama
+ollama serve &
+ollama pull llama3.1:8b
 ```
 
 ## Usage
@@ -89,14 +107,14 @@ Resolves sources and prints a snapshot table showing each source's weight, token
 
 ```
 Source                                   Weight   Tokens Hash
-docs/domain/overview.md                    1.00    2,340 a1b2c3d4
-docs/adr/001-rest.md                       0.70    1,100 c9d0e1f2
-3 sources | 3,440 tokens estimated | budget: 10,000
+sources/md/vibe.md                         1.00      340 a1b2c3d4
+sources/audio/midnight_drive.mp3           0.80    1,200 c9d0e1f2
+4 sources | 3,440 tokens estimated | budget: 10,000
 ```
 
 ### `cs synth`
 
-Runs the full pipeline and writes a context artifact.
+Runs the compilation pipeline and writes a JSON context artifact.
 
 | Flag | Description |
 |------|-------------|
@@ -106,21 +124,36 @@ Runs the full pipeline and writes a context artifact.
 | `--dry-run` | Print output to stdout instead of writing a file |
 | `--verbose` | Print pipeline summary to stderr |
 
+### `cs run`
+
+Loads a context artifact, resolves a capability graph, and projects output through an adapter.
+
+| Flag | Description |
+|------|-------------|
+| `--artifact` | Path to context artifact (default: `artifact.json`) |
+| `--capabilities` | Path to capability declarations (default: `capabilities.json`) |
+| `--adapter` | Adapter command (e.g., `deno run adapter/src/index.ts`) |
+| `--verbose` | Verbose output |
+
+`cs synth` and `cs run` operate independently across the artifact boundary. The context artifact is the stable interface between them.
+
 ## Configuration
 
 ```yaml
 version: "1"
 
 output:
-  path: Contextfile
+  path: artifact.json
 
 budget: 10000
 
 sources:
-  - path: docs/domain/overview.md
+  - markdown: docs/domain/overview.md
     weight: 1.0
-  - path: docs/adrs/*.md
+  - markdown: docs/adrs/*.md
     weight: 0.7
+  - audio: sources/audio/reference.mp3
+    weight: 0.8
 
 sections:
   - name: Domain Knowledge
@@ -129,23 +162,24 @@ sections:
     budget: 0.25
 
 llm:
-  provider: gemini
-  model: gemini-2.5-pro
-  api_key_env: GEMINI_API_KEY
+  provider: llama
+  model: llama3.1:8b
 ```
 
-- **Sources** declare file paths (globs supported) with weights from 0.0 to 1.0.
+- **Sources** declare markdown file paths (globs supported) or audio file paths, each with a weight from 0.0 to 1.0.
 - **Sections** define the output structure with proportional budget allocation.
-- **LLM** is optional. Without it, the pipeline runs in deterministic fallback mode.
+- **LLM** is optional. Without it, the pipeline runs in deterministic fallback mode. Only `llama` is supported as a provider.
 - Section classification requires the LLM. In `--no-llm` mode, output is flat weight-ordered.
-- **Only Gemini is supported in v0.1.** The `provider` field exists for future extensibility but is currently ignored — the pipeline always uses Gemini.
+- Audio sources require the `CS_AUDIO_ANALYZER` environment variable pointing to a librosa-based analysis script.
 
 ## Documentation
 
 - [Project Spec](docs/PROJECT_SPEC.md) — what Context Synth is for and the rules it follows
 - [System Design](docs/SYSTEM_DESIGN.md) — how the system is put together
-- [v0.1 Design](docs/design/v0.1.md) — the first build target
-- [v0.1 Plan](docs/plan/v0.1.md) — implementation milestones
+- [Technology](docs/TECHNOLOGY.md) — foundational technology choices
+- [Design](docs/design/) — versioned design documents (scope, architecture, acceptance criteria)
+- [Plan](docs/plan/) — versioned implementation plans and milestones
+- [Reflections](docs/reflections/) — versioned retrospectives on each release
 
 ## License
 

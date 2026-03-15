@@ -36,13 +36,7 @@ sources:
     weight: 0.8
 ```
 
-Copy the environment template and fill in the analyzer path:
-
-```bash
-cp ../../.env.example ../../.env
-```
-
-Edit `.env` so `CS_AUDIO_ANALYZER` points to the absolute path of the analysis script:
+Create a `.env` file at the repo root based on `.env.example` and set `CS_AUDIO_ANALYZER` to the absolute path of the analysis script:
 
 ```
 CS_AUDIO_ANALYZER=/full/path/to/examples/dj-v/scripts/analyze.py
@@ -96,8 +90,7 @@ This:
 ```
 contextsynth.yml
   │
-  ├── sources/md/vibe.md (creative direction)
-  ├── sources/md/constraints.md (musical constraints)
+  ├── sources/md/*.md (your markdown sources)
   └── sources/audio/*.mp3 (audio features via librosa + HPSS)
         │
         ▼
@@ -118,11 +111,11 @@ contextsynth.yml
 
 ## Changing the output
 
-- Edit `sources/md/vibe.md` to change the creative direction
-- Edit `sources/md/constraints.md` to change musical constraints
-- Edit `sources/md/composition.md` to describe the bar-by-bar structure
+The example ships with a few markdown sources and audio reference tracks to demonstrate the pipeline. Replace or edit them to make it your own:
+
+- Add or edit markdown sources in `sources/md/` — creative direction, musical constraints, composition structure, or anything else you want to feed into the context
 - Add or swap audio tracks in `sources/audio/` to change the musical reference
-- Change source weights in `contextsynth.yml` to shift influence
+- Declare your sources and weights in `contextsynth.yml`
 - Re-run `cs synth` then `cs run` to hear the difference
 
 ## Contributing
