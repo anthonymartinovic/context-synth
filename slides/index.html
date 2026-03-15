@@ -1043,6 +1043,122 @@
       background: var(--cs-green);
     }
 
+    /* --- Slide 12: Showing progress --- */
+    .slide-progress {
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .slide-progress h2 {
+      font-size: 2.2em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+      max-width: 920px;
+      align-self: center;
+    }
+
+    .slide-progress h2 .accent { color: var(--cs-orange); }
+    .slide-progress .accent-purple { color: var(--cs-purple); }
+    .slide-progress .accent-green { color: var(--cs-green); }
+
+    .slide-progress .subhead {
+      font-size: 1.02em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+      text-align: center;
+      max-width: 760px;
+      align-self: center;
+    }
+
+    .slide-progress .progress-grid {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .slide-progress .progress-card {
+      flex: 1;
+      max-width: 430px;
+      border-radius: 22px;
+      padding: 26px 28px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .slide-progress .progress-card.challenge {
+      border-color: rgba(123, 79, 191, 0.24);
+      background:
+        radial-gradient(circle at top left, rgba(123, 79, 191, 0.16), transparent 46%),
+        rgba(255, 255, 255, 0.04);
+    }
+
+    .slide-progress .progress-card.answer {
+      border-color: rgba(45, 181, 84, 0.24);
+      background:
+        radial-gradient(circle at top right, rgba(45, 181, 84, 0.14), transparent 46%),
+        rgba(255, 255, 255, 0.04);
+    }
+
+    .slide-progress .progress-tag {
+      font-size: 0.76em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .slide-progress .progress-card.challenge .progress-tag { color: var(--cs-purple); }
+    .slide-progress .progress-card.answer .progress-tag { color: var(--cs-green); }
+
+    .slide-progress .progress-title {
+      font-size: 1.22em;
+      font-weight: 700;
+      color: var(--cs-light);
+      line-height: 1.35;
+    }
+
+    .slide-progress .progress-copy {
+      font-size: 0.98em;
+      line-height: 1.6;
+      color: rgba(245, 245, 245, 0.92);
+    }
+
+    .slide-progress .footer {
+      font-size: 1em;
+      line-height: 1.6;
+      color: rgba(245, 245, 245, 0.9);
+      text-align: center;
+      max-width: 860px;
+      align-self: center;
+    }
+
+    /* --- Slide 13: DJ-V --- */
+    .slide-djv {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .slide-djv h2 {
+      font-size: 3.2em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .slide-djv h2 .accent { color: var(--cs-orange); }
+
+    .slide-djv .subtitle {
+      margin-top: 16px;
+      font-size: 1.15em;
+      font-weight: 500;
+      color: rgba(245, 245, 245, 0.8);
+    }
+
     /* --- Slide counter --- */
     .slide-counter {
       position: fixed;
@@ -1400,7 +1516,7 @@
       <div class="n white" style="top:324px; left:24px">User Input</div>
 
       <!-- Artifacts (middle-left) -->
-      <div class="n orange" style="top:62px;  left:298px">Profile</div>
+      <div class="n orange" style="top:62px;  left:298px">Profile Settings</div>
       <div class="n purple" style="top:132px; left:298px">Media Assets</div>
       <div class="n green"  style="top:198px; left:298px">Comments</div>
       <div class="n purple" style="top:262px; left:298px">User Permissions</div>
@@ -1448,6 +1564,108 @@
 
     <p class="footer">
       So the current repo is not the final model. It is a <span class="accent-green">step</span> toward a runtime where software can emerge from <span class="accent-purple">context</span> more directly.
+    </p>
+  </div>
+
+  <!-- Slide 12: How to show progress -->
+  <div class="slide slide-progress" data-slide="11">
+    <h2>How Can I Demonstrate <span class="accent">Progress</span> of ContextSynth?</h2>
+    <p class="subhead">
+      Sharing the evolution of something <span class="accent-purple">low-level</span> is hard. A lot can change under the hood, while the value is still difficult for a normal audience to see.
+    </p>
+
+    <div class="progress-grid">
+      <div class="progress-card challenge">
+        <p class="progress-tag">The challenge</p>
+        <p class="progress-title">Low-level progress is hard to make <span class="accent-purple">visible</span></p>
+        <p class="progress-copy">
+          Changes to runtimes, graphs, and artifact models matter, but they do not immediately give people a simple reason to care.
+        </p>
+      </div>
+
+      <div class="progress-card answer">
+        <p class="progress-tag">The answer</p>
+        <p class="progress-title">Use an <span class="accent-green">example application</span> that makes the progress obvious</p>
+        <p class="progress-copy">
+          A small, easy-to-understand app can show what changed, why it matters, and what ContextSynth now makes possible in a way people can grasp immediately.
+        </p>
+      </div>
+    </div>
+
+    <p class="footer">
+      So instead of starting with internals, show the progress through a <span class="accent-green">simple example</span> with a clear <span class="accent-purple">why</span>.
+    </p>
+  </div>
+
+  <!-- Slide 13: DJ-V -->
+  <div class="slide slide-djv" data-slide="12">
+    <h2><span class="accent">DJ</span>-<span class="accent">V</span></h2>
+    <p class="subtitle">A Music-Generating AI Agent, Synthesized from Context.</p>
+  </div>
+
+  <!-- Slide 14: DJ-V: The Vision -->
+  <div class="slide slide-graph" data-slide="13">
+    <h2>The <span class="accent">Vision</span></h2>
+
+    <div class="dag">
+      <svg viewBox="0 0 960 380" aria-hidden="true">
+        <!-- Sources → Artifacts (many-to-many, asymmetric) -->
+        <path d="M 204,28  C 240,28  270,58  298,78"/>
+        <path d="M 204,32  C 230,60  270,120 298,148"/>
+        <path d="M 204,82  C 240,80  270,80  298,78"/>
+        <path d="M 204,86  C 230,120 270,185 298,214"/>
+        <path d="M 204,136 C 240,138 270,144 298,148"/>
+        <path d="M 204,140 C 230,180 270,250 298,278"/>
+        <path d="M 204,186 C 240,176 270,158 298,148"/>
+        <path d="M 204,192 C 240,198 270,208 298,214"/>
+        <path d="M 204,244 C 240,238 270,222 298,214"/>
+        <path d="M 204,248 C 240,256 270,270 298,278"/>
+        <path d="M 204,298 C 240,294 270,284 298,278"/>
+
+        <!-- Artifacts → Artifacts (cross-deps) -->
+        <path d="M 418,96  C 436,112 436,132 418,148"/>
+        <path d="M 418,232 C 436,246 436,262 418,278"/>
+        <path d="M 396,96  C 378,140 378,186 396,214"/>
+
+        <!-- Artifacts → Graph -->
+        <path d="M 420,79  C 500,88  556,140 600,166"/>
+        <path d="M 400,149 C 480,154 546,168 600,176"/>
+        <path d="M 400,215 C 480,212 546,198 600,188"/>
+        <path d="M 410,279 C 490,266 556,224 600,200"/>
+
+        <!-- Graph → Runtime -->
+        <path d="M 726,182 C 766,182 796,182 836,182"/>
+      </svg>
+
+      <!-- Zone labels -->
+      <div class="zone-label" style="top:6px; left:38px">Sources</div>
+      <div class="zone-label" style="top:6px; left:310px">Artifacts</div>
+      <div class="zone-label" style="top:6px; left:596px">Graph</div>
+      <div class="zone-label" style="top:6px; right:28px">Runtime</div>
+
+      <!-- Sources (left edge, stacked) -->
+      <div class="n white" style="top:10px; left:24px; width:180px; white-space:normal; line-height:1.25;">song description</div>
+      <div class="n white" style="top:64px; left:24px; width:180px; white-space:normal; line-height:1.25;">hosted track</div>
+      <div class="n white" style="top:118px; left:24px; width:180px; white-space:normal; line-height:1.25;">local vocal stem</div>
+      <div class="n white" style="top:172px; left:24px; width:180px; white-space:normal; line-height:1.25;">freesound SFX</div>
+      <div class="n white" style="top:226px; left:24px; width:180px; white-space:normal; line-height:1.25;">local bassline stem</div>
+      <div class="n white" style="top:280px; left:24px; width:180px; white-space:normal; line-height:1.25;">hosted track</div>
+
+      <!-- Artifacts (middle-left) -->
+      <div class="n orange" style="top:62px; left:298px">song shape</div>
+      <div class="n purple" style="top:132px; left:298px">drum beat</div>
+      <div class="n green"  style="top:198px; left:298px">tempo / key</div>
+      <div class="n purple" style="top:262px; left:298px">melody / harmony</div>
+
+      <!-- Live Graph (center-right) -->
+      <div class="n orange" style="top:148px; left:600px; padding:16px 26px; font-size:0.96em">Context Graph</div>
+
+      <!-- Runtime (right edge) -->
+      <div class="n green" style="top:148px; left:836px; padding:16px 22px; font-size:0.96em">Stream of Music</div>
+    </div>
+
+    <p class="subhead" style="font-size:1em; color:rgba(245,245,245,0.9); text-align:center; max-width:800px; align-self:center;">
+      For DJ-V, different <span class="accent-purple">sources</span> like tracks, stems, and song notes are distilled into musical <span class="accent-green">artifacts</span>. Those artifacts form the <span class="accent">context graph</span>, and from that graph a live <span class="accent-green">stream of music</span> can emerge.
     </p>
   </div>
 
