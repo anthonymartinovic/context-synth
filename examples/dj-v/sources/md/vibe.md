@@ -2,16 +2,18 @@
 
 ## Mood & Atmosphere
 
-The music should feel like a late-night drive through a neon-lit city. There's a sense of forward motion and purpose, but also introspection. The listener is moving through space — physically and emotionally.
+Drawing on the Berlin Industrial techno scene and the Matrix films, I want this track to have a ominous feel, but ultimately rhythmic and danceable.
+
+I want there to be a pulsing effect (consider utilizing side-chain compression on the kick to emphasize this effect).
+
+Think of the drums and the bassline to be the foundation for the check, and when the melody introduced to provide the more dynamic flavor for the track.
 
 ## Sonic Palette
 
-Think analog synthesizers meeting digital precision. Warm pads layered over crisp, punchy drums. The low end should be present but controlled — a rolling bass that propels without overwhelming. High-frequency elements (hi-hats, arpeggios) should shimmer and decay naturally.
+Think analog synthesizers meeting digital precision. Want this to be heavily inspired by late-80's / early 90's Electronic Body Music (EBM), along with more modern Industrial Techno / Rave music.
+
+I want a good balance of noisy effects and crisp hats / melody. Contrast is key here.
 
 ## Energy Arc
 
-Start with a stripped-back intro that establishes the harmonic foundation. Build gradually by introducing rhythmic elements. The core section should have a driving, insistent quality without being aggressive. The mood is determined, not frantic.
-
-## References
-
-Draw from the intersection of electronic music and cinematic scoring. The kind of music that works equally well on a dance floor at 2am and in a film scene where the protagonist makes a pivotal decision.
+Start minimal but instantly driving-forward. Build, have a quick transition, then into the core of the track. Fade out slowly after the core ends.

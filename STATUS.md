@@ -44,6 +44,8 @@ _Last updated: v0.1.0_
 
 ## What's Not Working Well
 
+**The full pipeline is slow — minutes, not seconds.** An end-to-end DJ-V run (`cs synth` → `cs run`) takes several minutes. Audio analysis, LLM extraction, context interpretation, and audio generation each contribute meaningful latency. There is no caching, no incremental reuse, and no way to skip unchanged stages. For iterative workflows this is prohibitive.
+
 **LLM extraction is non-deterministic.** Run `cs synth` twice with the same config and you'll get different chunking and different section classifications. This is inherent to LLM-backed extraction but sits uncomfortably against governance goals. There is no verification that items were classified into the *right* section — only that they were classified into *a* valid section.
 
 **Section classification has no fallback.** If the LLM classifies an extraction into a section name that doesn't match any declared section (e.g., due to hallucination or casing), the item is silently omitted with reason "no matching section." Misclassified items disappear without warning.
@@ -54,9 +56,9 @@ _Last updated: v0.1.0_
 
 **No retry or timeout on LLM calls.** A transient failure aborts the entire run. A hung ollama request blocks indefinitely.
 
-**Audio analysis is slow.** Librosa analysis of 4 MP3 files takes ~2 minutes. Acceptable for a demo; needs caching or parallelism for real workflows.
+**Audio analysis is slow.** Librosa analysis of 4 MP3 files takes ~2 minutes. No results are cached between runs — every `cs synth` re-analyzes from scratch.
 
-**MusicGen on Apple Silicon MPS.** EnCodec decoder hits a conv1d channel limitation (>65536 channels). Generation falls back to CPU, taking ~2 minutes for 30 seconds of audio. This is a PyTorch/MPS constraint, not a framework issue.
+**MusicGen on Apple Silicon MPS.** EnCodec decoder hits a conv1d channel limitation (>65536 channels). Generation falls back to CPU, taking ~2 minutes for 30 seconds of audio. Combined with context interpretation latency, `cs run` alone can take several minutes. This is a PyTorch/MPS constraint, not a framework issue.
 
 ## What's Deferred
 
