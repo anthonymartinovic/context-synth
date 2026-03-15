@@ -1,26 +1,5 @@
-# Binary
-cs
-*.exe
-
 # Build
-/bin/
-/dist/
 .env
-
-# Dependencies
-/vendor/
-
-# Test
-*.test
-*.out
-cover.out
-coverage.html
-
-# IDE
-.idea/
-*.swp
-*.swo
-*~
 
 # OS
 .DS_Store
