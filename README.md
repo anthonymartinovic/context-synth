@@ -6,6 +6,8 @@
 
 ---
 
+## The v1 Vision
+
 Context Synth is a runtime where applications emerge from context rather than being written ahead of time. A collection of artifacts form a dependency graph — each carrying its own context, capabilities, and declared dependencies — and the application emerges from the live graph.
 
 ```
