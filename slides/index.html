@@ -138,6 +138,43 @@
 
     .slide-question h2 .accent { color: var(--cs-orange); }
 
+    /* --- Slide 3: Explicit disclaimer --- */
+    .slide-disclaimer {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 30px;
+    }
+
+    .slide-disclaimer h2 {
+      font-size: 2.8em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      max-width: 860px;
+    }
+
+    .slide-disclaimer h2 .accent { color: var(--cs-orange); }
+
+    .slide-disclaimer .disclaimer-panel {
+      max-width: 860px;
+      padding: 30px 36px;
+      border-radius: 24px;
+      border: 1px solid rgba(244, 123, 32, 0.24);
+      background:
+        radial-gradient(circle at top left, rgba(244, 123, 32, 0.16), transparent 42%),
+        radial-gradient(circle at bottom right, rgba(123, 79, 191, 0.14), transparent 44%),
+        rgba(255, 255, 255, 0.04);
+    }
+
+    .slide-disclaimer .disclaimer-panel p {
+      font-size: 1.08em;
+      line-height: 1.65;
+      color: rgba(245, 245, 245, 0.95);
+    }
+
+    .slide-disclaimer .accent-purple { color: var(--cs-purple); }
+    .slide-disclaimer .accent-green { color: var(--cs-green); }
+
     /* --- Slide 4: Today's model --- */
     .slide-today {
       justify-content: center;
@@ -812,7 +849,86 @@
     .slide-diff .bottom .accent-orange { color: var(--cs-orange); }
     .slide-diff .bottom .accent-purple { color: var(--cs-purple); }
 
-    /* --- Slide 9: Context infrastructure --- */
+    /* --- Slide 10: Human in the driver seat --- */
+    .slide-driver {
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .slide-driver h2 {
+      font-size: 2.3em;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    .slide-driver h2 .accent { color: var(--cs-orange); }
+    .slide-driver .accent-purple { color: var(--cs-purple); }
+    .slide-driver .accent-green { color: var(--cs-green); }
+
+    .slide-driver .subhead {
+      font-size: 1.02em;
+      line-height: 1.55;
+      color: rgba(245, 245, 245, 0.92);
+      text-align: center;
+      max-width: 840px;
+      align-self: center;
+    }
+
+    .slide-driver .driver-grid {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .slide-driver .driver-card {
+      flex: 1;
+      max-width: 420px;
+      border-radius: 22px;
+      padding: 24px 26px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .slide-driver .driver-card.agent { border-color: rgba(123, 79, 191, 0.24); }
+    .slide-driver .driver-card.human { border-color: rgba(45, 181, 84, 0.24); }
+
+    .slide-driver .card-tag {
+      font-size: 0.76em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .slide-driver .driver-card.agent .card-tag { color: var(--cs-purple); }
+    .slide-driver .driver-card.human .card-tag { color: var(--cs-green); }
+
+    .slide-driver .card-title {
+      font-size: 1.16em;
+      font-weight: 700;
+      color: var(--cs-light);
+      line-height: 1.35;
+    }
+
+    .slide-driver .card-copy,
+    .slide-driver .footer {
+      font-size: 0.98em;
+      line-height: 1.6;
+      color: rgba(245, 245, 245, 0.92);
+    }
+
+    .slide-driver .footer {
+      text-align: center;
+      max-width: 860px;
+      align-self: center;
+    }
+
+    /* --- Slide 11: Context infrastructure --- */
     .slide-infra {
       justify-content: center;
       gap: 28px;
@@ -1389,13 +1505,25 @@
     </ul>
   </div>
 
-  <!-- Slide 3: What is ContextSynth? -->
-  <div class="slide slide-question" data-slide="2">
+  <!-- Slide 3: Explicit disclaimer -->
+  <div class="slide slide-disclaimer" data-slide="2">
+    <h2>A Quick Note on <span class="accent">Current State</span></h2>
+    <div class="disclaimer-panel">
+      <p>
+        What I'm sharing is mostly the <span class="accent">direction</span> of ContextSynth, not the current repository as it exists <span class="accent-purple">today</span>.
+        The repo is still an early <span class="accent-green">v0.1.0</span> proof of some <span class="accent">core</span> building blocks, and it is still far from the fuller model I am building toward.
+        So from here on, think of this as the <span class="accent">v1 vision</span>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Slide 4: What is ContextSynth? -->
+  <div class="slide slide-question" data-slide="3">
     <h2>What is <span class="accent">ContextSynth</span>?</h2>
   </div>
 
-  <!-- Slide 4: Today's State of Development -->
-  <div class="slide slide-today" data-slide="3">
+  <!-- Slide 5: Today's State of Development -->
+  <div class="slide slide-today" data-slide="4">
     <h2>Today, users receive software that was <span class="accent">assembled ahead of time</span></h2>
     <p class="subhead">
       Posts, messages, videos, notifications, profiles, settings. Lots of different pieces, but they are put together before the user ever arrives.
@@ -1454,8 +1582,8 @@
     </p>
   </div>
 
-  <!-- Slide 5: AI / LLM transition -->
-  <div class="slide slide-ai" data-slide="4">
+  <!-- Slide 6: AI / LLM transition -->
+  <div class="slide slide-ai" data-slide="5">
     <h2>
       With <span class="accent">large language models</span>,
       new possibilities are emerging.
@@ -1464,6 +1592,7 @@
     <div class="ai-panel">
       <p>
         Software does not always have to arrive fully assembled. More of the experience can now take shape <span class="accent-green">at runtime</span>, in response to the <span class="accent-purple">user</span> and the moment.
+        <br /><br/>The tech industry seems to be mostly focusing on getting code out faster, but I am posing a different question: how can we help the user achieve what they want to achieve faster?
       </p>
     </div>
 
@@ -1472,9 +1601,9 @@
     </p>
   </div>
 
-  <!-- Slide 6: Enter ContextSynth -->
-  <div class="slide slide-enter" data-slide="5">
-    <h2>Enter <span class="accent">ContextSynth</span></h2>
+  <!-- Slide 7: ContextSynth vision -->
+  <div class="slide slide-enter" data-slide="6">
+    <h2>The <span class="accent">ContextSynth</span> Vision</h2>
 
     <div class="compare">
       <div class="model-card">
@@ -1499,8 +1628,8 @@
       </div>
 
       <div class="model-card context-card">
-        <p class="card-label">ContextSynth</p>
-        <p class="card-title">ContextSynth <span class="accent">ships the features directly</span>.</p>
+        <p class="card-label">The v1 direction</p>
+        <p class="card-title">ContextSynth would <span class="accent">ship the features directly</span>.</p>
         <div class="graph-cluster">
           <span class="node orange">Posts</span>
           <span class="node purple">Messages</span>
@@ -1520,21 +1649,21 @@
           <div class="box-main">App for This User</div>
         </div>
         <p class="card-copy">
-          The features are the thing you ship first. The experience can then take shape around who the user is and what they are trying to do.
+          In the model I am building toward, the features are the thing you ship first. The experience can then take shape around who the user is and what they are trying to do.
         </p>
       </div>
     </div>
 
     <p class="footer">
-      Instead of shipping an app that contains the features, ContextSynth ships the <span class="accent">features</span> and lets the app emerge in real time for the user and the moment.
+      This is the <span class="accent">v1 direction</span>: instead of shipping an app that contains the features, ContextSynth would ship the <span class="accent">features</span> and let the app emerge in real time for the user and the moment.
     </p>
   </div>
 
-  <!-- Slide 7: Example in practice -->
-  <div class="slide slide-example" data-slide="6">
+  <!-- Slide 8: Example in practice -->
+  <div class="slide slide-example" data-slide="7">
     <h2>An Example <span class="accent">in Practice</span></h2>
     <p class="subhead">
-      A user opens a social media page, is greeted by a chatbot, and describes what they want to do.
+      To make the vision concrete, imagine a user opening a social media page, being greeted by a chatbot, and describing what they want to do.
     </p>
 
     <div class="flow">
@@ -1588,12 +1717,12 @@
     </div>
 
     <p class="footer">
-      The application is no longer just a fixed set of screens. It can be formed around the <span class="accent">user</span> and the <span class="accent">task</span> in real time.
+      In this model, the application is no longer just a fixed set of screens. It can be formed around the <span class="accent">user</span> and the <span class="accent">task</span> in real time.
     </p>
   </div>
 
-  <!-- Slide 8: Why this is different -->
-  <div class="slide slide-diff" data-slide="7">
+  <!-- Slide 9: Why this is different -->
+  <div class="slide slide-diff" data-slide="8">
     <h2>Why This Is <span class="accent">Different</span></h2>
 
     <div class="diff-grid">
@@ -1623,12 +1752,42 @@
     </div>
 
     <p class="bottom">
-      ContextSynth points to something deeper: <span class="accent-orange">the engine underneath may need to be fundamentally rethought</span>. Not just new wrappers, not just better composition, but a runtime model where software can emerge from context. And not only for UI, but as a more general form of <span class="accent-purple">context infrastructure</span>.
+      ContextSynth points to something deeper: <span class="accent-orange">the engine underneath may need to be fundamentally rethought</span>. Tools like <span class="accent-purple">OpenClaw</span> are a powerful response to the world of apps as it exists today, but this is asking a more basic question: what if the <span class="accent-orange">static app</span> stops being the thing we ship at all? Not just new wrappers, not just better composition, but a runtime model where software can emerge from context. And not only for UI, but as a more general form of <span class="accent-purple">context infrastructure</span>.
     </p>
   </div>
 
-  <!-- Slide 9: Context infrastructure -->
-  <div class="slide slide-infra" data-slide="8">
+  <!-- Slide 10: Human in the driver seat -->
+  <div class="slide slide-driver" data-slide="9">
+    <h2>Keep The Human <span class="accent">In The Driver Seat</span></h2>
+    <p class="subhead">
+      I am not aiming for a world where the <span class="accent-purple">agent</span> becomes the main actor and the human becomes a bystander. I want the <span class="accent-green">person</span> to stay primary, while software assembles itself around what they are trying to do.
+    </p>
+
+    <div class="driver-grid">
+      <div class="driver-card agent">
+        <p class="card-tag">Agent-first model</p>
+        <p class="card-title">The user hands off the goal, and the agent takes over</p>
+        <p class="card-copy">
+          The person becomes more like a requester or approver, while the system becomes the main operator moving through tools and interfaces on their behalf.
+        </p>
+      </div>
+
+      <div class="driver-card human">
+        <p class="card-tag">ContextSynth direction</p>
+        <p class="card-title">The human stays primary, and the graph assembles what they need</p>
+        <p class="card-copy">
+          The system should reconfigure itself around the person, the task, and the moment, without turning the human into a passenger inside their own software.
+        </p>
+      </div>
+    </div>
+
+    <p class="footer">
+      The point is not to replace the person with an autonomous operator. It is to let software become far more dynamic while the <span class="accent-green">human</span> still sets the direction.
+    </p>
+  </div>
+
+  <!-- Slide 11: Context infrastructure -->
+  <div class="slide slide-infra" data-slide="10">
     <h2>Not Just <span class="accent">UI</span></h2>
     <p class="subhead">
       ContextSynth is not only about generating screens. The larger idea is <span class="accent-purple">context infrastructure</span>: a system that can shape different kinds of software around the <span class="accent-green">user</span>, the task, and the moment.
@@ -1659,9 +1818,9 @@
     </p>
   </div>
 
-  <!-- Slide 10: What the graph is made of -->
-  <div class="slide slide-graph" data-slide="9">
-    <h2>What the <span class="accent">Graph</span> Is Made Of</h2>
+  <!-- Slide 12: What the v1 graph could be -->
+  <div class="slide slide-graph" data-slide="11">
+    <h2>The <span class="accent">v1 Direction</span></h2>
 
     <div class="dag">
       <svg viewBox="0 0 960 380" aria-hidden="true">
@@ -1694,7 +1853,7 @@
       </svg>
 
       <!-- Zone labels -->
-      <div class="zone-label" style="top:6px; left:38px">Sources</div>
+      <div class="zone-label" style="top:6px; left:38px">Possible Sources</div>
       <div class="zone-label" style="top:6px; left:310px">Artifacts</div>
       <div class="zone-label" style="top:6px; left:596px">Graph</div>
       <div class="zone-label" style="top:6px; right:28px">Runtime</div>
@@ -1721,25 +1880,25 @@
     </div>
 
     <p class="subhead" style="font-size:1em; color:rgba(245,245,245,0.9); text-align:center; max-width:800px; align-self:center;">
-      External <span class="accent-purple">sources</span> stream into ContextSynth, are distilled into <span class="accent-green">artifacts</span>, those artifacts form the <span class="accent">context graph</span>, and the user engages with what <span class="accent-green">emerges</span> from it at runtime.
+      This is the <span class="accent">v1 model I am building toward</span>, not the current repo: external <span class="accent-purple">sources</span> flow into ContextSynth, are distilled into <span class="accent-green">artifacts</span>, those artifacts form the <span class="accent">context graph</span>, and the user engages with what <span class="accent-green">emerges</span> from it at runtime.
     </p>
   </div>
 
-  <!-- Slide 11: What exists today -->
-  <div class="slide slide-state" data-slide="10">
+  <!-- Slide 13: What exists today -->
+  <div class="slide slide-state" data-slide="12">
     <h2>What Exists <span class="accent">Today</span></h2>
     <p class="subhead">
-      The idea is larger than the current implementation. The repo today proves core building blocks, while the full <span class="accent-purple">graph-native</span> model is still the direction.
+      The repo is early. <span class="accent-green">v0.1.0</span> proves a few core building blocks, but it is <span class="accent-purple">nowhere near</span> the full graph-native model shown in the previous slides.
     </p>
 
     <div class="state-grid">
       <div class="state-card today">
         <p class="state-tag">Current repo</p>
-        <p class="state-title">v0.1.0 proves the <span class="accent-green">pieces</span></p>
+        <p class="state-title">v0.1.0 proves a few <span class="accent-green">pieces</span></p>
         <ul>
-          <li>Sources compile into a governed artifact.</li>
+          <li><span class="accent-green">Markdown and MP3</span> sources compile into one governed artifact.</li>
           <li>A <span class="accent-purple">capability graph</span> resolves downstream of that artifact.</li>
-          <li>This validates the runtime pieces, but still keeps an <span class="accent-green">artifact boundary</span>.</li>
+          <li>This validates some building blocks, but it is still far from the <span class="accent-green">graph-native v1 vision</span>.</li>
         </ul>
       </div>
 
@@ -1755,12 +1914,12 @@
     </div>
 
     <p class="footer">
-      So the current repo is not the final model. It is a <span class="accent-green">step</span> toward a runtime where software can emerge from <span class="accent-purple">context</span> more directly.
+      The current repo is <span class="accent-purple">not</span> the final model. It is an early <span class="accent-green">step</span> toward a runtime where software can emerge from <span class="accent-purple">context</span> more directly.
     </p>
   </div>
 
-  <!-- Slide 12: How to show progress -->
-  <div class="slide slide-progress" data-slide="11">
+  <!-- Slide 14: How to show progress -->
+  <div class="slide slide-progress" data-slide="13">
     <h2>How Can I Demonstrate <span class="accent">Progress</span> of ContextSynth?</h2>
     <p class="subhead">
       Sharing the evolution of something <span class="accent-purple">low-level</span> is hard. A lot can change under the hood, while the value is still difficult for a normal audience to see.
@@ -1789,14 +1948,14 @@
     </p>
   </div>
 
-  <!-- Slide 13: DJ-V -->
-  <div class="slide slide-djv" data-slide="12">
+  <!-- Slide 15: DJ-V -->
+  <div class="slide slide-djv" data-slide="14">
     <h2><span class="accent">DJ</span>-<span class="accent">V</span></h2>
-    <p class="subtitle">A Music-Generating AI Agent, Synthesized from Context.</p>
+    <p class="subtitle">An early example application built to prove the end-to-end flow.</p>
   </div>
 
-  <!-- Slide 14: DJ-V: The Vision -->
-  <div class="slide slide-graph" data-slide="13">
+  <!-- Slide 16: DJ-V: The Vision -->
+  <div class="slide slide-graph" data-slide="15">
     <h2>The <span class="accent">Vision</span></h2>
 
     <div class="dag">
@@ -1857,33 +2016,33 @@
     </div>
 
     <p class="subhead" style="font-size:1em; color:rgba(245,245,245,0.9); text-align:center; max-width:800px; align-self:center;">
-      For DJ-V, different <span class="accent-purple">sources</span> like tracks, stems, and song notes are distilled into musical <span class="accent-green">artifacts</span>. Those artifacts form the <span class="accent">context graph</span>, and from that graph a live <span class="accent-green">stream of music</span> can emerge.
+      In the longer-term vision for DJ-V, different <span class="accent-purple">sources</span> like tracks, stems, and song notes are distilled into musical <span class="accent-green">artifacts</span>. Those artifacts form the <span class="accent">context graph</span>, and from that graph a live <span class="accent-green">stream of music</span> can emerge.
     </p>
   </div>
 
-  <!-- Slide 15: DJ-V today vs future -->
-  <div class="slide slide-djv-state" data-slide="14">
+  <!-- Slide 17: DJ-V today vs future -->
+  <div class="slide slide-djv-state" data-slide="16">
     <h2>DJ-V: <span class="accent">Today</span> vs <span class="accent-green">Future</span></h2>
     <p class="subhead">
-      The current example validates the <span class="accent-green">end-to-end flow</span>, but it is still far from the fidelity and granularity needed. The goal is to move toward something that better fits the <span class="accent-purple">graph-native</span> philosophy.
+      DJ-V is an early <span class="accent-green">proof of flow</span>, not a finished product. It shows that the pipeline can run end to end, but it is still <span class="accent-purple">nowhere near</span> the control, fidelity, or structure the vision requires.
     </p>
 
     <div class="compare-grid">
       <div class="compare-card today">
         <p class="card-tag">Today</p>
-        <p class="card-title">Generating music with <span class="accent-green">Meta's MusicGen</span></p>
+        <p class="card-title">An early demo using <span class="accent-green">Meta's MusicGen</span></p>
         <ul>
-          <li>It proves the path from <span class="accent-purple">sources to music</span> works end to end.</li>
-          <li>But it still takes minutes to produce even a <span class="accent-green">30-second sample</span>.</li>
-          <li>The output is still nowhere near close enough to the original context sources.</li>
-          <li>So it is a strong proof of the flow, but <span class="accent-purple">not nearly good enough</span> yet.</li>
+          <li>It proves the path from <span class="accent-purple">governed sources to generated music</span> works end to end.</li>
+          <li>It is still slow, lossy, and nowhere near the fidelity needed.</li>
+          <li>Too much rich musical context still gets compressed before generation.</li>
+          <li>So it is useful as a proof of flow, but <span class="accent-purple">not close to the real target</span>.</li>
           <li><span class="accent-green">MusicGen</span> is a temporary backend. The plan is to replace it with software that allows much finer control.</li>
         </ul>
       </div>
 
       <div class="compare-card future">
         <p class="card-tag">Future</p>
-        <p class="card-title">A <span class="accent-green">graph-native</span> music agent</p>
+        <p class="card-title">A <span class="accent-green">graph-native</span> music system</p>
         <ul>
           <li>DJ-V should take in stems, notes, references, constraints, and hosted tracks together.</li>
           <li>Those inputs should resolve into musical <span class="accent-green">artifacts</span> like beat, tempo, melody, and song shape.</li>
@@ -1898,11 +2057,11 @@
     </p>
   </div>
 
-  <!-- Slide 16: Tech stack -->
-  <div class="slide slide-stack" data-slide="15">
+  <!-- Slide 18: Tech stack -->
+  <div class="slide slide-stack" data-slide="17">
     <h2>The <span class="accent">Tech Stack</span></h2>
     <p class="subhead">
-      The stack is intentionally narrow today: one core language for infrastructure, one SDK language for builders, and one officially supported model family for the judgment layer, <span class="accent-green">for now</span>.
+      The stack is intentionally narrow today: one core language for infrastructure, one planned SDK language for builders, and one officially supported model family for the judgment layer, <span class="accent-green">for now</span>.
     </p>
 
     <div class="stack-grid">
@@ -1918,7 +2077,7 @@
 
       <div class="stack-card ts">
         <p class="card-tag">TypeScript</p>
-        <p class="card-title">The <span class="accent-purple">SDK</span> for people building on top</p>
+        <p class="card-title">The planned <span class="accent-purple">SDK language</span> for people building on top</p>
         <ul>
           <li>Good ecosystem reach for developers making applications and adapters.</li>
           <li>Type safety helps at the boundary where contracts matter.</li>
@@ -1945,11 +2104,11 @@
     </ul>
   </div>
 
-  <!-- Slide 17: Protocol + Engine + Runtime -->
-  <div class="slide slide-per" data-slide="16">
+  <!-- Slide 19: Protocol + Engine + Runtime -->
+  <div class="slide slide-per" data-slide="18">
     <h2><span class="accent">Protocol</span> + Engine + <span class="accent-green">Runtime</span></h2>
     <p class="subhead">
-      One way to think about ContextSynth is as three layers working together: how context is described, how it is resolved, and how the result is actually used.
+      One way to think about the architecture I am building toward is as three layers working together: how context is described, how it is resolved, and how the result is actually used.
     </p>
 
     <div class="per-grid">
@@ -1979,7 +2138,7 @@
         <ul>
           <li>Reads the resulting graph and resolves what matters for this moment.</li>
           <li>Turns the graph into a live interface, workflow, or output.</li>
-          <li>That is where the application or experience actually emerges.</li>
+          <li>That is where the application or experience should eventually emerge more directly.</li>
         </ul>
       </div>
     </div>
@@ -1989,8 +2148,8 @@
     </p>
   </div>
 
-  <!-- Slide 18: What's next -->
-  <div class="slide slide-roadmap" data-slide="17">
+  <!-- Slide 20: What's next -->
+  <div class="slide slide-roadmap" data-slide="19">
     <h2>What's <span class="accent">Next</span>?</h2>
     <p class="subhead">
       The current repo proves important pieces, but the next phase is about moving from partial validation toward a more fully <span class="accent-purple">graph-native</span> system.
@@ -2033,8 +2192,8 @@
     </p>
   </div>
 
-  <!-- Slide 19: Closing / invitation -->
-  <div class="slide slide-close" data-slide="18">
+  <!-- Slide 21: Closing / invitation -->
+  <div class="slide slide-close" data-slide="20">
     <h2>An <span class="accent">Invitation</span></h2>
     <p class="subhead">
       If this idea resonates, there is now a simple place to find the project, follow along, and get involved.
@@ -2045,8 +2204,8 @@
         <p class="card-tag">Website</p>
         <p class="card-title"><span class="accent">contextsynth.dev</span></p>
         <ul>
-          <li>A reference to this YouTube video.</li>
-          <li>A clear starting point for the project.</li>
+          <li>A simple landing page for the project.</li>
+          <li>A place to follow along as the project evolves.</li>
         </ul>
       </div>
 
