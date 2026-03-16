@@ -9,7 +9,7 @@ import (
 
 	"github.com/anthonymartinovic/context-synth/internal/config"
 	"github.com/anthonymartinovic/context-synth/internal/llm"
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 	"github.com/anthonymartinovic/context-synth/internal/token"
 )
 
@@ -19,11 +19,14 @@ type LLMExtractor struct {
 
 type extractionResult struct {
 	index       int
-	extractions []model.Extraction
+	extractions []protocol.Extraction
 	err         error
 }
 
-func (l *LLMExtractor) Extract(ctx context.Context, snap model.Snapshot, sections []config.SectionDecl) ([]model.Extraction, error) {
+func (l *LLMExtractor) Extract(ctx context.Context, snap protocol.Snapshot, sections []config.SectionDecl) ([]protocol.Extraction, error) {
+	if l.Client == nil {
+		return nil, fmt.Errorf("LLM extractor has nil client")
+	}
 	if len(sections) == 0 {
 		return nil, fmt.Errorf("LLM extractor requires at least one section definition")
 	}
@@ -34,7 +37,7 @@ func (l *LLMExtractor) Extract(ctx context.Context, snap model.Snapshot, section
 	var wg sync.WaitGroup
 	for i, item := range snap.Items {
 		wg.Add(1)
-		go func(idx int, item model.SnapshotItem) {
+		go func(idx int, item protocol.SnapshotItem) {
 			defer wg.Done()
 			prompt := buildExtractionPrompt(item, sections)
 
@@ -55,7 +58,7 @@ func (l *LLMExtractor) Extract(ctx context.Context, snap model.Snapshot, section
 	}
 	wg.Wait()
 
-	var allExtractions []model.Extraction
+	var allExtractions []protocol.Extraction
 	for _, r := range results {
 		if r.err != nil {
 			return nil, r.err
@@ -83,7 +86,7 @@ Respond ONLY with a JSON array. Each element must have:
 Do not add commentary. Do not wrap in markdown code fences. Return only the JSON array.`, strings.Join(sectionNames, ", "))
 }
 
-func buildExtractionPrompt(item model.SnapshotItem, sections []config.SectionDecl) string {
+func buildExtractionPrompt(item protocol.SnapshotItem, sections []config.SectionDecl) string {
 	var sectionList strings.Builder
 	for _, s := range sections {
 		sectionList.WriteString(fmt.Sprintf("- %s\n", s.Name))
@@ -110,7 +113,7 @@ type extractionItem struct {
 	Content string `json:"content"`
 }
 
-func parseExtractionResponse(response string, item model.SnapshotItem) ([]model.Extraction, error) {
+func parseExtractionResponse(response string, item protocol.SnapshotItem) ([]protocol.Extraction, error) {
 	response = strings.TrimSpace(response)
 	response = strings.TrimPrefix(response, "```json")
 	response = strings.TrimPrefix(response, "```")
@@ -122,9 +125,9 @@ func parseExtractionResponse(response string, item model.SnapshotItem) ([]model.
 		return nil, fmt.Errorf("invalid JSON response: %w\nraw response: %s", err, response)
 	}
 
-	var extractions []model.Extraction
+	var extractions []protocol.Extraction
 	for _, ei := range items {
-		extractions = append(extractions, model.Extraction{
+		extractions = append(extractions, protocol.Extraction{
 			Content:     ei.Content,
 			Section:     ei.Section,
 			TokenCount:  token.Estimate(ei.Content),

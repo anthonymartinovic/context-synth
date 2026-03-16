@@ -12,7 +12,7 @@ import (
 	"github.com/anthonymartinovic/context-synth/internal/config"
 	"github.com/anthonymartinovic/context-synth/internal/extract"
 	"github.com/anthonymartinovic/context-synth/internal/llm"
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 	"github.com/anthonymartinovic/context-synth/internal/rank"
 	"github.com/anthonymartinovic/context-synth/internal/render"
 	"github.com/anthonymartinovic/context-synth/internal/snapshot"
@@ -29,13 +29,18 @@ type Options struct {
 }
 
 type Result struct {
-	Artifact model.Artifact
-	Output   string
+	Artifact     protocol.Artifact
+	Output       string
+	Verification verify.VerificationData
 }
 
-func Run(ctx context.Context, cfg config.Config, opts Options) (Result, error) {
-	provider := &source.MarkdownProvider{}
-	snap, err := snapshot.Build(ctx, cfg, provider)
+type Deps struct {
+	Provider  source.Provider
+	LLMClient llm.Client
+}
+
+func Run(ctx context.Context, cfg config.Config, opts Options, deps Deps) (Result, error) {
+	snap, err := snapshot.Build(ctx, cfg, deps.Provider)
 	if err != nil {
 		return Result{}, fmt.Errorf("snapshot: %w", err)
 	}
@@ -43,13 +48,9 @@ func Run(ctx context.Context, cfg config.Config, opts Options) (Result, error) {
 	var extractor extract.Extractor
 	mode := "deterministic"
 
-	if cfg.LLM != nil && !opts.NoLLM {
+	if deps.LLMClient != nil && cfg.LLM != nil && !opts.NoLLM {
 		mode = "full"
-		llmExtractor, err := buildLLMExtractor(cfg)
-		if err != nil {
-			return Result{}, fmt.Errorf("llm extractor: %w", err)
-		}
-		extractor = llmExtractor
+		extractor = &extract.LLMExtractor{Client: deps.LLMClient}
 	} else {
 		extractor = &extract.PassthroughExtractor{}
 	}
@@ -61,11 +62,11 @@ func Run(ctx context.Context, cfg config.Config, opts Options) (Result, error) {
 
 	ranked := rank.Rank(extractions)
 
-	var plan model.SynthPlan
+	var plan protocol.SynthPlan
 	if mode == "full" && len(cfg.Sections) > 0 {
-		var sectionBudgets []model.SectionBudget
+		var sectionBudgets []protocol.SectionBudget
 		for _, s := range cfg.Sections {
-			sectionBudgets = append(sectionBudgets, model.SectionBudget{
+			sectionBudgets = append(sectionBudgets, protocol.SectionBudget{
 				Name:       s.Name,
 				Proportion: s.Budget,
 			})
@@ -75,7 +76,30 @@ func Run(ctx context.Context, cfg config.Config, opts Options) (Result, error) {
 		plan = assemble.Assemble(ranked, cfg.Budget)
 	}
 
-	_ = verify.Verify(plan, mode)
+	vd := verify.Verify(plan, mode)
+	if opts.Verbose {
+		fmt.Fprintf(os.Stderr, "\n--- verification surface ---\n")
+		fmt.Fprintf(os.Stderr, "mode: %s\n\n", vd.Mode)
+		if len(vd.Included) > 0 {
+			fmt.Fprintf(os.Stderr, "%-40s %6s %8s %s\n", "Included", "Weight", "Tokens", "Section")
+			for _, item := range vd.Included {
+				section := item.Section
+				if section == "" {
+					section = "(flat)"
+				}
+				fmt.Fprintf(os.Stderr, "%-40s %6.2f %8d %s\n",
+					item.SourcePath, item.Weight, item.TokenCount, section)
+			}
+		}
+		if len(vd.Omitted) > 0 {
+			fmt.Fprintf(os.Stderr, "\n%-40s %6s %8s %s\n", "Omitted", "Weight", "Tokens", "Reason")
+			for _, item := range vd.Omitted {
+				fmt.Fprintf(os.Stderr, "%-40s %6.2f %8d %s\n",
+					item.SourcePath, item.Weight, item.TokenCount, item.Reason)
+			}
+		}
+		fmt.Fprintf(os.Stderr, "---\n\n")
+	}
 
 	configHash := computeConfigHash(opts.ConfigPath)
 
@@ -84,11 +108,11 @@ func Run(ctx context.Context, cfg config.Config, opts Options) (Result, error) {
 		tokensUsed += item.TokenCount
 	}
 
-	var sections []model.ArtifactSection
+	var sections []protocol.ArtifactSection
 	if mode == "full" && len(cfg.Sections) > 0 {
-		sectionMap := make(map[string]*model.ArtifactSection)
+		sectionMap := make(map[string]*protocol.ArtifactSection)
 		for _, s := range cfg.Sections {
-			sec := model.ArtifactSection{Name: s.Name}
+			sec := protocol.ArtifactSection{Name: s.Name}
 			sectionMap[s.Name] = &sec
 		}
 		for _, item := range plan.Included {
@@ -103,28 +127,31 @@ func Run(ctx context.Context, cfg config.Config, opts Options) (Result, error) {
 			}
 		}
 	} else {
-		sections = []model.ArtifactSection{
+		sections = []protocol.ArtifactSection{
 			{Name: "", Items: plan.Included},
 		}
 	}
 
-	artifact := model.Artifact{
-		FrontMatter: model.FrontMatter{
-			Generator:  "cs " + binaryVersion(),
-			Mode:       mode,
-			Snapshot:   snap.Hash,
-			Config:     configHash,
-			Timestamp:  time.Now(),
-			Budget:     cfg.Budget,
-			TokensUsed: tokensUsed,
+	artifact := protocol.Artifact{
+		Meta: protocol.Meta{
+			Generator:    "cs " + binaryVersion(),
+			Mode:         mode,
+			SnapshotHash: snap.Hash,
+			ConfigHash:   configHash,
+			Timestamp:    time.Now(),
+			Budget:       cfg.Budget,
+			TokensUsed:   tokensUsed,
 		},
 		Sections:  sections,
 		Omissions: plan.Omitted,
 	}
 
-	output := render.Render(artifact)
+	output, err := render.Render(artifact)
+	if err != nil {
+		return Result{}, fmt.Errorf("render: %w", err)
+	}
 
-	return Result{Artifact: artifact, Output: output}, nil
+	return Result{Artifact: artifact, Output: output, Verification: vd}, nil
 }
 
 func binaryVersion() string {
@@ -141,12 +168,4 @@ func computeConfigHash(path string) string {
 	}
 	hash := sha256.Sum256(data)
 	return fmt.Sprintf("%x", hash)
-}
-
-func buildLLMExtractor(cfg config.Config) (extract.Extractor, error) {
-	client, err := llm.NewGeminiClient(cfg.LLM.Model, cfg.LLM.APIKeyEnv)
-	if err != nil {
-		return nil, err
-	}
-	return &extract.LLMExtractor{Client: client}, nil
 }

@@ -1,46 +1,51 @@
 <div align="center">
   <img width="196" height="150" alt="Context Synth Logo" src="logo.png" />
+
+  **A context graph runtime that turns knowledge into capabilities, delivering real-time user experiences.**
 </div>
 
 ---
 
-## Status
+## The v1 Vision
 
-**v0.1.0-alpha.1** — early release, not yet stable. The `cs` binary compiles local markdown sources into bounded, traceable context artifacts with weight-based precedence, provenance tracking, and recorded omissions. LLM-backed extraction runs against Gemini (the only supported provider in this release). The artifact format is unstable and will change.
+Context Synth is a runtime where applications emerge from context rather than being written ahead of time. A collection of artifacts form a dependency graph — each carrying its own context, capabilities, and declared dependencies — and the application emerges from the live graph.
 
-For a detailed account of what's working, what isn't, and what's deferred, see [STATUS.md](STATUS.md).
+```
+context graph (collection of artifacts with dependencies)
+   ↓
+application emerges from the graph
+```
+
+This is closer to how an operating system works than how any application works. An OS has no single artifact at the end — it has a collection of capabilities forming a dependency graph, and the user experience emerges from that graph at runtime. With AI, this model becomes far more achievable.
 
 ---
 
-Context Synth is a governed context runtime that compiles multiple knowledge sources into a single structured context document for humans, tools, and AI systems.
+## Current State: v0.1.0
 
-Users declare which sources are allowed to shape the output, how much influence each source carries, what structure the output should follow, and how much can fit within it. Context Synth produces a reviewable context file that shows what was included, what was omitted, and where each part came from.
+v0.1.0 is the first end-to-end release. It validates the core building blocks — governed context compilation, capability graph resolution, adapter projection — through a two-phase pipeline:
 
 ```
-Sources → Snap → Extract → Rank → Assemble → Verify → Contextfile
+Sources → Snap → Extract → Rank → Assemble → Verify → Context Artifact (JSON)
+Context Artifact → Graph Construction → Dependency Resolution → Projection
 ```
 
-For details on the inner workings, see the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md).
+Today, sources compile into a single governed artifact, and a capability graph resolves downstream of it. This proves the pieces work. The v1 direction inverts the architecture so that artifacts form the graph directly rather than feeding into one. See [STATUS.md](STATUS.md) for full details on what's working, what isn't, and what's next.
 
-### What v0.1 supports today
+For details on the v0.1.0 architecture, see the [Project Spec](docs/PROJECT_SPEC.md) and [System Design](docs/SYSTEM_DESIGN.md).
 
-- **Local markdown files** as the only source type
-- Per-source weight declaration with glob expansion
+#### What v0.1.0 supports
+
+- **Markdown and MP3 audio** source types
+- Per-source weight declaration (markdown supports globs)
 - Global token budget with strict enforcement
-- User-defined section structure (with LLM-backed classification)
+- User-defined section structure with LLM-backed classification
 - Deterministic fallback mode with no LLM required
-- Provenance and omissions recorded in every artifact
-
-### Long-term direction
-
-Context Synth is intended to become an infrastructure layer that governs how context is constructed, versioned, and supplied to AI systems — ingesting from repositories, MCP servers, and other external sources; supporting stable artifact versioning, diffing, and drift detection; and integrating into CI pipelines. None of that is in the current version.
-
-## What It Is Not
-
-- Not a wiki or documentation system
-- Not a RAG layer
-- Not an agent
-- Not a prompt manager or model provider
+- Machine-readable JSON artifact with full governance metadata (provenance, weights, hashes, omissions)
+- Capability graph construction and topological resolution
+- LLM and subprocess executor mechanisms
+- Adapter interface for output projection
+- Llama as the default LLM provider (local inference via ollama)
+- [DJ-V](examples/dj-v/) — first example application (documents + audio → governed artifact → capability graph → generative music)
 
 ## Installation
 
@@ -72,9 +77,19 @@ cs snap
 # Produce a context artifact (deterministic, no LLM)
 cs synth --no-llm
 
-# Produce a context artifact with LLM-backed extraction
-export GEMINI_API_KEY="your-key"
+# Produce a context artifact with LLM-backed extraction (requires ollama)
 cs synth
+
+# Resolve a capability graph over the artifact
+cs run --artifact artifact.json --capabilities capabilities.json --adapter "your-adapter-cmd"
+```
+
+LLM-backed extraction requires ollama running locally with a Llama model:
+
+```bash
+brew install ollama
+ollama serve &
+ollama pull llama3.1:8b
 ```
 
 ## Usage
@@ -89,14 +104,14 @@ Resolves sources and prints a snapshot table showing each source's weight, token
 
 ```
 Source                                   Weight   Tokens Hash
-docs/domain/overview.md                    1.00    2,340 a1b2c3d4
-docs/adr/001-rest.md                       0.70    1,100 c9d0e1f2
-3 sources | 3,440 tokens estimated | budget: 10,000
+sources/md/vibe.md                         1.00      340 a1b2c3d4
+sources/audio/midnight_drive.mp3           0.80    1,200 c9d0e1f2
+4 sources | 3,440 tokens estimated | budget: 10,000
 ```
 
 ### `cs synth`
 
-Runs the full pipeline and writes a context artifact.
+Runs the compilation pipeline and writes a JSON context artifact.
 
 | Flag | Description |
 |------|-------------|
@@ -106,21 +121,36 @@ Runs the full pipeline and writes a context artifact.
 | `--dry-run` | Print output to stdout instead of writing a file |
 | `--verbose` | Print pipeline summary to stderr |
 
+### `cs run`
+
+Loads a context artifact, resolves a capability graph, and projects output through an adapter.
+
+| Flag | Description |
+|------|-------------|
+| `--artifact` | Path to context artifact (default: `artifact.json`) |
+| `--capabilities` | Path to capability declarations (default: `capabilities.json`) |
+| `--adapter` | Adapter command (e.g., `deno run adapter/src/index.ts`) |
+| `--verbose` | Verbose output |
+
+`cs synth` and `cs run` operate independently across the artifact boundary. The context artifact is the stable interface between them.
+
 ## Configuration
 
 ```yaml
 version: "1"
 
 output:
-  path: Contextfile
+  path: artifact.json
 
 budget: 10000
 
 sources:
-  - path: docs/domain/overview.md
+  - markdown: docs/domain/overview.md
     weight: 1.0
-  - path: docs/adrs/*.md
+  - markdown: docs/adrs/*.md
     weight: 0.7
+  - audio: sources/audio/reference.mp3
+    weight: 0.8
 
 sections:
   - name: Domain Knowledge
@@ -129,23 +159,24 @@ sections:
     budget: 0.25
 
 llm:
-  provider: gemini
-  model: gemini-2.5-pro
-  api_key_env: GEMINI_API_KEY
+  provider: llama
+  model: llama3.1:8b
 ```
 
-- **Sources** declare file paths (globs supported) with weights from 0.0 to 1.0.
+- **Sources** declare markdown file paths (globs supported) or audio file paths, each with a weight from 0.0 to 1.0.
 - **Sections** define the output structure with proportional budget allocation.
-- **LLM** is optional. Without it, the pipeline runs in deterministic fallback mode.
+- **LLM** is optional. Without it, the pipeline runs in deterministic fallback mode. Only `llama` is supported as a provider.
 - Section classification requires the LLM. In `--no-llm` mode, output is flat weight-ordered.
-- **Only Gemini is supported in v0.1.** The `provider` field exists for future extensibility but is currently ignored — the pipeline always uses Gemini.
+- Audio sources require the `CS_AUDIO_ANALYZER` environment variable pointing to a librosa-based analysis script.
 
 ## Documentation
 
 - [Project Spec](docs/PROJECT_SPEC.md) — what Context Synth is for and the rules it follows
 - [System Design](docs/SYSTEM_DESIGN.md) — how the system is put together
-- [v0.1 Design](docs/design/v0.1.md) — the first build target
-- [v0.1 Plan](docs/plan/v0.1.md) — implementation milestones
+- [Technology](docs/TECHNOLOGY.md) — foundational technology choices
+- [Design](docs/design/) — versioned design documents (scope, architecture, acceptance criteria)
+- [Plan](docs/plan/) — versioned implementation plans and milestones
+- [Reflections](docs/reflections/) — versioned retrospectives on each release
 
 ## License
 

@@ -42,8 +42,11 @@ func validate(cfg *Config, path string) error {
 		return fmt.Errorf("config: at least one source is required")
 	}
 	for i, s := range cfg.Sources {
-		if s.Path == "" {
-			return fmt.Errorf("config: source %d has empty path", i)
+		if s.Markdown == "" && s.Audio == "" {
+			return fmt.Errorf("config: source %d must have markdown or audio", i)
+		}
+		if s.Markdown != "" && s.Audio != "" {
+			return fmt.Errorf("config: source %d must have only one of markdown or audio", i)
 		}
 		if s.Weight < 0.0 || s.Weight > 1.0 {
 			return fmt.Errorf("config: source %d weight %.2f out of range [0.0, 1.0]", i, s.Weight)
@@ -57,12 +60,20 @@ func validate(cfg *Config, path string) error {
 			return fmt.Errorf("config: section %d budget must be non-negative", i)
 		}
 	}
+	if cfg.LLM != nil {
+		if cfg.LLM.Provider == "" {
+			return fmt.Errorf("config: llm.provider is required when llm is configured")
+		}
+		if cfg.LLM.Provider != "llama" {
+			return fmt.Errorf("config: unsupported llm provider %q", cfg.LLM.Provider)
+		}
+	}
 	return nil
 }
 
 func resolveDefaults(cfg *Config) {
 	if cfg.Output.Path == "" {
-		cfg.Output.Path = "Contextfile"
+		cfg.Output.Path = "artifact.json"
 	}
 	normalizeSectionBudgets(cfg)
 }
@@ -90,8 +101,11 @@ func normalizeSectionBudgets(cfg *Config) {
 func resolvePaths(cfg *Config, configPath string) {
 	dir := filepath.Dir(configPath)
 	for i := range cfg.Sources {
-		if !filepath.IsAbs(cfg.Sources[i].Path) {
-			cfg.Sources[i].Path = filepath.Join(dir, cfg.Sources[i].Path)
+		if cfg.Sources[i].Markdown != "" && !filepath.IsAbs(cfg.Sources[i].Markdown) {
+			cfg.Sources[i].Markdown = filepath.Join(dir, cfg.Sources[i].Markdown)
+		}
+		if cfg.Sources[i].Audio != "" && !filepath.IsAbs(cfg.Sources[i].Audio) {
+			cfg.Sources[i].Audio = filepath.Join(dir, cfg.Sources[i].Audio)
 		}
 	}
 }

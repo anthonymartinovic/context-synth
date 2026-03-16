@@ -7,21 +7,25 @@ import (
 	"sort"
 
 	"github.com/anthonymartinovic/context-synth/internal/config"
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 	"github.com/anthonymartinovic/context-synth/internal/source"
 )
 
-func Build(ctx context.Context, cfg config.Config, provider source.Provider) (model.Snapshot, error) {
-	var allItems []model.SnapshotItem
+func Build(ctx context.Context, cfg config.Config, provider source.Provider) (protocol.Snapshot, error) {
+	var allItems []protocol.SnapshotItem
 
 	for i, decl := range cfg.Sources {
 		resolved, err := provider.Resolve(ctx, decl, i)
 		if err != nil {
-			return model.Snapshot{}, fmt.Errorf("resolving source %d (%s): %w", i, decl.Path, err)
+			label := decl.Markdown
+			if label == "" {
+				label = decl.Audio
+			}
+			return protocol.Snapshot{}, fmt.Errorf("resolving source %d (%s): %w", i, label, err)
 		}
 		for _, r := range resolved {
-			allItems = append(allItems, model.SnapshotItem{
-				Source: model.Source{
+			allItems = append(allItems, protocol.SnapshotItem{
+				Source: protocol.Source{
 					Path:        r.Path,
 					Content:     r.Content,
 					ContentHash: r.ContentHash,
@@ -39,10 +43,10 @@ func Build(ctx context.Context, cfg config.Config, provider source.Provider) (mo
 	})
 
 	hash := computeSnapshotHash(allItems)
-	return model.Snapshot{Items: allItems, Hash: hash}, nil
+	return protocol.Snapshot{Items: allItems, Hash: hash}, nil
 }
 
-func computeSnapshotHash(items []model.SnapshotItem) string {
+func computeSnapshotHash(items []protocol.SnapshotItem) string {
 	h := sha256.New()
 	for _, item := range items {
 		h.Write([]byte(item.Source.ContentHash))

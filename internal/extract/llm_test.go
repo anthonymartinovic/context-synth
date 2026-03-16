@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/anthonymartinovic/context-synth/internal/config"
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 )
 
 type mockClient struct {
@@ -27,10 +27,10 @@ func TestLLMExtractor_ClassifiesIntoSections(t *testing.T) {
 	}
 
 	ext := &LLMExtractor{Client: client}
-	snap := model.Snapshot{
-		Items: []model.SnapshotItem{
+	snap := protocol.Snapshot{
+		Items: []protocol.SnapshotItem{
 			{
-				Source: model.Source{
+				Source: protocol.Source{
 					Path:        "docs/overview.md",
 					Content:     []byte("test content"),
 					ContentHash: "abc123def456ghij",
@@ -69,10 +69,10 @@ func TestLLMExtractor_InheritsProvenance(t *testing.T) {
 	}
 
 	ext := &LLMExtractor{Client: client}
-	snap := model.Snapshot{
-		Items: []model.SnapshotItem{
+	snap := protocol.Snapshot{
+		Items: []protocol.SnapshotItem{
 			{
-				Source: model.Source{
+				Source: protocol.Source{
 					Path:        "docs/test.md",
 					Content:     []byte("source text"),
 					ContentHash: "hashvalue1234abcd",
@@ -110,10 +110,10 @@ func TestLLMExtractor_HandlesCodeFences(t *testing.T) {
 	}
 
 	ext := &LLMExtractor{Client: client}
-	snap := model.Snapshot{
-		Items: []model.SnapshotItem{
+	snap := protocol.Snapshot{
+		Items: []protocol.SnapshotItem{
 			{
-				Source: model.Source{
+				Source: protocol.Source{
 					Path:        "test.md",
 					Content:     []byte("test"),
 					ContentHash: "abcdef1234567890",
@@ -137,7 +137,7 @@ func TestLLMExtractor_HandlesCodeFences(t *testing.T) {
 
 func TestLLMExtractor_RequiresSections(t *testing.T) {
 	ext := &LLMExtractor{Client: &mockClient{}}
-	_, err := ext.Extract(context.Background(), model.Snapshot{}, nil)
+	_, err := ext.Extract(context.Background(), protocol.Snapshot{}, nil)
 	if err == nil {
 		t.Fatal("expected error when no sections provided")
 	}
@@ -146,9 +146,9 @@ func TestLLMExtractor_RequiresSections(t *testing.T) {
 func TestLLMExtractor_APIError(t *testing.T) {
 	client := &mockClient{err: fmt.Errorf("API unavailable")}
 	ext := &LLMExtractor{Client: client}
-	snap := model.Snapshot{
-		Items: []model.SnapshotItem{
-			{Source: model.Source{Path: "test.md", Content: []byte("test"), ContentHash: "abc123"}},
+	snap := protocol.Snapshot{
+		Items: []protocol.SnapshotItem{
+			{Source: protocol.Source{Path: "test.md", Content: []byte("test"), ContentHash: "abc123"}},
 		},
 	}
 	_, err := ext.Extract(context.Background(), snap, []config.SectionDecl{{Name: "Info", Budget: 1.0}})

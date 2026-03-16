@@ -4,14 +4,14 @@ import (
 	"context"
 	"testing"
 
-	"github.com/anthonymartinovic/context-synth/internal/model"
+	"github.com/anthonymartinovic/context-synth/internal/protocol"
 )
 
 func TestPassthroughExtractor(t *testing.T) {
-	snap := model.Snapshot{
-		Items: []model.SnapshotItem{
+	snap := protocol.Snapshot{
+		Items: []protocol.SnapshotItem{
 			{
-				Source: model.Source{
+				Source: protocol.Source{
 					Path:        "a.md",
 					Content:     []byte("alpha content"),
 					ContentHash: "abc123",
@@ -22,7 +22,7 @@ func TestPassthroughExtractor(t *testing.T) {
 				Provenance: "a.md",
 			},
 			{
-				Source: model.Source{
+				Source: protocol.Source{
 					Path:        "b.md",
 					Content:     []byte("bravo content"),
 					ContentHash: "def456",

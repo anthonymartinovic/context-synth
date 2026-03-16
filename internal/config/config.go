@@ -14,8 +14,9 @@ type OutputConfig struct {
 }
 
 type SourceDecl struct {
-	Path   string  `yaml:"path"`
-	Weight float64 `yaml:"weight"`
+	Markdown string  `yaml:"markdown,omitempty"`
+	Audio    string  `yaml:"audio,omitempty"`
+	Weight   float64 `yaml:"weight"`
 }
 
 type SectionDecl struct {
@@ -24,7 +25,8 @@ type SectionDecl struct {
 }
 
 type LLMConfig struct {
-	Provider  string `yaml:"provider"`
-	Model     string `yaml:"model"`
-	APIKeyEnv string `yaml:"api_key_env"`
+	Provider string `yaml:"provider"`
+	Model    string `yaml:"model"`
+	BaseURL  string `yaml:"base_url,omitempty"`
+	APIKeyEnv string `yaml:"api_key_env,omitempty"`
 }

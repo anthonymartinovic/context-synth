@@ -1,11 +1,11 @@
 package verify
 
-import "github.com/anthonymartinovic/context-synth/internal/model"
+import "github.com/anthonymartinovic/context-synth/internal/protocol"
 
 type VerificationData struct {
 	Mode     string
 	Included []IncludedItem
-	Omitted  []model.Omission
+	Omitted  []protocol.Omission
 }
 
 type IncludedItem struct {
@@ -16,7 +16,7 @@ type IncludedItem struct {
 	Section     string
 }
 
-func Verify(plan model.SynthPlan, mode string) VerificationData {
+func Verify(plan protocol.SynthPlan, mode string) VerificationData {
 	var included []IncludedItem
 	for _, item := range plan.Included {
 		included = append(included, IncludedItem{

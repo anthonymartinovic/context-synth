@@ -1,27 +1,15 @@
-# Binary
-cs
-*.exe
-
 # Build
-/bin/
-/dist/
+/cs
 .env
-
-# Dependencies
-/vendor/
-
-# Test
-*.test
-*.out
-cover.out
-coverage.html
-
-# IDE
-.idea/
-*.swp
-*.swo
-*~
+__pycache__/
+*.pyc
 
 # OS
 .DS_Store
 Thumbs.db
+
+# DJ-V
+examples/dj-v/sources/audio/*
+examples/dj-v/artifact.json
+examples/dj-v/artifact-full.json
+examples/dj-v/output/*
